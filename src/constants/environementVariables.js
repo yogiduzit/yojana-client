@@ -1,0 +1,1 @@
+export const REACT_APP_URL_API='https://localhost:5001/api';
