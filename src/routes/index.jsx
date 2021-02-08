@@ -1,11 +1,20 @@
 import React from 'react';
+import Routes from "../constants/routes";
+import { Route, BrowserRouter } from "react-router-dom";
+import Login from "./login/login";
+import Dashboard from './dashboard/index';
+import '../assets/css/style.css'
 
-const App = (props) => {
+const Main = (props) => {
     return (
         <div>
-            Hello World
+            <BrowserRouter>
+                <Route path={Routes.LOGIN} component={Login} />
+                {/*<Route exact path={Routes.HOME} component={Login} />*/}
+                <Route path={Routes.DASHBOARD} component={Dashboard} />
+            </BrowserRouter>
         </div>
     )
 }
 
-export default App;
+export default Main;

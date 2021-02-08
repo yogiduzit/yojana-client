@@ -1,3 +1,18 @@
 body {
     margin: 0;
+    background-color: #E5ECF4;
+}
+
+.loginbox {
+
+    /* Primary White */
+    background: #FFFFFF;
+    border-radius: 50px;
+
+}
+
+.loginbutton {
+    background-color: #4877AD !important;
+    color: #FFFFFF !important;
+    border-radius: 15px !important;
 }

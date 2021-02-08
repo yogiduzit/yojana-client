@@ -1,4 +1,7 @@
-export const HOME = '/';
-export const LOGIN = '/login';
-export const DASHBOARD = '/dashboard';
-export const ABOUT_US = '/about-us';
+const Routes = {
+    HOME: '/',
+    LOGIN: '/login',
+    DASHBOARD: '/dashboard',
+};
+
+export default Routes;
