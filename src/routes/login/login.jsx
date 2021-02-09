@@ -34,12 +34,25 @@ class Login extends Component {
                         <img src={logo} />
                         <form className='p-5 w-100' onSubmit={this.loginSubmissionHandler}>
                             <div className='mt-5'>
-                                <TextField onChange={(event) => this.setUsername(event.target.value)} className='form-control w-50' id="outlined-basic" label="Username" variant="outlined" />
+                                <TextField onChange={(event) => this.setUsername(event.target.value)}
+                                           className='form-control w-50'
+                                           id="outlined-basic"
+                                           label="Username"
+                                           variant="outlined" />
                             </div>
                             <div className='mt-5'>
-                                <TextField onChange={(event) => this.setPassword(event.target.value)} className='form-control w-50' type='password' id="outlined-basic" label="Password" variant="outlined" />
+                                <TextField onChange={(event) => this.setPassword(event.target.value)}
+                                           className='form-control w-50'
+                                           type='password'
+                                           id="outlined-basic"
+                                           label="Password"
+                                           variant="outlined" />
                             </div>
-                            <Button className='w-50 mt-5 loginbutton' onClick={this.loginSubmissionHandler} variant="contained">Sign In</Button>
+                            <Button className='w-50 mt-5 loginbutton'
+                                    onClick={this.loginSubmissionHandler}
+                                    variant="contained">
+                                Sign In
+                            </Button>
                         </form>
                     </div>
                 </Container>
