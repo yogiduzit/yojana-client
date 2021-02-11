@@ -30,7 +30,7 @@
     },
     "scripts": {
         "dev": "react-scripts start",
-        "postinstall": "npm run build",
+        "prestart": "npm run build",
         "start": "node bin/www",
         "build": "react-scripts build",
         "test": "react-scripts test",
