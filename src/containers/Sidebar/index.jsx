@@ -38,6 +38,7 @@ const Sidebar = (props) => {
                         padding: '30px',
                         overflow: 'hidden',
                         whiteSpace: 'nowrap',
+                        cursor: 'pointer'
                     }}
                 >
                     <FaBars onClick={handleCollapsedChange}/>
@@ -48,35 +49,35 @@ const Sidebar = (props) => {
                 <Menu iconShape="circle">
                     <MenuItem
                         icon={<FaThLarge />}
-                        active={!pathname.localeCompare(Routes.DASHBOARD)}
+                        active={pathname.localeCompare(Routes.DASHBOARD) === 0}
                     >
                         Dashboard
                         <Link to={Routes.DASHBOARD} />
                     </MenuItem>
                     <MenuItem
                         icon={<FaFolder />}
-                        active={!pathname.localeCompare(Routes.PROJECTS)}
+                        active={pathname.localeCompare(Routes.PROJECTS) === 0}
                     >
                         Projects
                         <Link to={Routes.PROJECTS} />
                     </MenuItem>
                     <MenuItem
                         icon={<FaMoneyCheck />}
-                        active={!pathname.localeCompare(Routes.TIMESHEET)}
+                        active={pathname.localeCompare(Routes.TIMESHEET) === 0}
                     >
                         Timesheet
                         <Link to={Routes.TIMESHEET} />
                     </MenuItem>
                     <MenuItem
                         icon={<FaChartBar />}
-                        active={!pathname.localeCompare(Routes.REPORT)}
+                        active={pathname.localeCompare(Routes.REPORT) === 0}
                     >
                         Report
                         <Link to={Routes.REPORT} />
                     </MenuItem>
                     <MenuItem
                         icon={<FaUserFriends />}
-                        active={!pathname.localeCompare(Routes.TEAM)}
+                        active={pathname.localeCompare(Routes.TEAM) === 0}
                     >
                         Team
                         <Link to={Routes.TEAM} />
