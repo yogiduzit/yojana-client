@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
-import moment from 'moment'
+import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import { Link, useHistory } from 'react-router-dom'
 import '../../assets/css/timesheet.css'
 
@@ -304,8 +304,6 @@ const TimesheetIndex = () => {
     setOrderBy(property)
   }
 
-  const formatDate = date => moment(date).format('MM/DD/YYYY')
-
   const statusIndicator = status => {
     switch (status) {
       case statusEnum.APPROVED:
@@ -366,9 +364,9 @@ const TimesheetIndex = () => {
             ).map(row => (
               <TableRow key={row.id}>
                 <TableCell component='th' scope='row'>
-                  {formatDate(row.weekEndDate)}
+                  {formatMMDDYYYY(row.weekEndDate)}
                 </TableCell>
-                <TableCell>{formatDate(row.submittedDate)}</TableCell>
+                <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
                 <TableCell>{row.totalHours} hrs</TableCell>
                 <TableCell>
                   {statusIndicator(row.status)}

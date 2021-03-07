@@ -5,3 +5,30 @@
     border-radius: 3rem;
     overflow: hidden;
 }
+
+#timesheetCreateHeader {
+    width: 100%;
+    table-layout: fixed;
+    font-size: 1.2em;
+}
+
+#timesheetCreateHeader th {
+    padding-bottom: 1em;
+}
+
+.timesheetCreateRow input {
+    width: 35px;
+    border: none;
+    border-bottom: 1px solid grey;
+    text-align: center;
+}
+
+.timesheetCreateActionsIcon {
+    border: none;
+    background: none;
+}
+
+.timesheetCreateInputValidationMessage {
+    margin: 0;
+    color: #DD5B24;
+}
