@@ -14,7 +14,7 @@ const Main = (props) => {
         <div>
             <BrowserRouter>
                 <Route path={Routes.LOGIN} component={Login} />
-                {/*<Route exact path={Routes.HOME} component={login} />*/}
+                <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
                 <Route path={Routes.PROJECTS} component={Projects} />
                 <Route path={Routes.TIMESHEET} component={Timesheet} />
