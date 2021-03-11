@@ -4,6 +4,7 @@ const Routes = {
     DASHBOARD: '/dashboard',
     PROJECTS: '/projects',
     TIMESHEET: '/timesheet',
+    TIMESHEET_CREATE: '/timesheet/create',
     REPORT: '/report',
     TEAM: '/team',
 };
