@@ -64,7 +64,7 @@ const Employee = () => {
         return employee && employee.map((e) => {
         return (
             
-                            <Accordion className = 'accbg my-2 mr-2'>
+                            <Accordion className = 'accbg my-2 mr-2' >
                                 <AccordionSummary
                                 expandIcon={<EditIcon />}
                                 aria-controls="panel1a-content"
@@ -77,15 +77,19 @@ const Employee = () => {
                                 <AccordionDetails>
                                 <form className=' w-100' onSubmit={changePasswordSubmissionHandler}>
                                                     <div className='py-5 '>
-                                                        <TextField onChange={(event) => this.setOldPassword(event.target.value)}
-                                                                className='form-control w-50 bg-white'                                                   
+                                                        <TextField onChange={(event) => setOldPassword(event.target.value)}
+                                                                className='form-control w-50 bg-white'        
+                                                                name='old-passowrd'                                           
                                                                 label="Old Password"
+                                                                autoComplete='off'
                                                                 variant="outlined" />
                                                     </div>
                                                     <div className='py-5 justify-content-center'>
-                                                        <TextField onChange={(event) => this.setNewPassword(event.target.value)}
+                                                        <TextField onChange={(event) => setNewPassword(event.target.value)}
                                                                 className='form-control w-50 bg-white'
-                                                                type='password'                                                               
+                                                                name='new-passowrd'
+                                                                type='password'
+                                                                autoComplete='off'                                                               
                                                                 label="New Password"
                                                                 variant="outlined" />
                                                     </div>
