@@ -109,13 +109,14 @@ const Employee = () => {
     return (
         <Container>
             <div className='text-right m-3'>
-                                                                   
+                <Link to={Routes.ADDEMPLOYEE}>
                     <Button className='ml-auto  w-30 mt-5 loginbutton'
                         onClick={addEmployeeSubmissionHandler}
                         variant="contained">
                         Add Employee
                     </Button>
                 
+                </Link>
             </div>
         
     
