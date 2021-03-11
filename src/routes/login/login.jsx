@@ -2,13 +2,15 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '../../assets/css/style.css'
 
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap'
+import { Container } from 'reactstrap'
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core'
 
 import logo from '../../assets/images/logo.svg'
 import { login } from '../../api/Authentication';
+
 import { ACCESS_TOKEN } from '../../constants/environementVariables';
+import Routes from '../../constants/routes';
 
 class Login extends Component {
     constructor(props) {
@@ -27,7 +29,14 @@ class Login extends Component {
 
     onLogin = () => {
         login(this.getUsername(), this.getPassword())
-        .then(res => localStorage.setItem(ACCESS_TOKEN, res));   
+        .then(res => {
+          if (res.errors.length > 0) {
+            return;
+          } else {
+            localStorage.setItem(ACCESS_TOKEN, res.data.token);
+            this.props.history.push(Routes.DASHBOARD);
+          }
+        });   
     }
 
     render() {
