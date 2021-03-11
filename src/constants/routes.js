@@ -6,7 +6,9 @@ const Routes = {
     TIMESHEET: '/timesheet',
     TIMESHEET_CREATE: '/timesheet/create',
     REPORT: '/report',
-    TEAM: '/team',
+    EMPLOYEE: '/employee',
+    ADDEMPLOYEE: '/addEmployee',
+    
 };
 
 export default Routes;

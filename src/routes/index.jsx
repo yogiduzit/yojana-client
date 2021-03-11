@@ -8,6 +8,9 @@ import Timesheet from './timesheet';
 import TimesheetCreate from './timesheet/create'
 import Report from './report';
 import Team from './team';
+import Employee from './employee'
+import AddEmployee from './addEmployee'
+
 import '../assets/css/style.css';
 
 const Main = (props) => {
@@ -21,7 +24,9 @@ const Main = (props) => {
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route exact path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.REPORT} component={Report} />
-                <Route path={Routes.TEAM} component={Team} />
+                <Route path={Routes.EMPLOYEE} component={Employee} />
+                <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
+               
             </BrowserRouter>
         </div>
     )
