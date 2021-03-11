@@ -1,15 +1,20 @@
 import React from 'react';
+import userProfileImage from '../../assets/images/user-profile-mock.svg';
+import {Link} from "react-router-dom";
+import '../../assets/css/style.css'
 
 const Header = (props) => {
+    const userEmailAddress = 'jane.doe@gmail.com';
     return (
-        // TODO: When styling, do not use inline-styling - This is demo purpose
-        <div style={{
-            width: "100%",
-            height: "80px",
-            border: "2px solid black"
-        }}>
-            This is header
-        </div>
+        <>
+
+            <div className='p-5 ml-auto'>
+                <Link>
+                    <img src={userProfileImage} className='mr-3' />
+                    <span className='text-color-primary-yonder text-decoration-none'>{userEmailAddress}</span>
+                </Link>
+            </div>
+        </>
     )
 }
 
