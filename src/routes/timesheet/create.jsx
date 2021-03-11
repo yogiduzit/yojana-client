@@ -139,7 +139,7 @@ function TimesheetCreate () {
         rowToUpdate.hours[0] = value
         // update total hours for Saturday
         setTotalHours([
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[0], 0),
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[0]), 0),
           ...totalHours.slice(1)
         ])
         break
@@ -148,7 +148,7 @@ function TimesheetCreate () {
         // update total hours for Sunday
         setTotalHours([
           ...totalHours.slice(0, 1),
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[1], 0),
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[1]), 0),
           ...totalHours.slice(2)
         ])
         break
@@ -157,7 +157,7 @@ function TimesheetCreate () {
         // update total hours for Monday
         setTotalHours([
           ...totalHours.slice(0, 2),
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[2], 0),
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[2]), 0),
           ...totalHours.slice(3)
         ])
         break
@@ -166,7 +166,7 @@ function TimesheetCreate () {
         // update total hours for Tuesday
         setTotalHours([
           ...totalHours.slice(0, 3),
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[3], 0),
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[3]), 0),
           ...totalHours.slice(4)
         ])
         break
@@ -175,7 +175,7 @@ function TimesheetCreate () {
         // update total hours for Wednesday
         setTotalHours([
           ...totalHours.slice(0, 4),
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[4], 0),
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[4]), 0),
           ...totalHours.slice(5)
         ])
         break
@@ -184,7 +184,7 @@ function TimesheetCreate () {
         // update total hours for Thursday
         setTotalHours([
           ...totalHours.slice(0, 5),
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[5], 0),
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[5]), 0),
           ...totalHours.slice(6)
         ])
         break
@@ -193,7 +193,7 @@ function TimesheetCreate () {
         // update total hours for Friday
         setTotalHours([
           ...totalHours.slice(0, 6),
-          timesheet.rows.reduce((acc, obj) => acc + obj.hours[6], 0)
+          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[6]), 0)
         ])
         break
       default:
@@ -202,13 +202,8 @@ function TimesheetCreate () {
 
     // update total hours
     rowToUpdate.totalHours = rowToUpdate.hours.reduce(
-      (acc, item) => acc + item,
+      (acc, item) => acc + parseFloat(item),
       0
-    )
-
-    // set total of total hours from each row
-    setTotalOfTotalHours(
-      timesheet.rows.reduce((acc, obj) => acc + obj.totalHours, 0)
     )
 
     // set the final state of timesheet
@@ -223,6 +218,11 @@ function TimesheetCreate () {
         } else return row
       })
     })
+
+    // set total of total hours from each row
+    setTotalOfTotalHours(
+      timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.totalHours), 0)
+    )
   }
 
   const handleAddRow = () => {
