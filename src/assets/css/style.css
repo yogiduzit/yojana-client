@@ -18,3 +18,40 @@ body {
     color: #FFFFFF !important;
     border-radius: 15px !important;
 }
+
+.employeebox {
+
+    /* Primary White */
+    background: #FFFFFF;
+    border-radius: 50px;
+
+}
+.employeeboxP {
+
+    /* Primary White */
+    background:#CCDDF1;
+    border-radius: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+
+}
+.employeeAcc{
+    font-size: 15;
+    font-weight: bold;
+    
+
+}
+.employeeRoot{
+    width: 98%;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.accbg{
+
+    background-color: #E5ECF4 !important;
+    border-radius: 10px;
+}
+.colorP{
+    background-color:#4877AD !important;
+}

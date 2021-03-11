@@ -77,10 +77,10 @@ const Sidebar = (props) => {
                     </MenuItem>
                     <MenuItem
                         icon={<FaUserFriends />}
-                        active={pathname.localeCompare(Routes.TEAM) === 0}
+                        active={pathname.localeCompare(Routes.EMPLOYEE) === 0}
                     >
                         Team
-                        <Link to={Routes.TEAM} />
+                        <Link to={Routes.EMPLOYEE} />
                     </MenuItem>
                 </Menu>
             </SidebarContent>

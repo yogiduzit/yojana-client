@@ -5,7 +5,9 @@ const Routes = {
     PROJECTS: '/projects',
     TIMESHEET: '/timesheet',
     REPORT: '/report',
-    TEAM: '/team',
+    EMPLOYEE: '/employee',
+    ADDEMPLOYEE: '/addEmployee',
+    
 };
 
 export default Routes;
