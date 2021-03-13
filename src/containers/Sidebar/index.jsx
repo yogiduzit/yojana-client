@@ -30,7 +30,7 @@ const Sidebar = (props) => {
             image={false}
             collapsed={collapsed}
             breakPoint="md"
-            className="sidebar-custom-style"
+            className="sidebar-custom-style position-fixed"
         >
             <SidebarHeader>
                 <div
