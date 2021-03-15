@@ -3,11 +3,11 @@ const Routes = {
     LOGIN: '/login',
     DASHBOARD: '/dashboard',
     PROJECTS: '/projects',
-    TIMESHEET: '/timesheet',
+    TIMESHEET: '/timesheets',
     TIMESHEET_CREATE: '/timesheet/create',
     REPORT: '/report',
-    EMPLOYEE: '/employee',
-    ADDEMPLOYEE: '/addEmployee',
+    EMPLOYEE: '/employees',
+    ADDEMPLOYEE: '/employee/create',
     
 };
 

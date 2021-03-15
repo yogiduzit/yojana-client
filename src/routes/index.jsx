@@ -8,8 +8,8 @@ import Timesheet from './timesheet';
 import TimesheetCreate from './timesheet/create'
 import Report from './report';
 import Team from './team';
-import Employee from './employee'
-import AddEmployee from './addEmployee'
+import Employee from './employee/index'
+import AddEmployee from './employee/create'
 
 import '../assets/css/style.css';
 
