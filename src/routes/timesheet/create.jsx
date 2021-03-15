@@ -30,6 +30,7 @@ const useStyles = makeStyles({
 })
 
 const daysEnum = Object.freeze({
+  TOT: 'Total',
   SAT: 'Sat',
   SUN: 'Sun',
   MON: 'Mon',
@@ -38,6 +39,16 @@ const daysEnum = Object.freeze({
   THU: 'Thu',
   FRI: 'Fri'
 })
+
+const INITIAL_HOURS = Object.freeze([0, 0, 0, 0, 0, 0, 0])
+const SAT_IDX = 0
+const SUN_IDX = 1
+const MON_IDX = 2
+const TUE_IDX = 3
+const WED_IDX = 4
+const THU_IDX = 5
+const FRI_IDX = 6
+const DAYS_IN_WEEK = 7
 
 // TODO: DELETE DUMMY
 // dummy user which needs to be deleted later
@@ -57,7 +68,7 @@ const dummyTimesheet = {
       projectId: '010',
       workPackage: 'SICK',
       totalHours: 0,
-      hours: [0, 0, 0, 0, 0, 0, 0]
+      hours: [...INITIAL_HOURS]
     }
   ]
 }
@@ -77,7 +88,7 @@ function TimesheetCreate () {
   const [projectIds, setProjectIds] = useState(dummyProjectIds)
   const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
   // This is total hours of each day of rows (7 items)
-  const [totalHours, setTotalHours] = useState([0, 0, 0, 0, 0, 0, 0])
+  const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
   const [hoursInputErrorMsg, setHoursInputErrorMsg] = useState('')
   // display none or block for p tag
@@ -113,8 +124,118 @@ function TimesheetCreate () {
 
   const formatHours = input => parseFloat(input).toFixed(1)
 
+  const calculateTotalHours = (
+    dayToSet,
+    daysEnum,
+    totalHours,
+    setTotalHours,
+    timesheet,
+    setTotalOfTotalHours,
+    updatedTimesheetRows
+  ) => {
+    // For setting total hours by day
+    if (dayToSet !== undefined) {
+      switch (dayToSet) {
+        case daysEnum.SAT:
+          // update total hours for Saturday
+          setTotalHours([
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[SAT_IDX]),
+              0
+            ),
+            ...totalHours.slice(1)
+          ])
+          return
+        case daysEnum.SUN:
+          // update total hours for Sunday
+          setTotalHours([
+            ...totalHours.slice(0, SUN_IDX),
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[SUN_IDX]),
+              0
+            ),
+            ...totalHours.slice(MON_IDX)
+          ])
+          return
+        case daysEnum.MON:
+          // update total hours for Monday
+          setTotalHours([
+            ...totalHours.slice(0, MON_IDX),
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[MON_IDX]),
+              0
+            ),
+            ...totalHours.slice(TUE_IDX)
+          ])
+          return
+        case daysEnum.TUE:
+          // update total hours for Tuesday
+          setTotalHours([
+            ...totalHours.slice(0, TUE_IDX),
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[TUE_IDX]),
+              0
+            ),
+            ...totalHours.slice(WED_IDX)
+          ])
+          return
+        case daysEnum.WED:
+          // update total hours for Wednesday
+          setTotalHours([
+            ...totalHours.slice(0, WED_IDX),
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[WED_IDX]),
+              0
+            ),
+            ...totalHours.slice(THU_IDX)
+          ])
+          return
+        case daysEnum.THU:
+          // update total hours for Thursday
+          setTotalHours([
+            ...totalHours.slice(0, THU_IDX),
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[THU_IDX]),
+              0
+            ),
+            ...totalHours.slice(FRI_IDX)
+          ])
+          return
+        case daysEnum.FRI:
+          // update total hours for Friday
+          setTotalHours([
+            ...totalHours.slice(0, FRI_IDX),
+            timesheet.rows.reduce(
+              (acc, obj) => acc + parseFloat(obj.hours[FRI_IDX]),
+              0
+            )
+          ])
+          return
+        default:
+          return
+      }
+    } else if (updatedTimesheetRows !== undefined) {
+      // set total of total hours from each row
+      setTotalOfTotalHours(
+        updatedTimesheetRows.reduce(
+          (acc, obj) => acc + parseFloat(obj.totalHours),
+          0
+        )
+      )
+
+      let newTotalHours = [...INITIAL_HOURS]
+      for (let i = 0; i < DAYS_IN_WEEK; ++i) {
+        newTotalHours[i] = updatedTimesheetRows.reduce(
+          (acc, obj) => acc + parseFloat(obj.hours[i]),
+          0
+        )
+      }
+      setTotalHours(newTotalHours)
+    }
+  }
+
   // Gets triggered each time the user enters hours in an input field
-  const handleHoursChange = (e, rowToUpdate) => {
+  const handleHoursChange = (e, index, rowToUpdate) => {
     const value = formatHours(e.target.value)
 
     // validate input hour - to see if it exceeds 24 hrs
@@ -134,67 +255,83 @@ function TimesheetCreate () {
       setShowInputErrorMsg('none')
     }
 
-    switch (e.target.name) {
-      case daysEnum.SAT:
-        rowToUpdate.hours[0] = value
+    switch (index) {
+      case SAT_IDX:
+        rowToUpdate.hours[SAT_IDX] = value
         // update total hours for Saturday
-        setTotalHours([
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[0]), 0),
-          ...totalHours.slice(1)
-        ])
+        calculateTotalHours(
+          daysEnum.SAT,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
-      case daysEnum.SUN:
-        rowToUpdate.hours[1] = value
+      case SUN_IDX:
+        rowToUpdate.hours[SUN_IDX] = value
         // update total hours for Sunday
-        setTotalHours([
-          ...totalHours.slice(0, 1),
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[1]), 0),
-          ...totalHours.slice(2)
-        ])
+        calculateTotalHours(
+          daysEnum.SUN,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
-      case daysEnum.MON:
-        rowToUpdate.hours[2] = value
+      case MON_IDX:
+        rowToUpdate.hours[MON_IDX] = value
         // update total hours for Monday
-        setTotalHours([
-          ...totalHours.slice(0, 2),
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[2]), 0),
-          ...totalHours.slice(3)
-        ])
+        calculateTotalHours(
+          daysEnum.MON,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
-      case daysEnum.TUE:
-        rowToUpdate.hours[3] = value
+      case TUE_IDX:
+        rowToUpdate.hours[TUE_IDX] = value
         // update total hours for Tuesday
-        setTotalHours([
-          ...totalHours.slice(0, 3),
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[3]), 0),
-          ...totalHours.slice(4)
-        ])
+        calculateTotalHours(
+          daysEnum.TUE,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
-      case daysEnum.WED:
-        rowToUpdate.hours[4] = value
+      case WED_IDX:
+        rowToUpdate.hours[WED_IDX] = value
         // update total hours for Wednesday
-        setTotalHours([
-          ...totalHours.slice(0, 4),
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[4]), 0),
-          ...totalHours.slice(5)
-        ])
+        calculateTotalHours(
+          daysEnum.WED,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
-      case daysEnum.THU:
-        rowToUpdate.hours[5] = value
+      case THU_IDX:
+        rowToUpdate.hours[THU_IDX] = value
         // update total hours for Thursday
-        setTotalHours([
-          ...totalHours.slice(0, 5),
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[5]), 0),
-          ...totalHours.slice(6)
-        ])
+        calculateTotalHours(
+          daysEnum.THU,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
-      case daysEnum.FRI:
-        rowToUpdate.hours[6] = value
+      case FRI_IDX:
+        rowToUpdate.hours[FRI_IDX] = value
         // update total hours for Friday
-        setTotalHours([
-          ...totalHours.slice(0, 6),
-          timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.hours[6]), 0)
-        ])
+        calculateTotalHours(
+          daysEnum.FRI,
+          daysEnum,
+          totalHours,
+          setTotalHours,
+          timesheet
+        )
         break
       default:
         break
@@ -234,20 +371,32 @@ function TimesheetCreate () {
           projectId: '',
           workPackage: '',
           totalHours: 0,
-          hours: [0, 0, 0, 0, 0, 0, 0]
+          hours: [...INITIAL_HOURS]
         }
       ]
     })
   }
 
   const handleDeleteRow = rowToDelete => {
+    const updatedRows = [...timesheet.rows].filter(
+      row =>
+        row.projectId !== rowToDelete.projectId &&
+        row.workPackage !== rowToDelete.workPackage
+    )
+
+    calculateTotalHours(
+      undefined,
+      undefined,
+      totalHours,
+      setTotalHours,
+      timesheet,
+      setTotalOfTotalHours,
+      updatedRows
+    )
+
     setTimesheet({
       ...timesheet,
-      rows: [...timesheet.rows].filter(
-        row =>
-          row.projectId !== rowToDelete.projectId &&
-          row.workPackage !== rowToDelete.workPackage
-      )
+      rows: updatedRows
     })
   }
 
@@ -286,14 +435,11 @@ function TimesheetCreate () {
             <TableRow>
               <TableCell>Project</TableCell>
               <TableCell>WP</TableCell>
-              <TableCell align='right'>Total</TableCell>
-              <TableCell align='right'>Sat</TableCell>
-              <TableCell align='right'>Sun</TableCell>
-              <TableCell align='right'>Mon</TableCell>
-              <TableCell align='right'>Tue</TableCell>
-              <TableCell align='right'>Wed</TableCell>
-              <TableCell align='right'>Thu</TableCell>
-              <TableCell align='right'>Fri</TableCell>
+              {Object.values(daysEnum).map((item, idx) => (
+                <TableCell align='right' key={idx}>
+                  {item}
+                </TableCell>
+              ))}
               <TableCell align='right'>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -343,99 +489,28 @@ function TimesheetCreate () {
                       ))}
                   </Select>
                 </TableCell>
-                <TableCell align='right'>
-                  {formatHours(row.totalHours)}
-                </TableCell>
-                {/* {row.hours.map(day => (
-                  <TableCell align='right'>
-                    <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.SAT}
-                    value={row.hours[0]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                  </TableCell>
-                ))} */}
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.SAT}
-                    value={row.hours[0]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.SUN}
-                    value={row.hours[1]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.MON}
-                    value={row.hours[2]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.TUE}
-                    value={row.hours[3]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.WED}
-                    value={row.hours[4]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.THU}
-                    value={row.hours[5]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
-                <TableCell align='right'>
-                  <input
-                    onChange={e => handleHoursChange(e, row)}
-                    type='number'
-                    name={daysEnum.FRI}
-                    value={row.hours[6]}
-                    min='0'
-                    max='24'
-                    step='0.5'
-                  />
-                </TableCell>
+                {Object.keys(daysEnum).map((item, idx) => {
+                  if (idx === 0) {
+                    return (
+                      <TableCell align='right' key={idx}>
+                        {formatHours(row.totalHours)}
+                      </TableCell>
+                    )
+                  } else {
+                    return (
+                      <TableCell align='right' key={idx}>
+                        <input
+                          onChange={e => handleHoursChange(e, --idx, row)}
+                          type='number'
+                          value={row.hours[idx - 1]}
+                          min='0'
+                          max='24'
+                          step='0.5'
+                        />
+                      </TableCell>
+                    )
+                  }
+                })}
                 <TableCell align='right'>
                   <button
                     type='button'
@@ -470,27 +545,32 @@ function TimesheetCreate () {
             <TableRow>
               <TableCell>Total</TableCell>
               <TableCell></TableCell>
-              <TableCell align='right'>
-                {formatHours(totalOfTotalHours)}
-              </TableCell>
-              <TableCell align='right'>{formatHours(totalHours[0])}</TableCell>
-              <TableCell align='right'>{formatHours(totalHours[1])}</TableCell>
-              <TableCell align='right'>{formatHours(totalHours[2])}</TableCell>
-              <TableCell align='right'>{formatHours(totalHours[3])}</TableCell>
-              <TableCell align='right'>{formatHours(totalHours[4])}</TableCell>
-              <TableCell align='right'>{formatHours(totalHours[5])}</TableCell>
-              <TableCell align='right'>{formatHours(totalHours[6])}</TableCell>
+              {Object.keys(daysEnum).map((_, idx) => {
+                if (idx === 0) {
+                  return (
+                    <TableCell align='right' key={idx}>
+                      {formatHours(totalOfTotalHours)}
+                    </TableCell>
+                  )
+                } else {
+                  return (
+                    <TableCell align='right' key={idx}>
+                      {formatHours(totalHours[idx - 1])}
+                    </TableCell>
+                  )
+                }
+              })}
               <TableCell></TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Overtime</TableCell>
-              <TableCell></TableCell>
+              <TableCell />
               <TableCell align='right'>?</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
             <TableRow>
               <TableCell>Flextime</TableCell>
-              <TableCell></TableCell>
+              <TableCell />
               <TableCell align='right'>?</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
