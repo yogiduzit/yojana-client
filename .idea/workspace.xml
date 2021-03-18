@@ -31,7 +31,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fc6eb1fd-0737-4097-bcf4-b3cf316c0e8c" name="Default Changelist" comment="" />
+    <list default="true" id="13867fae-896e-468e-94b7-d5a33cbf15f6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/api/ApiController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -53,8 +57,11 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.standard" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
     <property name="nodejs_package_manager_path" value="yarn" />
   </component>
   <component name="SvnConfiguration">
@@ -89,9 +96,17 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="511" y="238" key="#ESLint" timestamp="1616032300922">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="511" y="238" key="#ESLint/0.0.1280.689@0.0.1280.689" timestamp="1616032300922" />
     <state x="366" y="147" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1615326345254">
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="366" y="147" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1280.689@0.0.1280.689" timestamp="1615326345254" />
+    <state x="371" y="92" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1616032292323">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="371" y="92" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.689@0.0.1280.689" timestamp="1616032292323" />
   </component>
 </project>
