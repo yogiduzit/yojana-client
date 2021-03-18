@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Routes from '../../constants/routes';
 import {
     ProSidebar,
@@ -11,6 +11,8 @@ import {
     SidebarContent,
 } from 'react-pro-sidebar';
 import { FaBars, FaThLarge, FaFolder, FaMoneyCheck, FaChartBar,  FaUserFriends } from 'react-icons/fa';
+import { FiLogOut } from 'react-icons/fi';
+import { logout } from '../../api/Authentication';
 
 const Sidebar = (props) => {
     useEffect(() => {
@@ -18,12 +20,18 @@ const Sidebar = (props) => {
     },[])
 
     const { pathname } = props.location;
+    const history = useHistory();
 
     const [collapsed, setCollapsed] = useState(false);
 
     const handleCollapsedChange = () => {
         setCollapsed(!collapsed);
     };
+
+    const handleLogout = () => {
+      logout();
+      history.push(Routes.LOGIN);
+    }
 
     return (
         <ProSidebar
@@ -77,10 +85,16 @@ const Sidebar = (props) => {
                     </MenuItem>
                     <MenuItem
                         icon={<FaUserFriends />}
-                        active={pathname.localeCompare(Routes.TEAM) === 0}
+                        active={pathname.localeCompare(Routes.EMPLOYEE) === 0}
                     >
-                        Team
-                        <Link to={Routes.TEAM} />
+                        Employees
+                        <Link to={Routes.EMPLOYEE} />
+                    </MenuItem>
+                    <MenuItem
+                        icon={<FiLogOut />}
+                        onClick={handleLogout}
+                    >
+                        Logout
                     </MenuItem>
                 </Menu>
             </SidebarContent>

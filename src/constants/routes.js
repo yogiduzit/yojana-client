@@ -3,9 +3,12 @@ const Routes = {
     LOGIN: '/login',
     DASHBOARD: '/dashboard',
     PROJECTS: '/projects',
-    TIMESHEET: '/timesheet',
+    TIMESHEET: '/timesheets',
+    TIMESHEET_CREATE: '/timesheet/create',
     REPORT: '/report',
-    TEAM: '/team',
+    EMPLOYEE: '/employees',
+    ADDEMPLOYEE: '/employee/create',
+    
 };
 
 export default Routes;
