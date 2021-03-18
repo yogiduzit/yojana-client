@@ -1,0 +1,27 @@
+{
+  "projects": [
+    {
+      "projectName": "Improving Student Panel :D",
+      "milestone": "Inception",
+      "currentWpID": 5
+    },
+    {
+      "projectName": "Improving BCIT Website",
+      "milestone": "Construction",
+      "currentWpID": 4
+    },{
+      "projectName": "Improving Email Panel - BCIT",
+      "milestone": "Elaboration",
+      "currentWpID": 2
+    },{
+      "projectName": "Ecommerce Website",
+      "milestone": "Construction",
+      "currentWpID": 7
+    },
+    {
+      "projectName": "Project Management System",
+      "milestone": "Construction",
+      "currentWpID": 4
+    }
+  ]
+}

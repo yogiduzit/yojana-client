@@ -22,6 +22,47 @@ body {
 .text-color-primary-yonder {
     color: #4877AD !important;
 }
+
+.header-text-purple-color {
+    color: #8A4FFF;
+    font-size: large;
+}
+
+.primary-blue-border-text-color {
+    border: 1px solid #4877AD !important;
+    color: #4877AD !important;
+    background-color: white !important;
+    font-size: large !important;
+    font-weight: bolder !important;
+}
+
+.bg-primary-blue {
+    background-color: #4877AD !important;
+}
+
+.primary-white-text-color {
+    color: white !important;
+    font-size: large !important;
+    font-weight: bold !important;
+}
+
+.primary-blue-text-color {
+    color: #4877AD !important;
+    font-size: large !important;
+    font-weight: bolder !important;
+}
+
+.dashboard-card-border-radius {
+    border-radius: 50px;
+}
+
+.font-size-lg {
+    font-size: larger;
+}
+
+.text-decoration-underline {
+    text-decoration: underline;
+}
 .employeebox {
 
     /* Primary White */
