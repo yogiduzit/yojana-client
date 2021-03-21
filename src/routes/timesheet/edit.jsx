@@ -3,11 +3,7 @@ import { useHistory } from 'react-router-dom'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import '../../assets/css/timesheet.css'
-import {
-  daysEnum,
-  DAYS_IN_WEEK,
-  INITIAL_HOURS
-} from '../../constants/timesheet/constants'
+import { daysEnum, INITIAL_HOURS } from '../../constants/timesheet/constants'
 import {
   formatHours,
   calculateTotalHours,
@@ -31,6 +27,7 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
+import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
 
 const useStyles = makeStyles({
   // for the table
@@ -70,35 +67,12 @@ function TimesheetEdit ({ location }) {
   const [showInputErrorMsg, setShowInputErrorMsg] = useState('none')
 
   useEffect(() => {
-    if (location.state) {
-      // spread timesheet object that has been retrieved from props
-      let timesheetToSave = { ...location.state }
-
-      // add total hours by row
-      timesheetToSave.rows.forEach(row => {
-        let totalHours = 0
-        totalHours = row.hours.reduce((acc, hour) => acc + hour, 0)
-        row.totalHours = totalHours
-      })
-
-      // add total hours of total hours and by each day
-      let totalHoursToSave = [...INITIAL_HOURS]
-      let totalOfTotalHoursToSave = 0
-      timesheetToSave.rows.forEach(row => {
-        totalOfTotalHoursToSave += row.totalHours
-        for (let i = 0; i < DAYS_IN_WEEK; i++) {
-          totalHoursToSave[i] += row.hours[i]
-        }
-      })
-      setTotalHours(totalHoursToSave)
-      setTotalOfTotalHours(totalOfTotalHoursToSave)
-
-      // add week number field in timesheet object
-      timesheetToSave.weekNum = moment(timesheetToSave.weekEndDate).format('W')
-
-      setTimesheet(timesheetToSave)
-      setLoaded(true)
-    }
+    getTimesheetFromProps(location.state, {
+      setTotalHours,
+      setTotalOfTotalHours,
+      setTimesheet,
+      setLoaded
+    })
   }, [location.state])
 
   const handleDateSelect = date => {
