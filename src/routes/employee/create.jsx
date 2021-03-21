@@ -126,11 +126,9 @@ class AddEmployee extends Component {
                       onClick={this.onSubmit}
                       variant="contained">
                       Add Employee
-                                </Button>
+                    </Button>
                   </Col>
                 </Row>
-
-
               </div>
             </div>
           </div>
@@ -138,12 +136,6 @@ class AddEmployee extends Component {
       </Container>
 
     )
-
-
-    // return <div className="Employee">{employee.map(renderEmployee)}</div>
-
-
-
   }
 }
 

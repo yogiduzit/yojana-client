@@ -3,7 +3,11 @@ import Routes from "../constants/routes";
 import { Route, BrowserRouter } from "react-router-dom";
 import Login from "./login/login";
 import Dashboard from './dashboard';
+
 import Projects from './projects';
+import AddProject from './projects/create';
+import ViewProject from './projects/view';
+
 import Timesheet from './timesheet';
 import TimesheetCreate from './timesheet/create'
 import Report from './report';
@@ -20,13 +24,14 @@ const Main = (props) => {
                 <Route path={Routes.LOGIN} component={Login} />
                 <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
-                <Route path={Routes.PROJECTS} component={Projects} />
+                <Route exact path={Routes.PROJECTS} component={Projects} />
+                <Route path={Routes.ADDPROJECT} component={AddProject} />
+                <Route exact path={Routes.VIEW_PROJECT} component={ViewProject} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route exact path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
-               
             </BrowserRouter>
         </div>
     )
