@@ -7,6 +7,7 @@ import Projects from './projects';
 import Timesheet from './timesheet';
 import TimesheetCreate from './timesheet/create'
 import TimesheetDetail from './timesheet/detail'
+import TimesheetEdit from './timesheet/edit'
 import Report from './report';
 import Team from './team';
 import '../assets/css/style.css';
@@ -22,6 +23,7 @@ const Main = (props) => {
                 <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
+                <Route path={Routes.TIMESHEET_EDIT} component={TimesheetEdit} />
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.TEAM} component={Team} />
             </BrowserRouter>

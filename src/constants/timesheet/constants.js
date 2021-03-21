@@ -55,7 +55,7 @@ const dummyTimesheetRows = [
   },
   {
     projectId: '1205',
-    workPackage: 'BRAVO',
+    workPackage: 'COOL',
     hours: [5, 5, 2, 0, 0, 2, 3]
   }
 ]

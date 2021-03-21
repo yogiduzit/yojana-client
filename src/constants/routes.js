@@ -7,6 +7,7 @@ const Routes = {
     TIMESHEET: '/timesheet',
     TIMESHEET_CREATE: '/timesheet-create',
     TIMESHEET_DETAIL: '/timesheet-detail/:id',
+    TIMESHEET_EDIT: '/timesheet-edit/:id',
     REPORT: '/report',
     TEAM: '/team',
 };

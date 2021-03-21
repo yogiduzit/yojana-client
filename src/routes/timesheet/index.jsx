@@ -289,7 +289,13 @@ const TimesheetIndex = () => {
                 </TableCell>
                 <TableCell>
                   {row.status === statusEnum.REJECTED ? (
-                    <Link to='#' className='mr-5'>
+                    <Link
+                      to={{
+                        pathname: `timesheet-edit/${row.id}`,
+                        state: row
+                      }}
+                      className='mr-5'
+                    >
                       <EditIcon style={{ color: '#4877AD' }} />
                     </Link>
                   ) : (
