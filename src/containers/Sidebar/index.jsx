@@ -18,13 +18,13 @@ import {
 } from 'react-icons/fa'
 
 const Sidebar = props => {
-  useEffect(() => {
-    console.log(pathname)
-  }, [])
-
   const { pathname } = props.location
 
   const [collapsed, setCollapsed] = useState(false)
+
+  useEffect(() => {
+    console.log(pathname)
+  }, [pathname])
 
   const handleCollapsedChange = () => {
     setCollapsed(!collapsed)
@@ -71,7 +71,12 @@ const Sidebar = props => {
             active={
               pathname.localeCompare(Routes.TIMESHEET) === 0 ||
               pathname.localeCompare(Routes.TIMESHEET_CREATE) === 0 ||
-              pathname.includes(Routes.TIMESHEET_DETAIL.substring(0, Routes.TIMESHEET_DETAIL.lastIndexOf(Routes.SEPARATOR)))
+              pathname.includes(
+                Routes.TIMESHEET_DETAIL.substring(
+                  0,
+                  Routes.TIMESHEET_DETAIL.lastIndexOf(Routes.SEPARATOR)
+                )
+              )
             }
           >
             Timesheet

@@ -28,6 +28,8 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
 import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
+import Loading from '../../components/Loading/Loading.jsx'
+import NotFound from '../../components/NotFound/NotFound'
 
 const useStyles = makeStyles({
   // for the table
@@ -148,7 +150,9 @@ function TimesheetEdit ({ location }) {
   }
 
   return !loaded ? (
-    <div>Loading...</div>
+    <Loading />
+  ) : !timesheet ? (
+    <NotFound />
   ) : (
     <div className='body'>
       <h1 className='mb-5'>Edit Timesheet</h1>

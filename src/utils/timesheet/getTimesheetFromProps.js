@@ -34,8 +34,8 @@ function getTimesheetFromProps (timesheetFromProps, state) {
     timesheetToSave.weekNum = moment(timesheetToSave.weekEndDate).format('W')
 
     setTimesheet(timesheetToSave)
-    setLoaded(true)
   }
+  setLoaded(true)
 }
 
 export default getTimesheetFromProps

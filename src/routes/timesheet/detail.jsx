@@ -20,6 +20,8 @@ import {
 } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
+import Loading from '../../components/Loading/Loading.jsx'
+import NotFound from '../../components/NotFound/NotFound'
 
 const useStyles = makeStyles({
   // for the table
@@ -55,7 +57,9 @@ function TimesheetDetail ({ location }) {
   }, [location.state])
 
   return !loaded ? (
-    <div>Loading...</div>
+    <Loading />
+  ) : !timesheet ? (
+    <NotFound />
   ) : (
     <div className='body'>
       {/* header that has 3 columns*/}
