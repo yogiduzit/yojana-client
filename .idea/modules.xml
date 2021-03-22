@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/comp4911-pms-client.iml" filepath="$PROJECT_DIR$/.idea/comp4911-pms-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/yojana-client.iml" filepath="$PROJECT_DIR$/.idea/yojana-client.iml" />
     </modules>
   </component>
 </project>

@@ -8,6 +8,7 @@ import Timesheet from './timesheet';
 import Report from './report';
 import Team from './team';
 import '../assets/css/style.css';
+import Employeeprofile from './employeeprofile/employeeprofile';
 
 const Main = (props) => {
     return (
@@ -20,6 +21,7 @@ const Main = (props) => {
                 <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.TEAM} component={Team} />
+                <Route path={Routes.EMPLOYEEPROFILE} component={Employeeprofile} />
             </BrowserRouter>
         </div>
     )

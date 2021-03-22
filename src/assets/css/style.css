@@ -18,3 +18,37 @@ body {
     color: #FFFFFF !important;
     border-radius: 15px !important;
 }
+
+.profile {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.em-number {
+    text-align: left;
+    position: relative;
+    bottom:40px;
+    font-size: 10px;
+    font: bold;
+    left: 30px;
+}
+
+.emp-img {
+    border-radius: 50%;
+    width: 100px;
+    height:100px;
+    position: relative;
+    bottom: 40px;
+}
+
+.emp-mail{
+    color:#4877AD;
+    bottom:38px;
+    font-size: 5px;
+}
+
+.va-work{
+    color:blueviolet;
+    font-size: 10px;
+    right: 30px;
+}

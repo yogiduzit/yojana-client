@@ -6,6 +6,7 @@ const Routes = {
     TIMESHEET: '/timesheet',
     REPORT: '/report',
     TEAM: '/team',
+    EMPLOYEEPROFILE: '/employeeprofile',
 };
 
 export default Routes;
