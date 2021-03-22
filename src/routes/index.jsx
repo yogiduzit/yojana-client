@@ -10,6 +10,8 @@ import ViewProject from './projects/view';
 
 import Timesheet from './timesheet';
 import TimesheetCreate from './timesheet/create'
+import TimesheetDetail from './timesheet/detail'
+import TimesheetEdit from './timesheet/edit'
 import Report from './report';
 import Team from './team';
 import Employee from './employee/index'
@@ -24,11 +26,14 @@ const Main = (props) => {
                 <Route path={Routes.LOGIN} component={Login} />
                 <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
+                <Route path={Routes.PROJECTS} component={Projects} />
+                <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route exact path={Routes.PROJECTS} component={Projects} />
                 <Route path={Routes.ADDPROJECT} component={AddProject} />
                 <Route exact path={Routes.VIEW_PROJECT} component={ViewProject} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
-                <Route exact path={Routes.TIMESHEET} component={Timesheet} />
+                <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
+                <Route path={Routes.TIMESHEET_EDIT} component={TimesheetEdit} />
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />

@@ -4,6 +4,13 @@ import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import { Link, useHistory } from 'react-router-dom'
+import {
+  stableSort,
+  getComparator
+} from '../../utils/timesheet/tableSortFunctions'
+import statusIndicator from '../../components/timesheet/statusIndicator'
+import { dummyTimesheets } from '../../constants/timesheet/constants'
+import { orderByEnum, statusEnum } from '../../constants/timesheet/constants'
 import '../../assets/css/timesheet.css'
 
 // material-ui
@@ -23,7 +30,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import LastPageIcon from '@material-ui/icons/LastPage'
 import EditIcon from '@material-ui/icons/Edit'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord'
+
 import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
 
@@ -57,21 +64,6 @@ const useStyles = makeStyles(theme => ({
     width: 1
   }
 }))
-
-// Enum for order by
-const orderByEnum = Object.freeze({
-  WEEK_END_DATE: 0,
-  SUBMITTED_DATE: 1,
-  TOTAL_HOURS: 2,
-  STATUS: 3
-})
-
-// Enum for timesheet status
-const statusEnum = Object.freeze({
-  APPROVED: 'Approved',
-  IN_PROGRESS: 'In Progress',
-  REJECTED: 'Rejected'
-})
 
 const headCells = [
   {
@@ -118,22 +110,6 @@ function descendingComparator (a, b, orderBy) {
     return 1
   }
   return 0
-}
-
-function getComparator (order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
-}
-
-function stableSort (array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) return order
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map(el => el[0])
 }
 
 function EnhancedTableHead (props) {
@@ -243,51 +219,18 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired
 }
 
-// function for creating dummy data
-function createData (id, date, totalHours, status) {
-  return {
-    id: id,
-    weekEndDate: date,
-    submittedDate: new Date(),
-    totalHours: totalHours,
-    status: status
-  }
-}
-
-// dummy data
-const rows = [
-  createData(1, new Date(1995, 11, 17), 40, 'Approved'),
-  createData(2, new Date(2002, 4, 5), 30, 'Rejected'),
-  createData(3, new Date(2021, 5, 3), 20, 'Approved'),
-  createData(4, new Date(1999, 7, 8), 20, 'In Progress'),
-  createData(5, new Date(2002, 4, 5), 40, 'Rejected'),
-  createData(6, new Date(1995, 11, 17), 20, 'In Progress'),
-  createData(7, new Date(2002, 4, 5), 30, 'Rejected'),
-  createData(8, new Date(2021, 5, 3), 40, 'Approved'),
-  createData(9, new Date(1999, 7, 8), 40, 'Rejected'),
-  createData(10, new Date(1999, 7, 8), 20, 'Rejected'),
-  createData(11, new Date(1995, 11, 17), 20, 'In Progress'),
-  createData(12, new Date(1995, 11, 17), 40, 'In Progress'),
-  createData(13, new Date(2021, 5, 3), 40, 'Approved'),
-  createData(14, new Date(1995, 11, 17), 30, 'Approved'),
-  createData(15, new Date(1999, 7, 8), 40, 'Approved'),
-  createData(16, new Date(1999, 7, 8), 30, 'In Progress'),
-  createData(17, new Date(2002, 4, 5), 20, 'In Progress'),
-  createData(18, new Date(2002, 4, 5), 40, 'Approved')
-]
-
 // Timesheet container
 const TimesheetIndex = () => {
   const classes = useStyles()
   const history = useHistory()
-  const [timesheets, setTimesheets] = useState(rows)
+  const [timesheets, setTimesheets] = useState(dummyTimesheets)
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState(-1)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
+    rowsPerPage - Math.min(rowsPerPage, timesheets.length - page * rowsPerPage)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -304,34 +247,6 @@ const TimesheetIndex = () => {
     setOrderBy(property)
   }
 
-  const statusIndicator = status => {
-    switch (status) {
-      case statusEnum.APPROVED:
-        return (
-          <FiberManualRecordIcon
-            style={{ color: '#95DB73' }}
-            className='mr-3'
-          />
-        )
-      case statusEnum.IN_PROGRESS:
-        return (
-          <FiberManualRecordIcon
-            style={{ color: '#F6E54B' }}
-            className='mr-3'
-          />
-        )
-      case statusEnum.REJECTED:
-        return (
-          <FiberManualRecordIcon
-            style={{ color: '#DD5B24' }}
-            className='mr-3'
-          />
-        )
-      default:
-        return null
-    }
-  }
-
   return (
     <div className='body'>
       <h1 style={{ float: 'left' }}>Timesheet</h1>
@@ -340,7 +255,7 @@ const TimesheetIndex = () => {
         color='primary'
         style={{ float: 'right' }}
         className='mb-5'
-        onClick={() => history.push('/timesheet/create')}
+        onClick={() => history.push('/timesheet-create')}
       >
         <AddIcon className='mr-3' />
         Create New
@@ -352,14 +267,14 @@ const TimesheetIndex = () => {
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            rowCount={rows.length}
+            rowCount={timesheets.length}
           />
           <TableBody>
             {(rowsPerPage > 0
-              ? stableSort(timesheets, getComparator(order, orderBy)).slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+              ? stableSort(
+                  timesheets,
+                  getComparator(order, orderBy, descendingComparator)
+                ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : timesheets
             ).map(row => (
               <TableRow key={row.id}>
@@ -369,12 +284,18 @@ const TimesheetIndex = () => {
                 <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
                 <TableCell>{row.totalHours} hrs</TableCell>
                 <TableCell>
-                  {statusIndicator(row.status)}
+                  {statusIndicator(row.status, 'mr-3')}
                   {row.status}
                 </TableCell>
                 <TableCell>
                   {row.status === statusEnum.REJECTED ? (
-                    <Link to='#' className='mr-5'>
+                    <Link
+                      to={{
+                        pathname: `timesheet-edit/${row.id}`,
+                        state: row
+                      }}
+                      className='mr-5'
+                    >
                       <EditIcon style={{ color: '#4877AD' }} />
                     </Link>
                   ) : (
@@ -383,7 +304,12 @@ const TimesheetIndex = () => {
                       className='mr-5'
                     />
                   )}
-                  <Link to='#'>
+                  <Link
+                    to={{
+                      pathname: `timesheet-detail/${row.id}`,
+                      state: row
+                    }}
+                  >
                     <OpenInNewIcon style={{ color: '#4877AD' }} />
                   </Link>
                 </TableCell>
@@ -401,7 +327,7 @@ const TimesheetIndex = () => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                 colSpan={3}
-                count={rows.length}
+                count={timesheets.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{

@@ -1,3 +1,22 @@
+
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import Routes from '../../constants/routes'
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SidebarHeader,
+  SidebarContent
+} from 'react-pro-sidebar'
+import {
+  FaBars,
+  FaThLarge,
+  FaFolder,
+  FaMoneyCheck,
+  FaChartBar,
+  FaUserFriends
+} from 'react-icons/fa'
 import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import Routes from '../../constants/routes';
@@ -14,19 +33,21 @@ import { FaBars, FaThLarge, FaFolder, FaMoneyCheck, FaChartBar,  FaUserFriends }
 import { FiLogOut } from 'react-icons/fi';
 import { logout } from '../../api/Authentication';
 
-const Sidebar = (props) => {
-    useEffect(() => {
-        console.log(pathname)
-    },[])
+const Sidebar = props => {
+  const { pathname } = props.location
 
+
+  const [collapsed, setCollapsed] = useState(false)
     const { pathname } = props.location;
     const history = useHistory();
 
-    const [collapsed, setCollapsed] = useState(false);
+  useEffect(() => {
+    console.log(pathname)
+  }, [pathname])
 
-    const handleCollapsedChange = () => {
-        setCollapsed(!collapsed);
-    };
+  const handleCollapsedChange = () => {
+    setCollapsed(!collapsed)
+  }
 
     const handleLogout = () => {
       logout();
@@ -40,20 +61,18 @@ const Sidebar = (props) => {
             breakPoint="md"
             className="sidebar-custom-style position-fixed"
         >
-            <SidebarHeader>
-                <div
-                    style={{
-                        padding: '30px',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                        cursor: 'pointer'
-                    }}
-                >
-                    <FaBars onClick={handleCollapsedChange}/>
-                </div>
-            </SidebarHeader>
-
-            <SidebarContent>
+        <SidebarHeader>
+          <div
+            style={{
+              padding: '30px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              cursor: 'pointer'
+            }}>
+              <FaBars onClick={handleCollapsedChange} />
+            </div>
+          </SidebarHeader>
+        <SidebarContent>
                 <Menu iconShape="circle">
                     <MenuItem
                         icon={<FaThLarge />}
@@ -98,8 +117,7 @@ const Sidebar = (props) => {
                     </MenuItem>
                 </Menu>
             </SidebarContent>
-        </ProSidebar>
-    );
+    </ProSidebar>
+  )
 };
-
 export default Sidebar;
