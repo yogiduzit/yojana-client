@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
+import { Container } from 'reactstrap'
 import { Link, useHistory } from 'react-router-dom'
 import {
   stableSort,
@@ -120,32 +121,33 @@ function EnhancedTableHead (props) {
   }
 
   return (
-    <TableHead>
-      <TableRow>
-        {headCells.map(headCell => (
-          <TableCell
-            key={headCell.id}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              <b>{headCell.label}</b>
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
+        <TableHead>
+          <TableRow>
+            {headCells.map(headCell => (
+                <TableCell
+                    key={headCell.id}
+                    sortDirection={orderBy === headCell.id ? order : false}
+                >
+                  <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : 'asc'}
+                      onClick={createSortHandler(headCell.id)}
+                  >
+                    <b>{headCell.label}</b>
+                    {orderBy === headCell.id ? (
+                        <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-        <TableCell>
-          <b>Actions</b>
-        </TableCell>
-      </TableRow>
-    </TableHead>
+                    ) : null}
+                  </TableSortLabel>
+                </TableCell>
+            ))}
+            <TableCell>
+              <b>Actions</b>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+
   )
 }
 
@@ -249,101 +251,104 @@ const TimesheetIndex = () => {
   }
 
   return (
-    <div className='main-body'>
-      <h1 style={{ float: 'left' }}>Timesheet</h1>
-      <Button
-        variant='outlined'
-        color='primary'
-        style={{ float: 'right' }}
-        className='mb-5'
-        onClick={() => history.push('/timesheet-create')}
-      >
-        <AddIcon className='mr-3' />
-        Create New
-      </Button>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label='custom pagination table'>
-          <EnhancedTableHead
-            classes={classes}
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            rowCount={timesheets.length}
-          />
-          <TableBody>
-            {(rowsPerPage > 0
-              ? stableSort(
-                  timesheets,
-                  getComparator(order, orderBy, descendingComparator)
-                ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : timesheets
-            ).map(row => (
-              <TableRow key={row.id}>
-                <TableCell component='th' scope='row'>
-                  {formatMMDDYYYY(row.weekEndDate)}
-                </TableCell>
-                <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
-                <TableCell>{row.totalHours} hrs</TableCell>
-                <TableCell>
-                  {statusIndicator(row.status, 'mr-3')}
-                  {row.status}
-                </TableCell>
-                <TableCell>
-                  {row.status === statusEnum.REJECTED ? (
-                    <Link
-                      to={{
-                        pathname: `timesheet-edit/${row.id}`,
-                        state: row
-                      }}
-                      className='mr-5'
-                    >
-                      <EditIcon style={{ color: '#4877AD' }} />
-                    </Link>
-                  ) : (
-                    <EditIcon
-                      style={{ visibility: 'hidden' }}
-                      className='mr-5'
-                    />
-                  )}
-                  <Link
-                    to={{
-                      pathname: `timesheet-detail/${row.id}`,
-                      state: row
-                    }}
-                  >
-                    <OpenInNewIcon style={{ color: '#4877AD' }} />
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+    <Container className=' text-center'>
+      <div className='mx-auto timesheet-container p-5'>
+        <h1 style={{ float: 'left' }}>Timesheet</h1>
+        <Button
+            variant='outlined'
+            color='primary'
+            style={{ float: 'right' }}
+            className='mb-5'
+            onClick={() => history.push('/timesheet-create')}
+        >
+          <AddIcon className='mr-3' />
+          Create New
+        </Button>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label='custom pagination table'>
+            <EnhancedTableHead
+                classes={classes}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={timesheets.length}
+            />
+            <TableBody>
+              {(rowsPerPage > 0
+                      ? stableSort(
+                          timesheets,
+                          getComparator(order, orderBy, descendingComparator)
+                      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      : timesheets
+              ).map(row => (
+                  <TableRow key={row.id}>
+                    <TableCell component='th' scope='row'>
+                      {formatMMDDYYYY(row.weekEndDate)}
+                    </TableCell>
+                    <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
+                    <TableCell>{row.totalHours} hrs</TableCell>
+                    <TableCell>
+                      {statusIndicator(row.status, 'mr-3')}
+                      {row.status}
+                    </TableCell>
+                    <TableCell>
+                      {row.status === statusEnum.REJECTED ? (
+                          <Link
+                              to={{
+                                pathname: `timesheet-edit/${row.id}`,
+                                state: row
+                              }}
+                              className='mr-5'
+                          >
+                            <EditIcon style={{ color: '#4877AD' }} />
+                          </Link>
+                      ) : (
+                          <EditIcon
+                              style={{ visibility: 'hidden' }}
+                              className='mr-5'
+                          />
+                      )}
+                      <Link
+                          to={{
+                            pathname: `timesheet-detail/${row.id}`,
+                            state: row
+                          }}
+                      >
+                        <OpenInNewIcon style={{ color: '#4877AD' }} />
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+              ))}
 
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
+              {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                    colSpan={3}
+                    count={timesheets.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    SelectProps={{
+                      inputProps: { 'aria-label': 'rows per page' },
+                      native: true
+                    }}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                />
               </TableRow>
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={3}
-                count={timesheets.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
-                  native: true
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </div>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </div>
+
+    </Container>
   )
 }
 

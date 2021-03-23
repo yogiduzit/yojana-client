@@ -6,6 +6,11 @@ import Routes from "../../constants/routes";
 
 
 const ProjectCard = (props) => {
+
+  const projectObj = {
+    projectName: ""
+  }
+
   return (
     <Col sm={12} md={6} className=''>
       <div className='p-4 m-4 bg-white dashboard-card-border-radius'>
@@ -46,7 +51,7 @@ const ProjectCard = (props) => {
         </Row>
         <div className='text-right'>
           <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
-            <Link classname="text-white" to={`${Routes.PROJECTS}/${props.project.id}`}>
+            <Link classname="text-white" to={`${Routes.VIEW_PROJECT}/${props.project.id}`}>
               More Info
             </Link>
           </MaterialButton>
