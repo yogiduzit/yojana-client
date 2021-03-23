@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import empPic from '../../assets/images/img_avatar.png'
 import WithSidebar from "../../hoc/WithSidebar";
-import './employeeprofile.css';
+import '../../assets/css/employeeprofile.css';
 import ArcProgress from 'react-arc-progress';
 import { BsBell, BsBrush } from "react-icons/bs";
 import { AiFillCamera } from "react-icons/ai";
 /**
- * 顶部布局
  * @param isHaveNotice
  * @param headImg
  * @param email
@@ -16,12 +15,11 @@ import { AiFillCamera } from "react-icons/ai";
 function Header(isHaveNotice, headImg ,email) {
     return (
         <div className="header-container">
-            {/*搜索框*/}
             <div className="search">
                 <img src={empPic} alt='search'/>
                 <input type="text" placeholder='Search...'/>
             </div>
-            {/*右侧布局*/}
+            
             <div className="info">
                 <div className='bell'>
                     {/*<img src={BsFillBellFill} alt="bell"/>*/}
@@ -40,7 +38,7 @@ function Header(isHaveNotice, headImg ,email) {
 }
 
 /**
- * 雇员信息
+ * 
  * @param number
  * @param headImg
  * @param email
@@ -120,7 +118,7 @@ function Employee(number, headImg, email, records, progress, text, callback) {
 }
 
 /**
- * 更新profile
+ * 
  * @param props
  * @returns {JSX.Element}
  * @constructor
@@ -154,7 +152,7 @@ function EmployeeUpdateProfile(props) {
 }
 
 /**
- * 更新密码
+ * 
  * @param props
  * @returns {JSX.Element}
  * @constructor

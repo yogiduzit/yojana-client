@@ -8,6 +8,11 @@
 # testing
 /coverage
 
+yarn.lock
+package-lock.json
+
+/.idea
+
 # production
 /build
 
@@ -23,3 +28,4 @@ yarn-debug.log*
 yarn-error.log*
 
 .eslintcache
+**/.idea/workspace.xml
