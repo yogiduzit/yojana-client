@@ -16,6 +16,7 @@ import Report from './report';
 import Team from './team';
 import Employee from './employee/index'
 import AddEmployee from './employee/create'
+import Workpackage from "./workpackage";
 
 import '../assets/css/style.css';
 
@@ -27,16 +28,16 @@ const Main = (props) => {
                 <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
                 <Route path={Routes.PROJECTS} component={Projects} />
-                <Route path={Routes.TIMESHEET} component={Timesheet} />
-                <Route exact path={Routes.PROJECTS} component={Projects} />
                 <Route path={Routes.ADDPROJECT} component={AddProject} />
-                <Route exact path={Routes.VIEW_PROJECT} component={ViewProject} />
+                <Route path={Routes.VIEW_PROJECT} component={Workpackage} />
+                <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
                 <Route path={Routes.TIMESHEET_EDIT} component={TimesheetEdit} />
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
+
             </BrowserRouter>
         </div>
     )

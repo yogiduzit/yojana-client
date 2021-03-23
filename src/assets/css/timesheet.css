@@ -6,6 +6,11 @@
     overflow: hidden;
 }
 
+.timesheet-container {
+    background-color: #fff;
+    border-radius: 3rem;
+}
+
 #timesheetCreateHeader {
     width: 100%;
     table-layout: fixed;

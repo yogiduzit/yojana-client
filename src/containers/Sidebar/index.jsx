@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import Routes from '../../constants/routes'
 import {
   ProSidebar,
@@ -9,26 +9,6 @@ import {
   SidebarHeader,
   SidebarContent
 } from 'react-pro-sidebar'
-import {
-  FaBars,
-  FaThLarge,
-  FaFolder,
-  FaMoneyCheck,
-  FaChartBar,
-  FaUserFriends
-} from 'react-icons/fa'
-import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import Routes from '../../constants/routes';
-import {
-    ProSidebar,
-    Menu,
-    MenuItem,
-    SubMenu,
-    SidebarHeader,
-    SidebarFooter,
-    SidebarContent,
-} from 'react-pro-sidebar';
 import { FaBars, FaThLarge, FaFolder, FaMoneyCheck, FaChartBar,  FaUserFriends } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
 import { logout } from '../../api/Authentication';
@@ -38,7 +18,6 @@ const Sidebar = props => {
 
 
   const [collapsed, setCollapsed] = useState(false)
-    const { pathname } = props.location;
     const history = useHistory();
 
   useEffect(() => {
