@@ -115,7 +115,7 @@ body {
 
 }
 .employeeAcc{
-    font-size: 15;
+    font-size: 15px;
     font-weight: bold;
     
 
@@ -132,4 +132,8 @@ body {
 }
 .colorP{
     background-color:#4877AD !important;
+}
+
+.background-light-blue {
+    background-color: #CCDDF1 !important;
 }

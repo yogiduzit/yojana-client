@@ -7,9 +7,7 @@ import Routes from "../../constants/routes";
 
 const ProjectCard = (props) => {
 
-  const projectObj = {
-    projectName: ""
-  }
+
 
   return (
     <Col sm={12} md={6} className=''>
@@ -50,11 +48,18 @@ const ProjectCard = (props) => {
           </Col>
         </Row>
         <div className='text-right'>
-          <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
-            <Link classname="text-white" to={`${Routes.VIEW_PROJECT}/${props.project.id}`}>
-              More Info
-            </Link>
-          </MaterialButton>
+          <Link classname="bg-white text-decoration-none "
+                to={
+                  {
+                    pathname: `/project/${props.project.id}`,
+                    data: props.project
+                  }
+                }
+                   >
+            <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
+                  More Info
+            </MaterialButton>
+          </Link>
         </div>
       </div>
     </Col>
