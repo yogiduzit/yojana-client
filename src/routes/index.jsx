@@ -10,6 +10,9 @@ import TimesheetDetail from './timesheet/detail'
 import TimesheetEdit from './timesheet/edit'
 import Report from './report';
 import Team from './team';
+import LeaveRequestCreate from './leaveRequest/create'
+import LeaveRequestList from './leaveRequest/list'
+import LeaveRequestDetail from './leaveRequest/detail'
 import '../assets/css/style.css';
 
 const Main = (props) => {
@@ -26,6 +29,9 @@ const Main = (props) => {
                 <Route path={Routes.TIMESHEET_EDIT} component={TimesheetEdit} />
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.TEAM} component={Team} />
+                <Route exact path={Routes.LEAVE_REQUEST_CREATE} component={LeaveRequestCreate} />
+                <Route exact path={Routes.LEAVE_REQUEST_LIST} component={LeaveRequestList} />
+                <Route path={Routes.LEAVE_REQUEST_DETAIL} component={LeaveRequestDetail} />
             </BrowserRouter>
         </div>
     )
