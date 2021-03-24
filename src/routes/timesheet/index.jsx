@@ -309,7 +309,7 @@ const TimesheetIndex = () => {
                       )}
                       <Link
                           to={{
-                            pathname: `timesheet-detail/${row.id}`,
+                            pathname: `timesheet/${row.id}`,
                             state: row
                           }}
                       >
