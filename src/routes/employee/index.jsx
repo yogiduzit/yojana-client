@@ -10,7 +10,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import Routes from '../../constants/routes';
 import { Icon } from '@material-ui/core';
 import axios from 'axios';
-
+import TextField from '@material-ui/core/TextField';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -31,10 +31,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import '../../assets/css/style.css';
 import { fetchAllEmployees } from '../../api/Employee';
 
-const Employees = () => {
-
+const Employees = (props) => {
+  
   const [employees, setEmployees] = useState([]);
-  // const [oldPassword, setOldPassword] = useState([])
+  const [fullName, setFullName] = useState("");
+  const [empId, setEmpId] = useState(0);
   // const [newPassword, setNewPassword] = useState([])
 
 
@@ -59,12 +60,41 @@ const Employees = () => {
     })
   };
 
-  const changePasswordSubmissionHandler = () => {
-    console.log("heee")
-  };
+  const onSubmit = () => {
+      console.log(empId);
+      const data = {
+        id: empId ,
+        fullName: fullName
+      }
+      const headers = {
+        'Authorization': `${localStorage.getItem(ACCESS_TOKEN)}`,
+        'Content-Type': 'application/json'
+      }
+      console.log(data);
+      axios.patch(`http://localhost:8080/yojana-backend/api/employees/${empId}`, 
+      
+        data, headers
+      )
+      .then((result) => {
+        console.log(result.data);
+      })
+  }
+
+  // const changePasswordSubmissionHandler = () => {
+  //   console.log("heee")
+  // };
 
   const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+  const toggle = (id) => {
+    if (modal == false) {
+      setEmpId(id);
+      setModal(true);
+      return;
+    }
+
+    setEmpId(0)
+    setModal(false);
+  };
 
   const renderEmployees = () => {
     
@@ -92,7 +122,7 @@ const Employees = () => {
                 <span onClick={() => removeData(e.id)}>
                   <DeleteIcon />
                 </span>
-                <span onClick={toggle}> 
+                <span onClick={() => toggle(e.id)}> 
                   <EditIcon className="ml-4"/>
                 </span>
               </TableCell>
@@ -124,14 +154,19 @@ const Employees = () => {
         </div>
       </Container>
       <Modal isOpen={modal} toggle={toggle}>
+      <form onSubmit={onSubmit}>
         <ModalHeader toggle={toggle}>Edit Employee</ModalHeader>
         <ModalBody>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              <div className='mt-5'>
+                
+                <TextField onChange={(e) => setFullName(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Full Name" variant="outlined" value={fullName} />
+              </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={toggle}>Submit</Button>{' '}
+          <Button color="primary" onClick={onSubmit}>Submit</Button>{' '}
           <Button color="secondary" onClick={toggle}>Cancel</Button>
         </ModalFooter>
+      </form>  
       </Modal>
     </Container>
   )
