@@ -5,17 +5,28 @@ import { Link } from 'react-router-dom';
 import WithHeader from "../../hoc/WithHeader";
 import { Container, Row, Col } from "reactstrap";
 
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+
 import Routes from '../../constants/routes';
-import { Button } from '@material-ui/core';
+import { Icon } from '@material-ui/core';
 import axios from 'axios';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import { ACCESS_TOKEN } from "../../constants/environementVariables"
 
 // import Accordion from '@material-ui/core/Accordion';
 // import AccordionSummary from '@material-ui/core/AccordionSummary';
 // import TextField from '@material-ui/core/TextField';
 // import AccordionDetails from '@material-ui/core/AccordionDetails';
 // import Typography from '@material-ui/core/Typography';
-// import EditIcon from '@material-ui/icons/Edit';
-// import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import '../../assets/css/style.css';
 import { fetchAllEmployees } from '../../api/Employee';
@@ -38,7 +49,11 @@ const Employees = () => {
   }
   const removeData = (id) => {
 
-    axios.delete(`${URL}/${id}`).then(res => {
+    axios.delete(`http://localhost:8080/yojana-backend/api/employees/${id}`,{
+      headers:{
+        'Authorization': `${localStorage.getItem(ACCESS_TOKEN)}`
+      }
+    }).then(res => {
       const del = employees.filter(employees => id !== employees.id)
       setEmployees(del)
     })
@@ -48,55 +63,47 @@ const Employees = () => {
     console.log("heee")
   };
 
-  const renderEmployees = () => {
-    return employees && employees.map((e, index) => {
-      return (
-        <Row key={index}>
-          {
-            // The employee data needs to exist inside Cols and not an accordion
-            // Please use https://material-ui.com/components/tables/#collapsible-table instead
-          }
-          <Col xs="6" sm="2" className="font-weight-bold">{e.id}</Col>
-          <Col xs="6" sm="4" className="font-weight-bold">{e.fullName}</Col>
-          <Col xs="6" sm="4" className="font-weight-bold">{e.credential?.username}</Col>
-          {/* <Accordion className='accbg my-2 mr-2'>
-            <AccordionSummary
-              expandIcon={<EditIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
 
-              <Typography className='employeeAcc ml-4'>{e.fullName}</Typography>
-              <Typography className='employeeAcc ml-4'>{e.credential.username}</Typography>
-              <span className='ml-auto' onClick={() => removeData(e.id)}> <DeleteIcon /></span>
-            </AccordionSummary>
-            <AccordionDetails>
-              <form className=' w-100' onSubmit={changePasswordSubmissionHandler}>
-                <div className='py-5 '>
-                  <TextField onChange={(event) => this.setOldPassword(event.target.value)}
-                    className='form-control w-50 bg-white'
-                    label="Old Password"
-                    variant="outlined" />
-                </div>
-                <div className='py-5 justify-content-center'>
-                  <TextField onChange={(event) => this.setNewPassword(event.target.value)}
-                    className='form-control w-50 bg-white'
-                    type='password'
-                    label="New Password"
-                    variant="outlined" />
-                </div>
-                <Button className='w-50 mt-5 loginbutton'
-                  onClick={changePasswordSubmissionHandler}
-                  variant="contained">
-                  Update Password
-              </Button>
-              </form>
-            </AccordionDetails>
-          </Accordion> */}
-        </Row>
+  const renderEmployees = () => {
+    
+      return (
+
+        
+       
+          <TableContainer component={Paper}>
+      <Table  aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>ID</TableCell>
+            <TableCell >Full Name</TableCell>
+            <TableCell >User Name</TableCell>
+            <TableCell ></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {employees.map((e) => (
+            <TableRow key={e.id}>
+              <TableCell >{e.id}</TableCell>
+              <TableCell >{e.fullName}</TableCell>
+              <TableCell >{e.credential?.username}</TableCell>
+              <TableCell align="right">
+                <span onClick={() => removeData(e.id)}>
+                  <DeleteIcon />
+                </span>
+                <span onClick={toggle}> 
+                  <EditIcon className="ml-4"/>
+                </span>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
       );
-    })
+   
   }
 
   return (
@@ -111,16 +118,21 @@ const Employees = () => {
       <Container className='p-5 w-200'>
         <div className='mx-auto  employeebox text-center py-5'>
           <div className='employeeRoot'>
-            <Row>
-            <Col xs="6" sm="2" className="font-weight-bold">ID</Col>
-              <Col xs="6" sm="4" className="font-weight-bold">Full Name</Col>
-              <Col xs="6" sm="4" className="font-weight-bold">Username</Col>
-            </Row>
 
             {renderEmployees()}
           </div>
         </div>
       </Container>
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}>Edit Employee</ModalHeader>
+        <ModalBody>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={toggle}>Submit</Button>{' '}
+          <Button color="secondary" onClick={toggle}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
     </Container>
   )
 };
