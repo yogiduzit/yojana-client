@@ -7,10 +7,11 @@ import { Link, useHistory } from 'react-router-dom'
 import {
   stableSort,
   getComparator
-} from '../../utils/timesheet/tableSortFunctions'
+} from '../../utils/tableSortFunctions'
 import statusIndicator from '../../components/timesheet/statusIndicator'
 import { dummyTimesheets } from '../../constants/timesheet/constants'
 import { orderByEnum, statusEnum } from '../../constants/timesheet/constants'
+import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
 
 // material-ui
@@ -248,7 +249,7 @@ const TimesheetIndex = () => {
   }
 
   return (
-    <div className='body'>
+    <div className='main-body'>
       <h1 style={{ float: 'left' }}>Timesheet</h1>
       <Button
         variant='outlined'

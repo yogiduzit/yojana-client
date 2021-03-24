@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
+import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
 import { daysEnum } from '../../constants/timesheet/constants'
 import { formatHours } from '../../utils/timesheet/totalHoursCalcFunctions'
@@ -61,7 +62,7 @@ function TimesheetDetail ({ location }) {
   ) : !timesheet ? (
     <NotFound />
   ) : (
-    <div className='body'>
+    <div className='main-body'>
       {/* header that has 3 columns*/}
       <table id='timesheetCreateHeader' className='mb-3'>
         <thead>
