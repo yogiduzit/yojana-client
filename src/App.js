@@ -1,3 +1,4 @@
+import React from 'react';
 import logo from './logo.svg';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Main from './routes/index';
