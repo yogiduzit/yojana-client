@@ -14,6 +14,9 @@ import TimesheetDetail from './timesheet/detail'
 import TimesheetEdit from './timesheet/edit'
 import Report from './report';
 import Team from './team';
+import LeaveRequestCreate from './leaveRequest/create'
+import LeaveRequestList from './leaveRequest/list'
+import LeaveRequestDetail from './leaveRequest/detail'
 import Employee from './employee/index'
 import AddEmployee from './employee/create'
 
@@ -35,6 +38,10 @@ const Main = (props) => {
                 <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
                 <Route path={Routes.TIMESHEET_EDIT} component={TimesheetEdit} />
                 <Route path={Routes.REPORT} component={Report} />
+                <Route path={Routes.TEAM} component={Team} />
+                <Route exact path={Routes.LEAVE_REQUEST_CREATE} component={LeaveRequestCreate} />
+                <Route exact path={Routes.LEAVE_REQUEST_LIST} component={LeaveRequestList} />
+                <Route path={Routes.LEAVE_REQUEST_DETAIL} component={LeaveRequestDetail} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
             </BrowserRouter>

@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
+import NotFound from '../../components/NotFound/NotFound'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import { Link, useHistory } from 'react-router-dom'
-import {
-  stableSort,
-  getComparator
-} from '../../utils/tableSortFunctions'
-import statusIndicator from '../../components/timesheet/statusIndicator'
-import { dummyTimesheets } from '../../constants/timesheet/constants'
-import { orderByEnum, statusEnum } from '../../constants/timesheet/constants'
+import { stableSort, getComparator } from '../../utils/tableSortFunctions'
+import { orderByEnum, dummyList } from '../../constants/leaveRequest/constants'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
 
@@ -29,10 +25,8 @@ import FirstPageIcon from '@material-ui/icons/FirstPage'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import LastPageIcon from '@material-ui/icons/LastPage'
-import EditIcon from '@material-ui/icons/Edit'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
-import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
@@ -68,37 +62,37 @@ const useStyles = makeStyles(theme => ({
 
 const headCells = [
   {
-    id: orderByEnum.WEEK_END_DATE,
-    label: 'Week Ending'
+    id: orderByEnum.REFERENCE_NUM,
+    label: 'Reference Number'
+  },
+  {
+    id: orderByEnum.EMPLOYEE_NAME,
+    label: 'Employee Name'
+  },
+  {
+    id: orderByEnum.LEAVE_TYPE,
+    label: 'Type'
   },
   {
     id: orderByEnum.SUBMITTED_DATE,
-    label: 'Submitted Date'
-  },
-  {
-    id: orderByEnum.TOTAL_HOURS,
-    label: 'Total Hours'
-  },
-  {
-    id: orderByEnum.STATUS,
-    label: 'Status'
+    label: 'Date'
   }
 ]
 
 function descendingComparator (a, b, orderBy) {
   let orderByProperty = ''
   switch (orderBy) {
-    case orderByEnum.WEEK_END_DATE:
-      orderByProperty = 'weekEndDate'
+    case orderByEnum.REFERENCE_NUM:
+      orderByProperty = 'referenceNum'
+      break
+    case orderByEnum.EMPLOYEE_NAME:
+      orderByProperty = 'firstName'
+      break
+    case orderByEnum.LEAVE_TYPE:
+      orderByProperty = 'leaveType'
       break
     case orderByEnum.SUBMITTED_DATE:
-      orderByProperty = 'submittedDate'
-      break
-    case orderByEnum.TOTAL_HOURS:
-      orderByProperty = 'totalHours'
-      break
-    case orderByEnum.STATUS:
-      orderByProperty = 'status'
+      orderByProperty = 'date'
       break
     default:
       break
@@ -221,17 +215,19 @@ TablePaginationActions.propTypes = {
 }
 
 // Timesheet container
-const TimesheetIndex = () => {
+const LeaveRequestList = () => {
   const classes = useStyles()
   const history = useHistory()
-  const [timesheets, setTimesheets] = useState(dummyTimesheets)
+  // TODO: Authorize user by its role to access this list page
+  const [isAuthorized, setAuthorized] = useState(true)
+  const [requests, setRequests] = useState(dummyList)
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState(-1)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, timesheets.length - page * rowsPerPage)
+    rowsPerPage - Math.min(rowsPerPage, requests.length - page * rowsPerPage)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -248,19 +244,11 @@ const TimesheetIndex = () => {
     setOrderBy(property)
   }
 
-  return (
+  return !isAuthorized ? (
+    <NotFound />
+  ) : (
     <div className='main-body'>
-      <h1 style={{ float: 'left' }}>Timesheet</h1>
-      <Button
-        variant='outlined'
-        color='primary'
-        style={{ float: 'right' }}
-        className='mb-5'
-        onClick={() => history.push('/timesheet-create')}
-      >
-        <AddIcon className='mr-3' />
-        Create New
-      </Button>
+      <h1 className='mb-5'>Leave Request List</h1>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='custom pagination table'>
           <EnhancedTableHead
@@ -268,46 +256,27 @@ const TimesheetIndex = () => {
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            rowCount={timesheets.length}
+            rowCount={requests.length}
           />
           <TableBody>
             {(rowsPerPage > 0
               ? stableSort(
-                  timesheets,
+                  requests,
                   getComparator(order, orderBy, descendingComparator)
                 ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : timesheets
+              : requests
             ).map(row => (
-              <TableRow key={row.id}>
+              <TableRow key={row.referenceNum}>
                 <TableCell component='th' scope='row'>
-                  {formatMMDDYYYY(row.weekEndDate)}
+                  {row.referenceNum}
                 </TableCell>
+                <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
+                <TableCell>{row.leaveType}</TableCell>
                 <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
-                <TableCell>{row.totalHours} hrs</TableCell>
                 <TableCell>
-                  {statusIndicator(row.status, 'mr-3')}
-                  {row.status}
-                </TableCell>
-                <TableCell>
-                  {row.status === statusEnum.REJECTED ? (
-                    <Link
-                      to={{
-                        pathname: `timesheet-edit/${row.id}`,
-                        state: row
-                      }}
-                      className='mr-5'
-                    >
-                      <EditIcon style={{ color: '#4877AD' }} />
-                    </Link>
-                  ) : (
-                    <EditIcon
-                      style={{ visibility: 'hidden' }}
-                      className='mr-5'
-                    />
-                  )}
                   <Link
                     to={{
-                      pathname: `timesheet-detail/${row.id}`,
+                      pathname: `leave-request-detail/${row.referenceNum}`,
                       state: row
                     }}
                   >
@@ -328,7 +297,7 @@ const TimesheetIndex = () => {
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                 colSpan={3}
-                count={timesheets.length}
+                count={requests.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 SelectProps={{
@@ -343,8 +312,17 @@ const TimesheetIndex = () => {
           </TableFooter>
         </Table>
       </TableContainer>
+      <Button
+        variant='contained'
+        color='primary'
+        onClick={() => history.goBack()}
+        style={{ float: 'right' }}
+        className='mt-4'
+      >
+        Back
+      </Button>
     </div>
   )
 }
 
-export default WithSidebar(WithHeader(TimesheetIndex))
+export default WithSidebar(WithHeader(LeaveRequestList))
