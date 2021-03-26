@@ -16,14 +16,11 @@
         "node-sass": "4.14.1",
         "prop-types": "^15.7.2",
         "react": "^17.0.1",
-<<<<<<< HEAD
         "react-arc-progress": "^1.0.2",
-=======
         "react-circular-progressbar": "^2.0.3",
         "react-datepicker": "^3.6.0",
         "react-bootstrap-validation": "^0.1.11",
         "react-collapsible": "^2.8.3",
->>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
         "react-dom": "^17.0.1",
         "react-icons": "^4.2.0",
         "react-pro-sidebar": "^0.6.0",

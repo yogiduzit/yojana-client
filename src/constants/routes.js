@@ -11,13 +11,13 @@ const Routes = {
     ADDPROJECT: '/project/create',
     VIEW_PROJECT: '/projects/:id',
     REPORT: '/report',
-<<<<<<< HEAD
     TEAM: '/team',
-    EMPLOYEEPROFILE: '/employeeprofile',
-=======
+    LEAVE_REQUEST_CREATE: '/leave-request-create',
+    LEAVE_REQUEST_LIST: '/leave-request-list',
+    LEAVE_REQUEST_DETAIL: '/leave-request-detail/:id',
     EMPLOYEE: '/employees',
     ADDEMPLOYEE: '/employee/create',
->>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
+    EMPLOYEEPROFILE: '/employeeprofile',
 };
 
 export default Routes;
