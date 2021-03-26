@@ -8,7 +8,7 @@ const Header = (props) => {
     return (
         <>
 
-            <div className='p-5 ml-auto'>
+            <div className='p-5 ml-auto text-right'>
                 <Link>
                     <img src={userProfileImage} className='mr-3' />
                     <span className='text-color-primary-yonder text-decoration-none'>{userEmailAddress}</span>
