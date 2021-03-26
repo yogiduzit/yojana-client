@@ -3,10 +3,16 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const Index = () => {
+  return (
+    <>
+      <App />
+    </>
+  )
+}
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Index />,
   document.getElementById('root')
 );
 

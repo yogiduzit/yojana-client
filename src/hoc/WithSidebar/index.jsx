@@ -16,4 +16,4 @@ const WithSidebar = ( WrappingComponent ) => {
     )
 }
 
-export default WithHeader(WithSidebar)
+export default WithSidebar;

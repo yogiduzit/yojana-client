@@ -1,6 +1,7 @@
 import React from 'react';
 import Routes from "../constants/routes";
-import { Route, BrowserRouter } from "react-router-dom";
+import { Route, BrowserRouter, Switch } from "react-router-dom";
+// import Sidebar from '../containers/Sidebar'
 import Login from "./login/login";
 import Dashboard from './dashboard';
 
@@ -23,7 +24,9 @@ import '../assets/css/style.css';
 const Main = (props) => {
     return (
         <div>
+            {/* <Sidebar /> */}
             <BrowserRouter>
+            <Switch>
                 <Route path={Routes.LOGIN} component={Login} />
                 <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
@@ -37,7 +40,8 @@ const Main = (props) => {
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
-
+              </Switch>  
+            
             </BrowserRouter>
         </div>
     )

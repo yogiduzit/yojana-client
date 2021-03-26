@@ -48,7 +48,7 @@ const ProjectCard = (props) => {
           </Col>
         </Row>
         <div className='text-right'>
-          <Link classname="bg-white text-decoration-none "
+          {/* <Link classname="bg-white text-decoration-none "
                 to={
                   {
                     pathname: `/project/${props.project.id}`,
@@ -59,7 +59,13 @@ const ProjectCard = (props) => {
             <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
                   More Info
             </MaterialButton>
+          </Link> */}
+          <Link className='bg-white text-decoration-none' to='www.google.com'>
+            <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
+                    More Info
+              </MaterialButton>
           </Link>
+
         </div>
       </div>
     </Col>

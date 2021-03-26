@@ -33,7 +33,7 @@ const Dashboard = () => {
         <h1 className='my-5 px-4 font-weight-bold'>Recent Projects</h1>
         <Row>
           {
-            projects.map((p, index) => {
+            projects && projects.map((p, index) => {
               return (
                 <ProjectCard key={index} project={p} />
               )
