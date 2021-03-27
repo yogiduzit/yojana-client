@@ -81,7 +81,7 @@ body {
 
 }
 .employeeAcc{
-    font-size: 15;
+    font-size: 15px;
     font-weight: bold;
     
 
@@ -98,4 +98,32 @@ body {
 }
 .colorP{
     background-color:#4877AD !important;
+}
+
+.background-light-blue {
+    background-color: #CCDDF1 !important;
+}
+
+.bg-light-green {
+    background-color: #C1F1D5 !important;
+}
+
+.bg-light-red {
+    background-color: #FFC7C3 !important;
+}
+
+#wp-accordion {
+    background-color: #E5ECF4 !important;
+    border-radius: 50px !important;
+}
+
+.btn-border-text-blue {
+    border-radius: 10px !important;
+    border-color: #4877AD !important;
+    color: #4877AD !important;
+
+}
+
+.border-radius-cicle {
+    border-radius: 100%;
 }

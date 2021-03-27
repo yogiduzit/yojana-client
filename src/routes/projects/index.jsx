@@ -23,17 +23,24 @@ const Projects = () => {
     setProjects(data.projects);
   };
 
-  return (
-    <Container>
-      <div className='text-right m-3'>
-        <Button className='ml-auto  w-30 mt-5 loginbutton'
-          variant="contained">
-          <Link className="text-white" to={Routes.ADDPROJECT}>Add projects</Link>
-        </Button>
-      </div>
+    const projectObj = {
+        id: 2,
+        projectName: "Admin Panel",
+        milestone: "Inception",
+        currentWpID: 2,
 
+    }
+  return (
       <Container>
-        <h1 className='my-5 px-4 font-weight-bold'>Projects</h1>
+          <h1 className=' px-4 font-weight-bold'>Projects</h1>
+        <div className='text-right m-1'>
+            <Link className="text-white" to={Routes.ADDPROJECT}>
+              <Button className='ml-auto  w-30 mt-5 loginbutton'
+                variant="contained">
+                Add projects
+              </Button>
+            </Link>
+        </div>
         <Row>
           {
             projects.map((p, index) => {
@@ -42,8 +49,8 @@ const Projects = () => {
               )
             })
           }
+          <ProjectCard project={projectObj} />
         </Row>
-      </Container>
     </Container>
   )
 }

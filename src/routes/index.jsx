@@ -1,6 +1,7 @@
 import React from 'react';
 import Routes from "../constants/routes";
-import { Route, BrowserRouter } from "react-router-dom";
+import { Route, BrowserRouter, Switch } from "react-router-dom";
+// import Sidebar from '../containers/Sidebar'
 import Login from "./login/login";
 import Dashboard from './dashboard';
 
@@ -19,21 +20,23 @@ import LeaveRequestList from './leaveRequest/list'
 import LeaveRequestDetail from './leaveRequest/detail'
 import Employee from './employee/index'
 import AddEmployee from './employee/create'
+import Workpackage from "./workpackage";
 
 import '../assets/css/style.css';
 
 const Main = (props) => {
     return (
         <div>
+            {/* <Sidebar /> */}
             <BrowserRouter>
+            <Switch>
                 <Route path={Routes.LOGIN} component={Login} />
                 <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
                 <Route path={Routes.PROJECTS} component={Projects} />
-                <Route path={Routes.TIMESHEET} component={Timesheet} />
-                <Route exact path={Routes.PROJECTS} component={Projects} />
                 <Route path={Routes.ADDPROJECT} component={AddProject} />
-                <Route exact path={Routes.VIEW_PROJECT} component={ViewProject} />
+                <Route path={Routes.VIEW_PROJECT} component={Workpackage} />
+                <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
                 <Route path={Routes.TIMESHEET_EDIT} component={TimesheetEdit} />
@@ -44,6 +47,8 @@ const Main = (props) => {
                 <Route path={Routes.LEAVE_REQUEST_DETAIL} component={LeaveRequestDetail} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
+              </Switch>  
+            
             </BrowserRouter>
         </div>
     )

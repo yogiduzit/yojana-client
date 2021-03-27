@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 // import React, { useState, useEffect } from 'react'
 // import { Link } from 'react-router-dom'
 // import Routes from '../../constants/routes'
@@ -29,6 +30,18 @@ import {
     SidebarFooter,
     SidebarContent,
 } from 'react-pro-sidebar';
+=======
+import React, { useState, useEffect } from 'react'
+import { Link, useHistory } from 'react-router-dom'
+import Routes from '../../constants/routes'
+import {
+  ProSidebar,
+  Menu,
+  MenuItem,
+  SidebarHeader,
+  SidebarContent
+} from 'react-pro-sidebar'
+>>>>>>> d3c8f94976537e6bcbfc69b6b523b07773b04c8e
 import { FaBars, FaThLarge, FaFolder, FaMoneyCheck, FaChartBar,  FaUserFriends } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
 import { logout } from '../../api/Authentication';
@@ -38,7 +51,6 @@ const Sidebar = props => {
 
 
   const [collapsed, setCollapsed] = useState(false)
-    const { pathname } = props.location;
     const history = useHistory();
 
   useEffect(() => {
