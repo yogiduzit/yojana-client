@@ -1,12 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
-import { createTimesheet } from '../../api/Timesheet'
-import Routes from '../../constants/routes'
-import { withRouter } from 'react-router';
 import { daysEnum, INITIAL_HOURS } from '../../constants/timesheet/constants'
 import {
   formatHours,
@@ -31,6 +28,9 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
+import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
+import Loading from '../../components/Loading/Loading.jsx'
+import NotFound from '../../components/NotFound/NotFound'
 
 const useStyles = makeStyles({
   // for the table
@@ -48,26 +48,6 @@ const user = {
 }
 
 // TODO: DELETE DUMMY
-// dummy timesheet which needs to be deleted later
-const dummyTimesheet = {
-  weekEndDate: new Date(),
-  weekNum: moment(new Date()).format('W'),
-  signature: null,
-  feedback: null,
-  overtime: null,
-  flextime: null,
-  approvedAt: null,
-  rows: [
-    {
-      projectId: '010',
-      workPackage: 'SICK',
-      totalHours: 0,
-      hours: [...INITIAL_HOURS]
-    }
-  ]
-}
-
-// TODO: DELETE DUMMY
 // dummy projectIds which needs to be deleted later
 const dummyProjectIds = ['010', '1205', '3710']
 
@@ -75,10 +55,11 @@ const dummyProjectIds = ['010', '1205', '3710']
 // dummy workPackages which needs to be deleted later
 const dummyWorkPackages = ['SICK', 'COOL', 'AWES']
 
-function TimesheetCreate() {
+function TimesheetEdit ({ location }) {
   const history = useHistory()
   const classes = useStyles()
-  const [timesheet, setTimesheet] = useState(dummyTimesheet)
+  const [loaded, setLoaded] = useState(false)
+  const [timesheet, setTimesheet] = useState(null)
   const [projectIds, setProjectIds] = useState(dummyProjectIds)
   const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
   // This is total hours of each day of rows (7 items)
@@ -87,6 +68,15 @@ function TimesheetCreate() {
   const [hoursInputErrorMsg, setHoursInputErrorMsg] = useState('')
   // display none or block for p tag
   const [showInputErrorMsg, setShowInputErrorMsg] = useState('none')
+
+  useEffect(() => {
+    getTimesheetFromProps(location.state, {
+      setTotalHours,
+      setTotalOfTotalHours,
+      setTimesheet,
+      setLoaded
+    })
+  }, [location.state])
 
   const handleDateSelect = date => {
     setTimesheet({
@@ -157,36 +147,16 @@ function TimesheetCreate() {
   }
 
   const handleSubmit = () => {
-    var timesheetDate = timesheet.weekEndDate;
-    var month = timesheetDate.getMonth() + 1;
-    var day = timesheetDate.getDate();
-    var year = timesheetDate.getFullYear();
-    var monthStr = "" + month;
-    var dayStr = "" + day;
-    if (month < 10) {
-      monthStr = "0" + month;
-    }
-    if (day < 10) {
-      dayStr = "0" + day;
-    }
-    var date =  year + "-" + monthStr + "-" + dayStr;
-    var tempTimesheet = {
-      ownerId: 0,
-      endWeek: date,
-      signature: null,
-      feedback: null,
-      status: "pending",
-      overtime: null,
-      flextime: null,
-      approvedAt: null
-    };
-    console.log(tempTimesheet);
-    console.log('2021-03-22' === date);
-    createTimesheet(tempTimesheet);
+    console.log('submit!')
   }
 
-  return (
+  return !loaded ? (
+    <Loading />
+  ) : !timesheet ? (
+    <NotFound />
+  ) : (
     <div className='main-body'>
+      <h1 className='mb-5'>Edit Timesheet</h1>
       {/* header that has 3 columns*/}
       <table id='timesheetCreateHeader' className='mb-3'>
         <thead>
@@ -293,7 +263,7 @@ function TimesheetCreate() {
                             })
                           }
                           type='number'
-                          value={row.hours[idx - 1]}
+                          value={formatHours(row.hours[idx - 1])}
                           min='0'
                           max='24'
                           step='0.5'
@@ -385,4 +355,4 @@ function TimesheetCreate() {
   )
 }
 
-export default WithSidebar(WithHeader(TimesheetCreate))
+export default WithSidebar(WithHeader(TimesheetEdit))
