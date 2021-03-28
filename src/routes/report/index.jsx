@@ -12,6 +12,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
+import SearchBar from "material-ui-search-bar";
+
 import download from '../../assets/images/download.svg'
 import { ACCESS_TOKEN } from "../../constants/environementVariables"
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Container } from 'reactstrap';
@@ -39,6 +41,31 @@ const Report = (props) => {
       })
     };
 
+    const [rows,setRows] = useState(staticData.projectName);
+    const [searched, setSearched] = useState("");
+    const requestSearch =(searchedVal) => {
+        const filteredRows = staticData.projectName.filter((row) => {
+            return row.name.toLowerCase().includes(searchedVal.toLowerCase());
+        });
+        setRows(filteredRows);
+    };
+    const cancelSearch = () =>{
+        setSearched("");
+        requestSearch(searched);
+    };
+    const [rowsM,setRowsM] = useState(staticData.projectNameMonthly);
+    const [searchedM, setSearchedM] = useState("");
+    const requestSearchM =(searchedValM) => {
+        const filteredRowsM = staticData.projectNameMonthly.filter((row) => {
+            return row.name.toLowerCase().includes(searchedValM.toLowerCase());
+        });
+        setRowsM(filteredRowsM);
+    };
+    const cancelSearchM = () =>{
+        setSearchedM("");
+        requestSearchM(searchedM);
+    };
+
     return (
         <Container className='p-5 w-200'>
         <div className='mx-auto  employeebox text-center py-5 px-5'>
@@ -62,6 +89,12 @@ const Report = (props) => {
             </Nav>
             <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
+            <Paper>
+                <SearchBar className="my-3"
+                value={searched}
+                onChange={(searchVal) => requestSearch(searchVal)}
+                onCancelSearch={() => cancelSearch()}
+                />
             <TableContainer component={Paper}>
         <Table  aria-label="simple table">
             <TableHead>
@@ -75,7 +108,7 @@ const Report = (props) => {
             </TableRow>
             </TableHead>
             <TableBody>
-            {staticData.projectName.map((e) => (
+            {rows.map((e) => (
                 <TableRow key={e.id}>
                 <TableCell >{e.id}</TableCell>    
                 <TableCell >{e.name}</TableCell>
@@ -90,8 +123,15 @@ const Report = (props) => {
             </TableBody>
         </Table>
         </TableContainer>
+        </Paper>
         </TabPane>
         <TabPane tabId="2">
+            <Paper>
+            <SearchBar className="my-3"
+                value={searchedM}
+                onChange={(searchValM) => requestSearchM(searchValM)}
+                onCancelSearch={() => cancelSearchM()}
+                />
             <TableContainer component={Paper}>
             <Table  aria-label="simple table">
                 <TableHead>
@@ -105,7 +145,7 @@ const Report = (props) => {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {staticData.projectNameMonthly.map((e) => (
+                {rowsM.map((e) => (
                     <TableRow key={e.id}>
                     <TableCell >{e.id}</TableCell>    
                     <TableCell >{e.name}</TableCell>
@@ -118,6 +158,7 @@ const Report = (props) => {
                 </TableBody>
             </Table>
             </TableContainer>
+            </Paper>
         </TabPane>
       </TabContent>
         </div>
