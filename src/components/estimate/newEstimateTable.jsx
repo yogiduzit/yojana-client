@@ -11,7 +11,7 @@ import {
     TableHead,
     TableRow
 } from '@material-ui/core'
-
+import { Button as MaterialButton, IconButton } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper';
 import ClearIcon from "@material-ui/icons/Clear";
@@ -62,7 +62,7 @@ export default function AddNewEstimate(props) {
                 } else return row;
             })
         })
-        setTotalCost(estimate.rows.reduce((a,v) => a = a + v.cost, 0));
+        setTotalCost(estimate.rows.reduce((a, v) => a = a + v.cost, 0));
     }
 
     const handleDropdownChange = (e, rowToUpdate) => {
@@ -85,7 +85,7 @@ export default function AddNewEstimate(props) {
         console.log(rowToDelete.rowId);
         const updatedRows = [...estimate.rows].filter(
             row =>
-            row.rowId !== rowToDelete.rowId
+                row.rowId !== rowToDelete.rowId
         )
 
         setEstimate({
@@ -96,12 +96,11 @@ export default function AddNewEstimate(props) {
     const handleAddRow = () => {
         var index;
         if (estimate.rows.length != 0) {
-            index = estimate.rows[estimate.rows.length-1].rowId+1;
+            index = estimate.rows[estimate.rows.length - 1].rowId + 1;
         }
         else {
             index = 1;
         }
-        console.log(index);
         setEstimate({
             ...estimate,
             rows: [
@@ -117,16 +116,20 @@ export default function AddNewEstimate(props) {
             ]
         })
     }
+    
+    const submitEstimate = () => {
+        console.log(estimate);
+    }
 
     return (
         <div className="main-body">
-            <h1 style={{ textAlign: "left"}}>Add New Estimate</h1>
-            <button
-            type="button"
-            onClick={() => closeEstimateTable()}
+            <MaterialButton
+                aria-label="delete"
+                onClick={() => closeEstimateTable()}
             >
                 <ClearIcon />
-            </button>
+            </MaterialButton>
+            <h1 style={{ textAlign: "left" }}>Add New Estimate</h1>
             <TableContainer component={Paper}>
                 <TableHead>
                     <TableRow>
@@ -194,8 +197,8 @@ export default function AddNewEstimate(props) {
                             </TableCell>
                             <TableCell align="right">
                                 <button
-                                type="button"
-                                onClick={() => handleDeleteRow(row)}
+                                    type="button"
+                                    onClick={() => handleDeleteRow(row)}
                                 >
                                     <DeleteIcon />
                                 </button>
@@ -203,14 +206,15 @@ export default function AddNewEstimate(props) {
                         </TableRow>
                     ))}
                     <TableRow>
-                        <TableCell colSpan={5}/>
+                        <TableCell colSpan={5} />
                         <TableCell align="right">
-                            <button
-                                type="button"
+                            <MaterialButton
+                                variant="outlined"
+                                className='mt-4 btn-border-text-blue font-weight-bold p-2'
                                 onClick={handleAddRow}
                             >
                                 Add Row
-                            </button>
+                            </MaterialButton>
                         </TableCell>
                     </TableRow>
                     <TableRow>
@@ -220,6 +224,20 @@ export default function AddNewEstimate(props) {
                     </TableRow>
                 </TableBody>
             </TableContainer>
+            <MaterialButton
+                variant="outlined"
+                className='mt-4 btn-border-text-blue font-weight-bold p-2'
+                onClick={() => closeEstimateTable()}
+            >
+                Cancel
+            </MaterialButton>
+            <MaterialButton
+                variant="outlined"
+                className='mt-4 btn-border-text-blue font-weight-bold p-2'
+                onClick={submitEstimate}
+            >
+                Submit
+            </MaterialButton>
         </div>
     )
 }
