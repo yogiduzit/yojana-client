@@ -7,7 +7,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button as MaterialButton, IconButton } from '@material-ui/core'
 import dropDownIcon from '../../assets/images/dropdown-workpackage-icon.svg';
-
+import AddNewEstimate from "../estimate/newEstimateTable";
 const ExpandIcon = () => {
     return (
         <IconButton className='background-light-blue'>
@@ -25,10 +25,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 const WorkpackageCard = (props) => {
     const classes = useStyles();
-
+    const [estimateView, setEstimateView] = useState(false);
     const [estimatedCost, setEstimatedCost] = useState(0);
     const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
-
+    const toggleEstimate = () => {
+        setEstimateView(!estimateView);
+    }
 
     const wpData = {
         wp: 'WP 1',
@@ -135,6 +137,16 @@ const WorkpackageCard = (props) => {
                                         View sub work packages
                                     </MaterialButton>
                                 </div>
+                                <div className='text-right mt-4'>
+                                    <MaterialButton
+                                        variant='outlined'
+                                        className='mt-4 btn-border-text-blue font-weight-bold p-2'
+                                        onClick={toggleEstimate}
+                                    >
+                                        Add Estimate
+                                    </MaterialButton>
+                                </div>
+                                {estimateView ? <AddNewEstimate toggle={toggleEstimate}/>: null}
                             </div>
                         </Col>
                 </AccordionDetails>
