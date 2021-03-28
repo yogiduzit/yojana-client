@@ -146,7 +146,7 @@ const WorkpackageCard = (props) => {
                                         Add Estimate
                                     </MaterialButton>
                                 </div>
-                                {estimateView ? <AddNewEstimate toggle={toggleEstimate}/>: null}
+                                {estimateView ? <AddNewEstimate toggle={toggleEstimate} modal={estimateView}/>: null}
                             </div>
                         </Col>
                 </AccordionDetails>
