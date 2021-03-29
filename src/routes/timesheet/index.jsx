@@ -10,7 +10,6 @@ import {
   getComparator
 } from '../../utils/tableSortFunctions'
 import statusIndicator from '../../components/timesheet/statusIndicator'
-import { dummyTimesheets } from '../../constants/timesheet/constants'
 import { orderByEnum, statusEnum } from '../../constants/timesheet/constants'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
@@ -35,6 +34,8 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
 import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
+import { fetchAllTimesheets } from '../../api/Timesheet'
+import { toPascalCase } from '../../utils/string'
 
 const useStyles = makeStyles(theme => ({
   // styles for order by dropdown
@@ -226,14 +227,14 @@ TablePaginationActions.propTypes = {
 const TimesheetIndex = () => {
   const classes = useStyles()
   const history = useHistory()
-  const [timesheets, setTimesheets] = useState(dummyTimesheets)
-  const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState(-1)
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [timesheets, setTimesheets] = useState([]);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState(-1);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, timesheets.length - page * rowsPerPage)
+    rowsPerPage - Math.min(rowsPerPage, timesheets.length - page * rowsPerPage);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -249,6 +250,15 @@ const TimesheetIndex = () => {
     setOrder(isAsc ? 'desc' : 'asc')
     setOrderBy(property)
   }
+
+  useEffect(() => {
+    async function loadTimesheets() {
+      const res = await fetchAllTimesheets();
+      setTimesheets(res.data.timesheets);
+    };
+
+    loadTimesheets()
+  }, []);
 
   return (
     <Container className=' text-center'>

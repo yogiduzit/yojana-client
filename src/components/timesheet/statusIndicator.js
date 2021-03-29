@@ -17,6 +17,13 @@ const statusIndicator = (status, className) => {
           className={className ? className : null}
         />
       )
+    case statusEnum.PENDING:
+      return (
+        <FiberManualRecordIcon
+          style={{ color: '#AAAAAA' }}
+          className={className ? className : null}
+        />
+      )
     case statusEnum.REJECTED:
       return (
         <FiberManualRecordIcon
