@@ -31,6 +31,7 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
+import Routes from '../../constants/routes'
 
 const useStyles = makeStyles({
   // for the table
@@ -79,8 +80,16 @@ function TimesheetCreate() {
   const history = useHistory()
   const classes = useStyles()
   const [timesheet, setTimesheet] = useState(initialTimesheetState)
+
+  /**
+   * For proper UI, we will have to fetch the projects the user
+   * is working on. The user can then choose either of the projects
+   * in the timesheet row. Based on the project selected, we can show the workpackages
+   * that the user has worked upon.
+   */
   const [projectIds, setProjectIds] = useState(dummyProjectIds)
   const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
+
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
@@ -183,7 +192,7 @@ function TimesheetCreate() {
     });
 
     if (!(createTimesheetResponse.errors && createTimesheetResponse.errors.length > 0)) {
-      await Promise.all(timesheet.rows.map(async (row) => {
+      const createRowsResponses = await Promise.all(timesheet.rows.map(async (row) => {
         await addRow(createTimesheetResponse.data.id, {
           index: row.index,
           notes: row.notes,
@@ -192,6 +201,12 @@ function TimesheetCreate() {
           hours: row.hours
         });
       }));
+
+      if (createRowsResponses.some(res => res.data.errors && res.data.errors.length > 0)) {
+        console.error("Error creating rows in the timesheet");
+      } else {
+        history.push(Routes.TIMESHEET);
+      }
     }
   };
 

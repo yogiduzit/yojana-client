@@ -232,8 +232,7 @@ export const handleHoursChange = (e, index, rowToUpdate, state) => {
     ...timesheet,
     rows: [...timesheet.rows].map(row => {
       if (
-        row.projectId === rowToUpdate.projectId &&
-        row.workPackage === rowToUpdate.workPackage
+        row.index === rowToUpdate.index
       ) {
         return rowToUpdate
       } else return row
