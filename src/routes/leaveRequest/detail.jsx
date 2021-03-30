@@ -32,10 +32,10 @@ function LeaveRequestDetail ({ match, location }) {
   ) : (
     <div className='main-body'>
       <h1 className='mb-5'>Leave Request Detail</h1>
-      <table style={{ width: '60%' }}>
+      <table style={{ width: '60%' }} id='table-layout'>
         <tbody>
           <tr>
-            <td>
+            <td style={{ verticalAlign: 'top' }}>
               <TextField
                 id='employee-id-readonly'
                 label='Employee ID'
@@ -47,8 +47,29 @@ function LeaveRequestDetail ({ match, location }) {
               />
             </td>
             <td style={{ textAlign: 'right' }}>
-              <p>Date: {formatMMDDYYYY(new Date())}</p>
+              <p>
+                Start date:{' '}
+                {formatMMDDYYYY(request.startDate ? request.startDate : null)}
+              </p>
             </td>
+            <td style={{ textAlign: 'right' }}>
+              <p>
+                End date:{' '}
+                {formatMMDDYYYY(request.endDate ? request.endDate : null)}
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p>
+                <b>
+                  <i>Employee Name:</i>
+                </b>{' '}
+                {request.employee ? request.employee.fullName : null}
+              </p>
+            </td>
+            <td></td>
+            <td></td>
           </tr>
           <tr>
             <td>
@@ -56,18 +77,21 @@ function LeaveRequestDetail ({ match, location }) {
                 <b>
                   <i>Type:</i>
                 </b>{' '}
-                {request.leaveType}
+                {request.type ? request.type : null}
               </p>
             </td>
             <td></td>
+            <td></td>
           </tr>
           <tr>
-            <td colspan='2'>
+            <td colspan='3'>
               <b>
                 <i>Description:</i>
               </b>
               <br />
-              <p style={{ wordWrap: 'break-word' }}>{request.description}</p>
+              <p style={{ wordWrap: 'break-word' }}>
+                {request.description ? request.description : null}
+              </p>
             </td>
           </tr>
           <tr>

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { ACCESS_TOKEN, API_URL } from "../constants/environementVariables"
 
 export const fetchAllEmployees = async () => {
@@ -20,4 +21,12 @@ export const createEmployee = async (body) => {
   });
   return res.json();    
 };
+
+export const fetchEmployeeById = async (id) => {
+  return axios.get(`${API_URL}/employees/${id}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+    }
+  })
+}
 

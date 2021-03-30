@@ -6,7 +6,7 @@ import NotFound from '../../components/NotFound/NotFound'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import { Link, useHistory } from 'react-router-dom'
 import { stableSort, getComparator } from '../../utils/tableSortFunctions'
-import { orderByEnum, dummyList } from '../../constants/leaveRequest/constants'
+import { orderByEnum } from '../../constants/leaveRequest/constants'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
 
@@ -109,7 +109,8 @@ function descendingComparator (a, b, orderBy) {
       break
   }
 
-  if (orderByProperty === 'employee') { // Nested object for the employee
+  if (orderByProperty === 'employee') {
+    // Nested object for the employee
     if (
       b[orderByProperty][EMP_FULLNAME_PROPERTY] <
       a[orderByProperty][EMP_FULLNAME_PROPERTY]
