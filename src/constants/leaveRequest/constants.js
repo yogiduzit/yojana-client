@@ -1,9 +1,10 @@
 // Enum for order by
 export const orderByEnum = Object.freeze({
-  REFERENCE_NUM: 0,
-  EMPLOYEE_NAME: 1,
-  LEAVE_TYPE: 2,
-  SUBMITTED_DATE: 3
+  ID: 0,
+  EMPLOYEE_FULLNAME: 1,
+  TYPE: 2,
+  START_DATE: 3,
+  END_DATE: 4
 })
 
 export const leaveTypes = Object.freeze({

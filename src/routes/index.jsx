@@ -29,10 +29,9 @@ const Main = (props) => {
             <BrowserRouter>
                 <Route path={Routes.LOGIN} component={Login} />
                 <Route exact path={Routes.HOME} component={Dashboard} />
-                <Route path={Routes.DASHBOARD} component={Dashboard} />
-                <Route path={Routes.PROJECTS} component={Projects} />
-                <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route exact path={Routes.PROJECTS} component={Projects} />
+                <Route path={Routes.DASHBOARD} component={Dashboard} />
+                <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.ADDPROJECT} component={AddProject} />
                 <Route exact path={Routes.VIEW_PROJECT} component={ViewProject} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
