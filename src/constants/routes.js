@@ -6,6 +6,7 @@ const Routes = {
     PROJECTS: '/projects',
     ADDPROJECT: '/projects-create',
     VIEW_PROJECT: '/project/:id',
+    VIEW_SUB_WORK_PACKAGE: '/project/:id/wp/:wpId',
     TIMESHEET: '/timesheets',
     TIMESHEET_CREATE: '/timesheets-create',
     TIMESHEET_DETAIL: '/timesheet/:id',
