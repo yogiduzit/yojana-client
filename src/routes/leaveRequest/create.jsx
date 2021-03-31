@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import WithHeader from '../../hoc/WithHeader'
 import WithSidebar from '../../hoc/WithSidebar'
+import DatePicker from 'react-datepicker'
 
 import { leaveTypes } from '../../constants/leaveRequest/constants'
 
@@ -14,11 +16,8 @@ import {
   Select,
   TextField
 } from '@material-ui/core'
-import { formatMMDDYYYY } from '../../utils/dateFormatter'
-
-const dummyEmployee = {
-  id: 100
-}
+import { fetchEmployeeById } from '../../api/Employee'
+import { createLeaveRequest } from '../../api/LeaveRequest'
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -33,13 +32,65 @@ const useStyles = makeStyles(theme => ({
 
 function LeaveRequestCreate () {
   const classes = useStyles()
+  const history = useHistory()
 
   // TODO: employeeId can be passed from props
-  const [employee, setEmployee] = useState(dummyEmployee)
-  const [description, setDescription] = useState('')
+  const [empId, setEmpId] = useState(null)
+  const [empName, setEmpName] = useState('')
   const [request, setRequest] = useState({})
+  const [errorMessages, setErrorMessages] = useState([])
 
-  const handleDropdownChange = e => {
+  const errorMessagesValue = Object.freeze({
+    EMPLOYEE: 'You need to choose employee.',
+    START_DATE: 'You need to choose start date.',
+    END_DATE: 'You need to choose end date.',
+    START_END_DATE: 'End date should be later than or equal to start date.',
+    TYPE: 'You need to choose type.',
+    DESCRIPTION: 'You need to add description.'
+  })
+
+  const handleEmpIdChange = e => {
+    let value = parseInt(e.target.value)
+    setEmpId(value)
+    setEmpName('')
+  }
+
+  const handleEmpIdEnter = e => {
+    const ENTER_KEY = 'Enter'
+    if (e.key === ENTER_KEY) {
+      fetchEmployeeById(empId)
+        .then(res => {
+          console.log(res)
+          setEmpName(res.data.data.employee.fullName)
+          setRequest({
+            ...request,
+            empId: empId
+          })
+        })
+        .catch(e => {
+          console.error(e)
+          setEmpName('')
+        })
+    }
+  }
+
+  const handleDateSelect = (date, forWhat) => {
+    if (date) {
+      if (forWhat === 'startDate') {
+        setRequest({
+          ...request,
+          startDate: date.getTime()
+        })
+      } else if (forWhat === 'endDate') {
+        setRequest({
+          ...request,
+          endDate: date.getTime()
+        })
+      }
+    }
+  }
+
+  const handleTypeChange = e => {
     setRequest({
       ...request,
       type: e.target.value
@@ -47,40 +98,113 @@ function LeaveRequestCreate () {
   }
 
   const handleDescriptionChange = e => {
-    setDescription(e.target.value)
+    setRequest({
+      ...request,
+      description: e.target.value
+    })
   }
 
   const handleSubmit = e => {
     e.preventDefault()
 
-    setRequest({
-      ...request,
-      description: description,
-      employeeId: employee.id
-    })
+    validateAndErrorMessage()
 
-    console.log('submitted!')
+    if (errorMessages.length === 0) {
+      createLeaveRequest(request)
+        .then(res => {
+          console.error(res)
+          history.push('/leave-request-list')
+        })
+        .catch(e => console.error(e))
+    }
+  }
+
+  const validateAndErrorMessage = () => {
+    let errorMessagesArray = []
+    if (!request.empId || !empName) {
+      errorMessagesArray.push(errorMessagesValue.EMPLOYEE)
+    } else {
+      errorMessagesArray = errorMessagesArray.filter(
+        item => item !== errorMessagesValue.EMPLOYEE
+      )
+    }
+    if (!request.startDate) {
+      errorMessagesArray.push(errorMessagesValue.START_DATE)
+    } else {
+      errorMessagesArray = errorMessagesArray.filter(
+        item => item !== errorMessagesValue.START_DATE
+      )
+    }
+    if (!request.endDate) {
+      errorMessagesArray.push(errorMessagesValue.END_DATE)
+    } else {
+      errorMessagesArray = errorMessagesArray.filter(
+        item => item !== errorMessagesValue.END_DATE
+      )
+    }
+    if (request.endDate < request.startDate) {
+      errorMessagesArray.push(errorMessagesValue.START_END_DATE)
+    } else {
+      errorMessagesArray = errorMessagesArray.filter(
+        item => item !== errorMessagesValue.START_END_DATE
+      )
+    }
+    if (!request.type) {
+      errorMessagesArray.push(errorMessagesValue.TYPE)
+    } else {
+      errorMessagesArray = errorMessagesArray.filter(
+        item => item !== errorMessagesValue.TYPE
+      )
+    }
+    if (!request.description) {
+      errorMessagesArray.push(errorMessagesValue.DESCRIPTION)
+    } else {
+      errorMessagesArray = errorMessagesArray.filter(
+        item => item !== errorMessagesValue.DESCRIPTION
+      )
+    }
+
+    setErrorMessages(errorMessagesArray)
   }
 
   return (
     <div className='main-body'>
       <h1 className='mb-5'>Leave Request</h1>
-      <table style={{ width: '60%' }}>
+      <table style={{ width: '75%' }}>
         <tbody>
           <tr>
             <td>
               <TextField
                 id='employee-id-readonly'
                 label='Employee ID'
-                defaultValue={employee.id}
-                InputProps={{
-                  readOnly: true
-                }}
+                onChange={handleEmpIdChange}
+                onKeyDown={handleEmpIdEnter}
+                helperText='Type employee ID and press ENTER'
               />
             </td>
             <td style={{ textAlign: 'right' }}>
-              Date: {formatMMDDYYYY(new Date())}
+              Start date:
+              <DatePicker
+                selected={request.startDate}
+                onSelect={e => handleDateSelect(e, 'startDate')}
+                className='ml-3'
+              />
             </td>
+            <td style={{ textAlign: 'right' }}>
+              End date:{' '}
+              <DatePicker
+                selected={request.endDate}
+                onSelect={e => handleDateSelect(e, 'endDate')}
+                className='ml-3'
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <p className='mt-3'>Employee Name: {empName}</p>
+            </td>
+            <td></td>
+            <td></td>
           </tr>
           <tr>
             <td>
@@ -90,7 +214,7 @@ function LeaveRequestCreate () {
                   labelId='type-select-label'
                   id='type-select'
                   value={request.type}
-                  onChange={handleDropdownChange}
+                  onChange={handleTypeChange}
                 >
                   {Object.values(leaveTypes).map((item, key) => (
                     <MenuItem key={key} value={item}>
@@ -101,9 +225,10 @@ function LeaveRequestCreate () {
               </FormControl>
             </td>
             <td></td>
+            <td></td>
           </tr>
           <tr>
-            <td colspan='2'>
+            <td colspan='3'>
               <TextField
                 id='outlined-multiline-static'
                 multiline
@@ -118,6 +243,10 @@ function LeaveRequestCreate () {
           </tr>
         </tbody>
       </table>
+      <p></p>
+      {errorMessages.map(item => (
+        <p style={{ margin: '0', color: 'red' }}>{item}</p>
+      ))}
       <Button
         variant='contained'
         color='primary'

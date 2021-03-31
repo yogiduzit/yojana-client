@@ -6,7 +6,7 @@ import NotFound from '../../components/NotFound/NotFound'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import { Link, useHistory } from 'react-router-dom'
 import { stableSort, getComparator } from '../../utils/tableSortFunctions'
-import { orderByEnum, dummyList } from '../../constants/leaveRequest/constants'
+import { orderByEnum } from '../../constants/leaveRequest/constants'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
 
@@ -28,6 +28,9 @@ import LastPageIcon from '@material-ui/icons/LastPage'
 import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
+import { fetchAllLeaveRequests } from '../../api/LeaveRequest'
+import Loading from '../../components/Loading/Loading'
+import Routes from '../../constants/routes'
 
 const useStyles = makeStyles(theme => ({
   // styles for order by dropdown
@@ -62,49 +65,75 @@ const useStyles = makeStyles(theme => ({
 
 const headCells = [
   {
-    id: orderByEnum.REFERENCE_NUM,
+    id: orderByEnum.ID,
     label: 'Reference Number'
   },
   {
-    id: orderByEnum.EMPLOYEE_NAME,
+    id: orderByEnum.EMPLOYEE_FULLNAME,
     label: 'Employee Name'
   },
   {
-    id: orderByEnum.LEAVE_TYPE,
+    id: orderByEnum.TYPE,
     label: 'Type'
   },
   {
-    id: orderByEnum.SUBMITTED_DATE,
-    label: 'Date'
+    id: orderByEnum.START_DATE,
+    label: 'Start Date'
+  },
+  {
+    id: orderByEnum.END_DATE,
+    label: 'End Date'
   }
 ]
 
 function descendingComparator (a, b, orderBy) {
   let orderByProperty = ''
+  const EMP_FULLNAME_PROPERTY = 'fullName'
+
   switch (orderBy) {
-    case orderByEnum.REFERENCE_NUM:
-      orderByProperty = 'referenceNum'
+    case orderByEnum.ID:
+      orderByProperty = 'id'
       break
-    case orderByEnum.EMPLOYEE_NAME:
-      orderByProperty = 'firstName'
+    case orderByEnum.EMPLOYEE_FULLNAME:
+      orderByProperty = 'employee'
       break
-    case orderByEnum.LEAVE_TYPE:
-      orderByProperty = 'leaveType'
+    case orderByEnum.TYPE:
+      orderByProperty = 'type'
       break
-    case orderByEnum.SUBMITTED_DATE:
-      orderByProperty = 'date'
+    case orderByEnum.START_DATE:
+      orderByProperty = 'startDate'
+      break
+    case orderByEnum.END_DATE:
+      orderByProperty = 'endDate'
       break
     default:
       break
   }
 
-  if (b[orderByProperty] < a[orderByProperty]) {
-    return -1
+  if (orderByProperty === 'employee') {
+    // Nested object for the employee
+    if (
+      b[orderByProperty][EMP_FULLNAME_PROPERTY] <
+      a[orderByProperty][EMP_FULLNAME_PROPERTY]
+    ) {
+      return -1
+    }
+    if (
+      b[orderByProperty][EMP_FULLNAME_PROPERTY] >
+      a[orderByProperty][EMP_FULLNAME_PROPERTY]
+    ) {
+      return 1
+    }
+    return 0
+  } else {
+    if (b[orderByProperty] < a[orderByProperty]) {
+      return -1
+    }
+    if (b[orderByProperty] > a[orderByProperty]) {
+      return 1
+    }
+    return 0
   }
-  if (b[orderByProperty] > a[orderByProperty]) {
-    return 1
-  }
-  return 0
 }
 
 function EnhancedTableHead (props) {
@@ -220,11 +249,22 @@ const LeaveRequestList = () => {
   const history = useHistory()
   // TODO: Authorize user by its role to access this list page
   const [isAuthorized, setAuthorized] = useState(true)
-  const [requests, setRequests] = useState(dummyList)
+  const [requests, setRequests] = useState([])
+  const [loaded, setLoaded] = useState(false)
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState(-1)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+
+  useEffect(() => {
+    fetchAllLeaveRequests()
+      .then(res => {
+        console.log(res)
+        setLoaded(true)
+        setRequests(res.data.data.leaveRequest)
+      })
+      .catch(e => console.error(e))
+  }, [])
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, requests.length - page * rowsPerPage)
@@ -244,11 +284,17 @@ const LeaveRequestList = () => {
     setOrderBy(property)
   }
 
-  return !isAuthorized ? (
+  return !loaded ? (
+    <Loading />
+  ) : !isAuthorized ? (
     <NotFound />
   ) : (
     <div className='main-body'>
       <h1 className='mb-5'>Leave Request List</h1>
+      <Button className='ml-auto  w-30 mt-5 loginbutton'
+          variant="contained">
+          <Link className="text-white" to={Routes.LEAVE_REQUEST_CREATE}>Request leave</Link>
+        </Button>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='custom pagination table'>
           <EnhancedTableHead
@@ -266,17 +312,24 @@ const LeaveRequestList = () => {
                 ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : requests
             ).map(row => (
-              <TableRow key={row.referenceNum}>
+              <TableRow key={row.id}>
                 <TableCell component='th' scope='row'>
-                  {row.referenceNum}
+                  {row.id}
                 </TableCell>
-                <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-                <TableCell>{row.leaveType}</TableCell>
-                <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
+                <TableCell>
+                  {row.employee ? row.employee.fullName : null}
+                </TableCell>
+                <TableCell>{row.type ? row.type : null}</TableCell>
+                <TableCell>
+                  {formatMMDDYYYY(row.startDate ? row.startDate : null)}
+                </TableCell>
+                <TableCell>
+                  {formatMMDDYYYY(row.endDate ? row.endDate : null)}
+                </TableCell>
                 <TableCell>
                   <Link
                     to={{
-                      pathname: `leave-request-detail/${row.referenceNum}`,
+                      pathname: `leave-request-detail/${row.id}`,
                       state: row
                     }}
                   >
