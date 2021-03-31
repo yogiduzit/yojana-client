@@ -21,6 +21,7 @@ import Employee from './employee/index'
 import AddEmployee from './employee/create'
 
 import '../assets/css/style.css';
+import EmployeeProfile from './employeeprofile/employeeprofile';
 
 const Main = (props) => {
     return (
@@ -44,6 +45,7 @@ const Main = (props) => {
                 <Route path={Routes.LEAVE_REQUEST_DETAIL} component={LeaveRequestDetail} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
+                <Route path={Routes.EMPLOYEEPROFILE} component={EmployeeProfile} />
             </BrowserRouter>
         </div>
     )

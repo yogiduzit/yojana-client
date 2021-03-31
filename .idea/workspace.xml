@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
+  <component name="ChangeListManager">
+    <list default="true" id="6dca9e80-e893-4cf2-acef-255a05eb2a6f" name="默认变更列表" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/yojana-client.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes/employeeprofile/.sass-cache/565e162ef7c2c16641046df32ffbffbb2abd43d3/employeeprofile.sassc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes/employeeprofile/.sass-cache/565e162ef7c2c16641046df32ffbffbb2abd43d3/employeeprofile.scssc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes/employeeprofile/employeeprofile.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes/employeeprofile/employeeprofile.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/comp4911-pms-client.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/discord.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/prettier.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/www" beforeDir="false" afterPath="$PROJECT_DIR$/bin/www" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/robots.txt" beforeDir="false" afterPath="$PROJECT_DIR$/public/robots.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__test__/components/App.test.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/__test__/components/App.test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/css/with-sidebar.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/css/with-sidebar.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/images/logo.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/images/logo.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/Footer/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Footer/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/Header/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Header/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/containers/Sidebar/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/containers/Sidebar/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hoc/WithHeader/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/hoc/WithHeader/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hoc/WithSidebar/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/hoc/WithSidebar/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/reportWebVitals.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/dashboard/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/dashboard/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/login/login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/login/login.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/projects/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/projects/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/report/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/report/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/team/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/team/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/timesheet/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/timesheet/index.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/setupTests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    </list>
+=======
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -40,23 +92,66 @@
 =======
     <list default="true" id="13867fae-896e-468e-94b7-d5a33cbf15f6" name="Default Changelist" comment="" />
 >>>>>>> 2f3489778cbfa7263e901fd2d76c5d9de92a3e97
+>>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Sass File" />
+      </list>
+    </option>
+=======
   <component name="ComposerSettings">
     <execution />
+>>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+<<<<<<< HEAD
+  <component name="ProjectId" id="1q0113yzIIzIyTIWjV6Uh2AEDD7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+=======
   <component name="ProjectId" id="1pXMESVGOFDltBuuOE2frFbGRJT" />
+>>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+<<<<<<< HEAD
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="list.type.of.created.stylesheet" value="Sass" />
+    <property name="nodejs_package_manager_path" value="yarn" />
+    <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="6dca9e80-e893-4cf2-acef-255a05eb2a6f" name="默认变更列表" comment="" />
+      <created>1616201476165</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616201476165</updated>
+      <workItem from="1616201480533" duration="446000" />
+      <workItem from="1616202295613" duration="22169000" />
+      <workItem from="1616292829072" duration="42000" />
+      <workItem from="1616331423001" duration="939000" />
+=======
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -81,10 +176,21 @@
       <workItem from="1615324877144" duration="2017000" />
       <workItem from="1615330800093" duration="925000" />
       <workItem from="1615433290101" duration="2132000" />
+>>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
+<<<<<<< HEAD
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+=======
     <option name="version" value="2" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -112,5 +218,6 @@
       <screen x="0" y="0" width="1280" height="689" />
     </state>
     <state x="371" y="92" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.689@0.0.1280.689" timestamp="1616032292323" />
+>>>>>>> 71509e3e3bd64c8a7224ea6931f172bbbb4acf13
   </component>
 </project>

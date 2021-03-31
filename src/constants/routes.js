@@ -17,6 +17,7 @@ const Routes = {
     LEAVE_REQUEST_DETAIL: '/leave-request-detail/:id',
     EMPLOYEE: '/employees',
     ADDEMPLOYEE: '/employee/create',
+    EMPLOYEEPROFILE: '/employeeprofile',
 };
 
 export default Routes;
