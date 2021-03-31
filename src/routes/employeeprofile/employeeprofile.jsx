@@ -1,250 +1,93 @@
 import React, { Component, Fragment } from 'react';
+
 import empPic from '../../assets/images/img_avatar.png'
 import WithSidebar from "../../hoc/WithSidebar";
+
+import EmployeeDetails from "./employeeDetails";
+import EmployeeUpdateProfile from "./employeeUpdateProfile";
+import EmployeeUpdatePwd from "./employeeUpdatePwd";
+import Header from "./header";
+
 import '../../assets/css/employeeprofile.css';
-import ArcProgress from 'react-arc-progress';
-import { BsBell, BsBrush } from "react-icons/bs";
-import { AiFillCamera } from "react-icons/ai";
-/**
- * @param isHaveNotice
- * @param headImg
- * @param email
- * @returns {JSX.Element}
- * @constructor
- */
-function Header(isHaveNotice, headImg ,email) {
-    return (
-        <div className="header-container">
-            <div className="search">
-                <img src={empPic} alt='search'/>
-                <input type="text" placeholder='Search...'/>
-            </div>
-            
-            <div className="info">
-                <div className='bell'>
-                    {/*<img src={BsFillBellFill} alt="bell"/>*/}
-                    <BsBell/>
-                    {isHaveNotice ? <div></div> : null }
-                </div>
-                <div className='head'>
-                    <img src={headImg} alt="user-head"/>
-                </div>
-                <div className='name'>
-                    <span>{email}</span>
-                </div>
-            </div>
-        </div>
-    )
-}
 
-/**
- * 
- * @param number
- * @param headImg
- * @param email
- * @param records
- * @param progress
- * @param text
- * @returns {JSX.Element}
- * @constructor
- */
-function Employee(number, headImg, email, records, progress, text, callback) {
-    return (
-        <div className='employee-info-container'>
-            <div className='header'>
-                <span>Employee number {number}</span>
-                <div className='user'>
-                    <img src={headImg} alt="head"/>
-                    <span>{email}</span>
-                </div>
-                <div onClick={() => {
-                    callback();
-                }}>
-                    <BsBrush className='edit-img'/>
-                    {/*<img src={empPic} alt="edit"/>*/}
-                </div>
-            </div>
-            <div className='details'>
-                <div className='leaves'>
-                    <span>Vacation & Sick Leaves</span>
-                    <div className='leave-item'>
-                        {records.map(({state, time}) => {
-                            return (
-                                <div key={time}>
-                                    <span>{time}</span>
-                                    <span>{state}</span>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-                <div className='working'>
-                    <span>Working Hours</span>
-                    <div className='details'>
-                        <div className='label-info'>
-                            <div>
-                                <span>Working</span>
-                                <span>Hours</span>
-                            </div>
-                            <div>
-                                <span>Off</span>
-                            </div>
-                        </div>
-                        <div>
-                            <ArcProgress
-                                size={150}
-                                progress={progress}
-                                text={text}
-                                fillColor={'#2ED47A'}
-                                emptyColor={'#FFB946'}
-                                thickness={6}
-                                arcStart={0}
-                                arcEnd={360}
-                                textStyle={{
-                                    size: '35px',
-                                    color: '#2ED47A'
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className='extra'>
-                        <div>Extra Hours</div>
-                        <div>0 hrs</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-/**
- * 
- * @param props
- * @returns {JSX.Element}
- * @constructor
- */
-function EmployeeUpdateProfile(props) {
-    return (
-        <div className='employee-profile-container'>
-            <div className='header'>
-                <span>Employee number {props.number}</span>
-                <div className='user'>
-                    <img className='head' src={props.headImg} alt="head"/>
-                    <span>{props.email}</span>
-                    {/*<img className='edit' src={empPic} alt="edit"/>*/}
-                    <AiFillCamera className='edit'/>
-                </div>
-            </div>
-            <div className='input-area'>
-                <div>
-                    <input type="text" placeholder='Username'/>
-                </div>
-                <div>
-                    <input type="e-mail" placeholder='Email address'/>
-                </div>
-                <div>Update Password ?</div>
-            </div>
-            <div className='update-btn' onClick={() => {
-                props.callback();
-            }}>Update Profile</div>
-        </div>
-    )
-}
-
-/**
- * 
- * @param props
- * @returns {JSX.Element}
- * @constructor
- */
-function EmployeeUpdatePwd(props) {
-    return (
-        <div className='employee-pwd-container'>
-            <div className='header'>
-                <span>Employee number {props.number}</span>
-                <div className='user'>
-                    <div>
-                        <img className='head' src={props.headImg} alt="head"/>
-                    </div>
-                    <span>{props.email}</span>
-                </div>
-            </div>
-            <div className='input-area'>
-                <div>
-                    <input type="password" placeholder='Old Password'/>
-                </div>
-                <div>
-                    <input type="password" placeholder='New Password'/>
-                </div>
-                <div>
-                    <input type="password" placeholder='Confirm Password'/>
-                </div>
-            </div>
-            <div className='update-btn'>Update Password</div>
-        </div>
-    )
-}
-
-function showKind(kind = 1, callback) {
-    if (kind == 1) {
+function showPage(pageType = "employeeDetails", callback) {
+    if (pageType === "employeeDetails") {
         return (
             <Fragment>
                 <div className="introduce">Profile</div>
-                {Employee(788,empPic, 'test@gmail.com', [{
-                    state: 'Sick',
-                    time: '12/12/2020'
-                }, {
-                    state: 'Off',
-                    time: '15/10/2020'
-                }], .782, '24 hrs', () => {
-                    callback(2);
-                })}
+                <EmployeeDetails
+                    number={788}
+                    headImg={empPic}
+                    email='test@gmail.com'
+                    records={[{
+                        state: 'Sick',
+                        time: '12/12/2020'
+                    }, {
+                        state: 'Off',
+                        time: '15/10/2020'
+                    }]}
+                    progress={.782}
+                    text='24 hrs'
+                    callback={() => {
+                        callback("updateEmployeeProfile");
+                    }} />
             </Fragment>
         )
     }
-    else if (kind == 2) {
+    else if (pageType === "updateEmployeeProfile") {
         return (
             <Fragment>
-                <EmployeeUpdateProfile number={788} headImg={empPic} email={'test@gmail.com'} callback={() => {
-                    callback(3);
-                }}></EmployeeUpdateProfile>
+                <EmployeeUpdateProfile
+                    number={788}
+                    headImg={empPic}
+                    email={'test@gmail.com'}
+                    callback={() => {
+                        callback("updateEmployeePwd");
+                    }}></EmployeeUpdateProfile>
             </Fragment>
         )
     }
-    else if (kind == 3) {
+    else if (pageType === "updateEmployeePwd") {
         return (
             <Fragment>
-                <EmployeeUpdatePwd number={788} headImg={empPic} email={'test@gmail.com'}></EmployeeUpdatePwd>
+                <EmployeeUpdatePwd
+                    number={788}
+                    headImg={empPic}
+                    email={'test@gmail.com'}
+                />
             </Fragment>
         )
     }
     return null;
 }
 
-class Employeeprofile extends Component {
+class EmployeeProfile extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isHaveNotice: true,
             headImg: empPic,
             email: 'test@gmail.com',
-            index: 1
+            pageType: 'employeeDetails'
         }
     }
 
     render() {
-        let that = this;
-        const { isHaveNotice, headImg, email, index} = this.state;
+        const { isHaveNotice, headImg, email, index } = this.state;
         return (
             <div className='employee'>
-                {Header(isHaveNotice, headImg, email)}
-                {showKind(index, (index) => {
-                    that.setState({
+                <Header
+                    isHaveNotice={isHaveNotice}
+                    headImg={headImg}
+                    email={email}
+                />
+                {showPage(index, ((index) => {
+                    this.setState({
                         index
                     })
-                })}
+                }))}
             </div>
         );
     }
 }
-export default WithSidebar((Employeeprofile));
+export default WithSidebar((EmployeeProfile));
