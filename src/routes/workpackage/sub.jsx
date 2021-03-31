@@ -11,66 +11,58 @@ import BCITLogo from '../../assets/images/bcit-logo.svg';
 import EditPencil from '../../assets/images/edit-pencil-icon.svg';
 import GreenCheck from '../../assets/images/green-check-submission.svg';
 import RedClose from '../../assets/images/red-close-submission.svg';
-import AddButtonIcon from '../../assets/images/addWpButton.svg';
 
-import LowestLevelWorkpackageCard from "../../components/workpackage/lowestLevelWorkpackageCard.component";
-import AddWorkpackage from "../../components/workpackage/addWorkpackage.component";
-import { fetchWorkPackagesByHierarchy } from '../../api/WorkPackage';
-
-
-import { initialProjectState } from './initialState';
-import { fetchProject } from '../../api/Project';
+import { fetchChildWorkPackages, fetchWorkPackage } from '../../api/WorkPackage';
+import { initialWorkPackageState } from './initialState';
 import { handleBudgetChanged, handleEstimateChanged } from './utils/handlers';
 
-const Workpackage = (props) => {
+const SubWorkpackage = () => {
     const params = useParams();
-    const [project, setProject] = useState(initialProjectState);
-
+    const [workPackage, setWorkPackage] = useState(initialWorkPackageState);
     const [isTotalBudgetEditModeOn, setIsTotalBudgetEditModeOn] = useState(false);
     const [isInitialEstimateEditModeOn, setIsInitialEstimateEditModeOn] = useState(false);
 
-    const [totalBudget, setTotalBudget] = useState(project.budget);
-    const [initialEstimate, setInitialEstimate] = useState(project.initialEstimate);
+    const [totalBudget, setTotalBudget] = useState(workPackage.budget);
+    const [initialEstimate, setInitialEstimate] = useState(workPackage.initialEstimate);
     const [tempTotalBudget, setTempTotalBudget] = useState(totalBudget);
     const [tempInitialEstimate, setTempInitialEstimate] = useState(initialEstimate);
 
     const [wps, setWps] = useState([]);
 
     useEffect(() => {
-        async function loadWorkPackages() {
-            let res;
-            res = await fetchWorkPackagesByHierarchy(params.id, 0);
+        async function loadProject() {
+            const res = await fetchWorkPackage(params.id, params.wpId);
             if (res.errors && res.errors.length > 0) {
-                console.error("Cannot load work packages for project");
+                console.error("Cannot load workpackage");
+            } else {
+                setWorkPackage(res.data.workPackage);
+                setInitialEstimate(res.data.workPackage.initialEstimate);
+                setTotalBudget(res.data.workPackage.budget);
+            }
+        };
+        async function loadWorkPackages() {
+            const res = await fetchChildWorkPackages(params.id, params.wpId);
+            if (res.errors && res.errors.length > 0) {
+                console.error("Cannot load work packages for workpackage");
             } else {
                 setWps(res.data.workPackages);
             }
         };
         loadWorkPackages();
-        async function loadProject() {
-            const res = await fetchProject(params.id);
-            if (res.errors && res.errors.length > 0) {
-                console.error("Cannot load project");
-            } else {
-                setProject(res.data.project);
-                setInitialEstimate(res.data.project.initialEstimate);
-                setTotalBudget(res.data.project.budget);
-            }
-        };
         loadProject();
-    }, [params.id])
+    }, [params.id, params.wpId])
 
     return (
         <>
             <Container>
-                <h1 className=' px-4 font-weight-bold'>Project {project.name}</h1>
+                <h1 className=' px-4 font-weight-bold'>{workPackage.workPackagePk.projectID} - {workPackage.workPackagePk.id}</h1>
                 <div className='bg-white dashboard-card-border-radius px-4 py-3'>
                     <Row>
                         <Col>
                             <span>
                                 <img src={BCITLogo} alt='BCIT Logo' />
                             </span>
-                            <h3 className='primary-blue-text-color mb-5 d-inline ml-3'>{project.name}</h3>
+                            <h3 className='primary-blue-text-color mb-5 d-inline ml-3'>{workPackage.workPackageName}</h3>
                             <div className='mt-5'>
                                 <Row >
                                     <Col className='text-left'>
@@ -100,7 +92,7 @@ const Workpackage = (props) => {
                                                         size='small'
                                                         onClick={() => {
                                                             setIsInitialEstimateEditModeOn(false);
-                                                            handleEstimateChanged(params.id, tempInitialEstimate, setInitialEstimate);
+                                                            handleEstimateChanged(params.id, tempInitialEstimate, setInitialEstimate, params.wpId)
                                                         }}
                                                     >
                                                         <img src={GreenCheck} alt='Edit Pencil' />
@@ -140,8 +132,9 @@ const Workpackage = (props) => {
 
                                     </Col>
                                     <Col className='text-left'>
+
                                         <span className='text-color-primary-yonder font-weight-bold'>
-                                            ${project.allocatedInitialEstimate}
+                                            ${workPackage.allocatedInitialEstimate}
                                         </span>
                                     </Col>
                                 </Row>
@@ -155,7 +148,7 @@ const Workpackage = (props) => {
                                     <Col className='text-left'>
 
                                         <span className='text-color-primary-yonder font-weight-bold'>
-                                            ${initialEstimate - project.allocatedInitialEstimate}
+                                            ${initialEstimate - workPackage.allocatedInitialEstimate}
                                         </span>
                                     </Col>
                                 </Row>
@@ -190,7 +183,7 @@ const Workpackage = (props) => {
                                                     size='small'
                                                     onClick={() => {
                                                         setIsTotalBudgetEditModeOn(false);
-                                                        handleBudgetChanged(params.id, tempTotalBudget, setTotalBudget);
+                                                        handleBudgetChanged(params.id, tempTotalBudget, setTotalBudget, params.wpId);
                                                     }}
                                                 >
                                                     <img src={GreenCheck} alt='Edit Pencil' />
@@ -232,7 +225,7 @@ const Workpackage = (props) => {
                                 <Col className='text-left'>
 
                                     <span className='text-color-primary-yonder font-weight-bold'>
-                                        ${project.allocatedBudget}
+                                        ${workPackage.allocatedBudget}
                                     </span>
 
                                 </Col>
@@ -247,7 +240,7 @@ const Workpackage = (props) => {
                                 <Col className='text-left'>
 
                                     <span className='text-color-primary-yonder font-weight-bold'>
-                                        ${totalBudget - project.allocatedBudget}
+                                        ${totalBudget - workPackage.allocatedBudget}
                                     </span>
                                 </Col>
                             </Row>
@@ -261,7 +254,7 @@ const Workpackage = (props) => {
                                 <Col className='text-left'>
 
                                     <span className='text-color-primary-yonder font-weight-bold'>
-                                        $1500
+                                        {workPackage.charged}
                                     </span>
 
                                 </Col>
@@ -343,11 +336,11 @@ const Workpackage = (props) => {
                             );
                         })
                     }
-                    <LowestLevelWorkpackageCard />
                 </div>
+
             </Container>
         </>
     )
 }
 
-export default WithSidebar(WithHeader(Workpackage));
+export default WithSidebar(WithHeader(SubWorkpackage));

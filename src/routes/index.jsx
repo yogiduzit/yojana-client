@@ -21,6 +21,7 @@ import LeaveRequestDetail from './leaveRequest/detail'
 import Employee from './employee/index'
 import AddEmployee from './employee/create'
 import Workpackage from "./workpackage";
+import SubWorkpackage from "./workpackage/sub";
 
 import '../assets/css/style.css';
 
@@ -39,7 +40,7 @@ const Main = (props) => {
                   <Workpackage key={`view-project-${window.location.href}`} {...props} />
                 )} />
                 <Route exact path={Routes.VIEW_SUB_WORK_PACKAGE} render={(props) => (
-                  <Workpackage key={`view-wp-${window.location.href}`} {...props} />
+                  <SubWorkpackage key={`view-wp-${window.location.href}`} {...props} />
                 )} />
                 <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
