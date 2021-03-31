@@ -6,8 +6,11 @@ import BCITLogo from '../../assets/images/bcit-logo.svg';
 import EditPencil from '../../assets/images/edit-pencil-icon.svg';
 import GreenCheck from '../../assets/images/green-check-submission.svg';
 import RedClose from '../../assets/images/red-close-submission.svg';
+import AddButtonIcon from '../../assets/images/addWpButton.svg';
 import { IconButton, TextField } from '@material-ui/core'
 import WorkpackageCard from "../../components/workpackage/workpackageCard.component";
+import LowestLevelWorkpackageCard from "../../components/workpackage/lowestLevelWorkpackageCard.component";
+import AddWorkpackage from "../../components/workpackage/addWorkpackage.component";
 
 
 const Workpackage = (props) => {
@@ -20,6 +23,7 @@ const Workpackage = (props) => {
     const [tempTotalBudget, setTempTotalBudget] = useState(0);
     const [tempAllocatedBudget, setTempAllocatedBudget] = useState(0);
     const [initialEstimate, setInitialEstimate] = useState(0);
+
 
 
     useEffect( () => {
@@ -42,7 +46,10 @@ const Workpackage = (props) => {
         <>
             <Container>
                 <h1 className=' px-4 font-weight-bold'>Project {projectObj.projectName}</h1>
-                <div className='bg-white dashboard-card-border-radius px-4 py-3'>
+                <div className='text-right'>
+                    <AddWorkpackage workpackage={projectObj} />
+                </div>
+                <div className='bg-white dashboard-card-border-radius px-4 py-3 mt-5'>
                     <Row>
                         <Col>
                             <span>
@@ -285,6 +292,7 @@ const Workpackage = (props) => {
                     <WorkpackageCard />
                     <WorkpackageCard />
                     <WorkpackageCard />
+                    <LowestLevelWorkpackageCard />
                 </div>
 
             </Container>
