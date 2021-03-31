@@ -2,7 +2,7 @@ import axios from 'axios'
 import { ACCESS_TOKEN, API_URL } from '../constants/environementVariables'
 
 export const fetchAllLeaveRequests = () => {
-  return axios.get(`${API_URL}/leaverequest`, {
+  return axios.get(`${API_URL}/leaverequests`, {
     headers: {
       'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
     }
@@ -12,7 +12,7 @@ export const fetchAllLeaveRequests = () => {
 export const createLeaveRequest = body => {
   const { empId, startDate, endDate, type, description } = body
   return axios.post(
-    `${API_URL}/leaverequest`,
+    `${API_URL}/leaverequests`,
     {
       empId: empId,
       startDate: startDate,
