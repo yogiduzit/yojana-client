@@ -30,6 +30,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
 import { fetchAllLeaveRequests } from '../../api/LeaveRequest'
 import Loading from '../../components/Loading/Loading'
+import Routes from '../../constants/routes'
 
 const useStyles = makeStyles(theme => ({
   // styles for order by dropdown
@@ -290,6 +291,10 @@ const LeaveRequestList = () => {
   ) : (
     <div className='main-body'>
       <h1 className='mb-5'>Leave Request List</h1>
+      <Button className='ml-auto  w-30 mt-5 loginbutton'
+          variant="contained">
+          <Link className="text-white" to={Routes.LEAVE_REQUEST_CREATE}>Request leave</Link>
+        </Button>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='custom pagination table'>
           <EnhancedTableHead

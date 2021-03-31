@@ -15,7 +15,8 @@ import {
   FaFolder,
   FaMoneyCheck,
   FaChartBar,
-  FaUserFriends
+  FaUserFriends,
+  FaRegCalendarMinus
 } from 'react-icons/fa'
 import { FiLogOut } from 'react-icons/fi'
 import { logout } from '../../api/Authentication'
@@ -95,6 +96,13 @@ const Sidebar = props => {
           >
             Employees
             <Link to={Routes.EMPLOYEE} />
+          </MenuItem>
+          <MenuItem
+            icon={<FaRegCalendarMinus/>}
+            active={pathname.localeCompare(Routes.LEAVE_REQUEST_LIST) === 0}
+          >
+            Leave Requests
+            <Link to={Routes.LEAVE_REQUEST_LIST} />
           </MenuItem>
           <MenuItem icon={<FiLogOut />} onClick={handleLogout}>
             Logout
