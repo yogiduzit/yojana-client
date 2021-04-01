@@ -63,7 +63,10 @@ const Workpackage = (props) => {
     return (
         <>
             <Container>
-                <h1 className=' px-4 font-weight-bold'>Project {project.name}</h1>
+                <h1 className=' px-4 font-weight-bold'>Project {project.id}</h1>
+                <div className='text-right'>
+                    <AddWorkpackage workpackage={project} />
+                </div>
                 <div className='bg-white dashboard-card-border-radius px-4 py-3'>
                     <Row>
                         <Col>
@@ -338,12 +341,11 @@ const Workpackage = (props) => {
                     </Row>
                     {
                         wps.map((wp, index) => {
-                            return (
-                                <WorkpackageCard wpData={wp} key={index} />
-                            );
+                            return wp.lowestLevel 
+                                ? (<LowestLevelWorkpackageCard wpData={wp} key={index} />)
+                                : (<WorkpackageCard wpData={wp} key={index} />);
                         })
                     }
-                    <LowestLevelWorkpackageCard />
                 </div>
             </Container>
         </>

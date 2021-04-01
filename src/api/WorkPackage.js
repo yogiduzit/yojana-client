@@ -36,6 +36,18 @@ export const fetchWorkPackage = async (id, wpId) => {
     return res.json();
 };
 
+export const createWorkPackage = async (id, body) => {
+    const res = await fetch(`${API_URL}/projects/${id}/workPackages`, {
+        body: JSON.stringify(body),
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+            'Content-Type': "application/json",
+        }
+    });
+    return res.json();
+};
+
 export const updateWorkPackage = async (id, wpId, body) => {
     const res = await fetch(`${API_URL}/projects/${id}/workPackages/${wpId}`, {
         body: JSON.stringify(body),
@@ -46,4 +58,4 @@ export const updateWorkPackage = async (id, wpId, body) => {
         }
     });
     return res.json();
-}
+};

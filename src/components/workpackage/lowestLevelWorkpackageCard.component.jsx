@@ -21,6 +21,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Collapse from '@material-ui/core/Collapse';
+import { getTimeAgo } from '../../utils/dateFormatter';
 
 
 const ExpandIcon = () => {
@@ -80,27 +81,27 @@ const lowestLevelWorkpackageData = [
     }
 ]
 
-const LowestLevelWorkpackageCard = () => {
+const LowestLevelWorkpackageCard = ({ wpData }) => {
 
     const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
     const [detailsExpanded, setDetailsExpanded] = useState(false);
 
     const classes = useStyles();
-    const wpData = {
-        wp: 'WP 1.1.1',
-        initEstimate: 200,
-        priority: 'High',
-        issuedDate: '18/01/21',
-        dueDate: '18/01/21',
-        detail: {
-            purpose: 'More refined user interface',
-            description: 'Customization user interface',
-            estimatedCost: 200,
-            charge: 150
-        }
-    }
+    // const wpData = {
+    //     wp: 'WP 1.1.1',
+    //     initEstimate: 200,
+    //     priority: 'High',
+    //     issuedDate: '18/01/21',
+    //     dueDate: '18/01/21',
+    //     detail: {
+    //         purpose: 'More refined user interface',
+    //         description: 'Customization user interface',
+    //         estimatedCost: 200,
+    //         charge: 150
+    //     }
+    // }
     return (
-        <Accordion elevation={0} classes={{ root: classes.MuiAccordionroot}} className='mt-3' id='wp-accordion'>
+        <Accordion elevation={0} classes={{ root: classes.MuiAccordionroot }} className='mt-3' id='wp-accordion'>
             <AccordionSummary
                 expandIcon={<ExpandIcon />}
                 aria-controls="panel1a-content"
@@ -108,58 +109,73 @@ const LowestLevelWorkpackageCard = () => {
                 id="panel1a-header"
             >
                 <Col>
-                            <span className='font-weight-bold'>
-                                {wpData.wp}
-                            </span>
+                    <span className='font-weight-bold'>
+                        {wpData.workPackagePk.id}
+                    </span>
 
                 </Col>
                 <Col>
-                            <span className='font-weight-bold'>
-                                {wpData.initEstimate}
-                            </span>
+                    <span className='font-weight-bold'>
+                        {wpData.initialEstimate}
+                    </span>
                 </Col>
                 <Col>
-                            <span className='font-weight-bold ml-3'>
-                                {wpData.priority}
-                            </span>
+                    <span className='font-weight-bold'>
+                        {wpData.allocatedInitialEstimate}
+                    </span>
                 </Col>
                 <Col>
-                            <span className='font-weight-bold'>
-                                {wpData.issuedDate}
-                            </span>
+                    <span className='font-weight-bold'>
+                        {wpData.budget}
+                    </span>
                 </Col>
                 <Col>
-                            <span className='font-weight-bold'>
-                                {wpData.dueDate}
-                            </span>
+                    <span className='font-weight-bold'>
+                        {wpData.allocatedBudget}
+                    </span>
+                </Col>
+                {/* <Col>
+						<span className='font-weight-bold ml-3'>
+							{wpData.priority}
+						</span>
+					</Col> */}
+                <Col>
+                    <span className='font-weight-bold'>
+                        {getTimeAgo(wpData.audit.createdAt)}
+                    </span>
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {getTimeAgo(wpData.dueAt)}
+                    </span>
                 </Col>
             </AccordionSummary>
             <AccordionDetails >
                 <Col>
                     <div className='p-2 text-left'>
-                        <div>
-                                    <span className='font-weight-bold'>
-                                        Purpose
+                        {/* <div>
+                            <span className='font-weight-bold'>
+                                Purpose
                                     </span>
                             <span className='font-weight-bold ml-5'>
-                                        {wpData.detail.purpose}
-                                    </span>
-                        </div>
+                                {wpData.detail.purpose}
+                            </span>
+                        </div> */}
                         <div className='mt-3'>
-                                    <span className='font-weight-bold'>
-                                        Description
+                            <span className='font-weight-bold'>
+                                Description
                                     </span>
                             <span className='font-weight-bold ml-5'>
-                                        {wpData.detail.description}
-                                    </span>
+                                {wpData.description}
+                            </span>
                         </div>
                     </div>
                 </Col>
                 <Col className='ml-auto text-right'>
                     <div className='p-2 text-right'>
-                        <div>
-                                    <span className='font-weight-bold'>
-                                        Estimated Cost
+                        {/* <div>
+                            <span className='font-weight-bold'>
+                                Initial Estimate
                                     </span>
                             {
                                 isEstimatedCostEditMode ?
@@ -170,16 +186,16 @@ const LowestLevelWorkpackageCard = () => {
                                     </>
                             }
                             <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                        ${wpData.detail.estimatedCost}
-                                    </span>
-                        </div>
+                                ${wpData.initialEstimate}
+                            </span>
+                        </div> */}
                         <div className='mt-3'>
-                                    <span className='font-weight-bold'>
-                                        Charge
+                            <span className='font-weight-bold'>
+                                Charge
                                     </span>
                             <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                        ${wpData.detail.charge}
-                                    </span>
+                                ${wpData.charged}
+                            </span>
                         </div>
 
                     </div>
@@ -196,8 +212,8 @@ const LowestLevelWorkpackageCard = () => {
                 <Col className='text-right'>
                     <div className='text-right'>
                         <MaterialButton variant='contained'
-                                        onClick={() => setDetailsExpanded(!detailsExpanded)}
-                                        className='bg-white text-color-primary-yonder border-blue font-weight-bold'>
+                            onClick={() => setDetailsExpanded(!detailsExpanded)}
+                            className='bg-white text-color-primary-yonder border-blue font-weight-bold'>
                             View detailed estimate
                         </MaterialButton>
                     </div>
@@ -213,14 +229,14 @@ const LowestLevelWorkpackageCard = () => {
                                 return (
                                     <TimelineItem key={index}>
                                         <TimelineSeparator>
-                                            <TimelineDot/>
-                                            <TimelineConnector/>
+                                            <TimelineDot />
+                                            <TimelineConnector />
                                         </TimelineSeparator>
                                         <TimelineContent>
                                             <span className='font-weight-bold'>{e.date}</span>
                                         </TimelineContent>
                                         <TimelineContent>
-                                            <TableContainer component={Paper} style={{minWidth: 700}}>
+                                            <TableContainer component={Paper} style={{ minWidth: 700 }}>
                                                 <Table aria-label="spanning table">
                                                     <TableHead>
                                                         <TableRow>
@@ -275,7 +291,7 @@ const LowestLevelWorkpackageCard = () => {
                     </Timeline>
                     <div className='text-right'>
                         <MaterialButton
-                                        className='background-light-blue text-color-primary-yonder font-weight-bold border-radius-15'>
+                            className='background-light-blue text-color-primary-yonder font-weight-bold border-radius-15'>
                             Add Estimation
                         </MaterialButton>
                     </div>

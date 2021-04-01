@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import WithSidebar from "../../hoc/WithSidebar";
 import WithHeader from "../../hoc/WithHeader";
 import WorkpackageCard from "../../components/workpackage/workpackageCard.component";
+import LowestLevelWorkpackageCard from "../../components/workpackage/lowestLevelWorkpackageCard.component";
 
 import BCITLogo from '../../assets/images/bcit-logo.svg';
 import EditPencil from '../../assets/images/edit-pencil-icon.svg';
@@ -30,7 +31,7 @@ const SubWorkpackage = () => {
     const [wps, setWps] = useState([]);
 
     useEffect(() => {
-        async function loadProject() {
+        async function loadParentWorkPackage() {
             const res = await fetchWorkPackage(params.id, params.wpId);
             if (res.errors && res.errors.length > 0) {
                 console.error("Cannot load workpackage");
@@ -49,7 +50,7 @@ const SubWorkpackage = () => {
             }
         };
         loadWorkPackages();
-        loadProject();
+        loadParentWorkPackage();
     }, [params.id, params.wpId])
 
     return (
@@ -331,9 +332,9 @@ const SubWorkpackage = () => {
                     </Row>
                     {
                         wps.map((wp, index) => {
-                            return (
-                                <WorkpackageCard wpData={wp} key={index} />
-                            );
+                            return wp.lowestLevel 
+                                ? (<LowestLevelWorkpackageCard wpData={wp} key={index} />)
+                                : (<WorkpackageCard wpData={wp} key={index} />);
                         })
                     }
                 </div>
