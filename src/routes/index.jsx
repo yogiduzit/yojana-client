@@ -18,8 +18,10 @@ import Team from './team';
 import Employee from './employee/index'
 import AddEmployee from './employee/create'
 import Workpackage from "./workpackage";
+import SubWorkpackage from "./workpackage/sub";
 
 import '../assets/css/style.css';
+import { Work } from '@material-ui/icons';
 
 const Main = (props) => {
     return (
@@ -32,7 +34,12 @@ const Main = (props) => {
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
                 <Route path={Routes.PROJECTS} component={Projects} />
                 <Route path={Routes.ADDPROJECT} component={AddProject} />
-                <Route path={Routes.VIEW_PROJECT} component={Workpackage} />
+                <Route exact path={Routes.VIEW_PROJECT} render={(props) => (
+                  <Workpackage key={`view-project-${window.location.href}`} {...props} />
+                )} />
+                <Route exact path={Routes.VIEW_SUB_WORK_PACKAGE} render={(props) => (
+                  <SubWorkpackage key={`view-wp-${window.location.href}`} {...props} />
+                )} />
                 <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
