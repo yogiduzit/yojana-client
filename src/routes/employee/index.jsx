@@ -18,7 +18,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { ACCESS_TOKEN } from "../../constants/environementVariables"
+import Checkbox from '@material-ui/core/Checkbox';
+import { ACCESS_TOKEN } from "../../constants/environementVariables";
 
 // import Accordion from '@material-ui/core/Accordion';
 // import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -35,6 +36,10 @@ const Employees = (props) => {
   
   const [employees, setEmployees] = useState([]);
   const [fullName, setFullName] = useState("");
+  const [admin, setAdmin] = useState(false);
+  const [timesheetApprover, setTimesheetApprover] = useState(false);
+  const [projectManager, setProjectManager] = useState(false);
+  const [hr, setHr] = useState(false);
   const [empId, setEmpId] = useState(0);
   // const [newPassword, setNewPassword] = useState([])
 
@@ -46,7 +51,7 @@ const Employees = (props) => {
   const getData = async () => {
     const { data } = await fetchAllEmployees();
     setEmployees(data.employees);
-
+    console.log(data.employees);
   }
   const removeData = (id) => {
 
@@ -64,7 +69,11 @@ const Employees = (props) => {
       console.log(empId);
       const data = {
         id: empId ,
-        fullName: fullName
+        fullName: fullName,
+        admin: admin,
+        timesheetApprover: timesheetApprover,
+        projectManager: projectManager,
+        hr: hr
       }
       const headers = {
         'Authorization': `${localStorage.getItem(ACCESS_TOKEN)}`,
@@ -109,6 +118,10 @@ const Employees = (props) => {
             <TableCell>ID</TableCell>
             <TableCell >Full Name</TableCell>
             <TableCell >User Name</TableCell>
+            <TableCell >Admin</TableCell>
+            <TableCell >Project Manager</TableCell>
+            <TableCell >Timesheet Approver</TableCell>
+            <TableCell >HR</TableCell>
             <TableCell ></TableCell>
           </TableRow>
         </TableHead>
@@ -118,6 +131,10 @@ const Employees = (props) => {
               <TableCell >{e.id}</TableCell>
               <TableCell >{e.fullName}</TableCell>
               <TableCell >{e.credential?.username}</TableCell>
+              <TableCell >{e.admin.toString()}</TableCell>
+              <TableCell >{e.projectManager.toString()}</TableCell>
+              <TableCell >{e.timesheetApprover}</TableCell>
+              <TableCell >{e.hr.toString()}</TableCell>
               <TableCell align="right">
                 <span onClick={() => removeData(e.id)}>
                   <DeleteIcon />
@@ -160,6 +177,15 @@ const Employees = (props) => {
               <div className='mt-5'>
                 
                 <TextField onChange={(e) => setFullName(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Full Name" variant="outlined" value={fullName} />
+                <label>Privileges:</label><br/>
+                <label for="myAdmin">Admin</label>
+                <Checkbox onChange={(e) => setAdmin(e.target.value) } className="bg-white w-100" id="myAdmin" label="Admin" value={admin}/>
+                <label for="myPM">Project Manager</label>
+                <Checkbox onChange={(e) => setProjectManager(e.target.value) } className="bg-white w-100" id="myPM" value={projectManager} />
+                <label for="myTA">Timesheet Approver</label>
+                <Checkbox onChange={(e) => setTimesheetApprover(e.target.value) } className="bg-white w-100" id="myTA" value={timesheetApprover} />
+                <label for="myHR">HR</label>
+                <Checkbox onChange={(e) => setHr(e.target.value) } className="bg-white w-100" id="myHR"  variant="outlined" value={hr} />
               </div>
         </ModalBody>
         <ModalFooter>
