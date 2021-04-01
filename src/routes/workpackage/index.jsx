@@ -1,12 +1,8 @@
-import { IconButton, TextField } from '@material-ui/core'
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import { useParams } from 'react-router';
-
 import WithSidebar from "../../hoc/WithSidebar";
 import WithHeader from "../../hoc/WithHeader";
-import WorkpackageCard from "../../components/workpackage/workpackageCard.component";
-
 import BCITLogo from '../../assets/images/bcit-logo.svg';
 import EditPencil from '../../assets/images/edit-pencil-icon.svg';
 import GreenCheck from '../../assets/images/green-check-submission.svg';
@@ -34,9 +30,6 @@ const Workpackage = (props) => {
     const [tempTotalBudget, setTempTotalBudget] = useState(totalBudget);
     const [tempInitialEstimate, setTempInitialEstimate] = useState(initialEstimate);
 
-    useEffect( () => {
-        calculateUnallocatedBudget()
-    }, [totalBudget, allocatedBudget]);
 
     const [wps, setWps] = useState([]);
 
@@ -69,10 +62,6 @@ const Workpackage = (props) => {
             <Container>
                 <h1 className=' px-4 font-weight-bold'>Project {project.name}</h1>
                 <div className='bg-white dashboard-card-border-radius px-4 py-3'>
-                <h1 className=' px-4 font-weight-bold'>Project {projectObj.projectName}</h1>
-                <div className='text-right'>
-                    <AddWorkpackage workpackage={projectObj} />
-                </div>
                 <div className='bg-white dashboard-card-border-radius px-4 py-3 mt-5'>
                     <Row>
                         <Col>
@@ -346,7 +335,6 @@ const Workpackage = (props) => {
                             </span>
                         </Col>
                     </Row>
-<<<<<<< src/routes/workpackage/index.jsx
                     {
                         wps.map((wp, index) => {
                             return (
@@ -354,15 +342,8 @@ const Workpackage = (props) => {
                             );
                         })
                     }
-=======
-                    <WorkpackageCard />
-                    <WorkpackageCard />
-                    <WorkpackageCard />
-                    <WorkpackageCard />
-                    <LowestLevelWorkpackageCard />
->>>>>>> src/routes/workpackage/index.jsx
                 </div>
-
+            </div>
             </Container>
         </>
     )
