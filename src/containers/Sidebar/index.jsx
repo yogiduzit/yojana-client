@@ -14,9 +14,9 @@ import { FiLogOut } from 'react-icons/fi';
 import { logout } from '../../api/Authentication';
 
 const Sidebar = props => {
-  const { pathname } = props.location
+  // const { pathname } = props.location
 
-
+  const { pathname } = props.location;
   const [collapsed, setCollapsed] = useState(false)
     const history = useHistory();
 

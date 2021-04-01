@@ -11,6 +11,7 @@ import { getTimeAgo } from "../../utils/dateFormatter";
 import { useHistory } from "react-router";
 import Routes from "../../constants/routes";
 
+import AddNewEstimate from "../estimate/newEstimateTable";
 const ExpandIcon = () => {
 	return (
 		<IconButton className='background-light-blue'>
@@ -29,9 +30,13 @@ const useStyles = makeStyles((theme) => ({
 const WorkpackageCard = ({ wpData }) => {
 	const classes = useStyles();
   const history = useHistory();
-
+	const [estimateView, setEstimateView] = useState(false);
 	const [estimatedCost, setEstimatedCost] = useState(0);
 	const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
+	const toggleEstimate = () => {
+			setEstimateView(!estimateView);
+	}
+
 
 	return (
 		<>
@@ -46,6 +51,7 @@ const WorkpackageCard = ({ wpData }) => {
 						<span className='font-weight-bold'>
 							{wpData.workPackagePk.id}
 						</span>
+
 
 					</Col>
 					<Col>
@@ -139,18 +145,29 @@ const WorkpackageCard = ({ wpData }) => {
 								>
 									View sub work packages
                                     </MaterialButton>
-							</div>
-						</div>
-					</Col>
-				</AccordionDetails>
-			</Accordion>
-			{/*<Row>*/}
-			{/*    <Col></Col>*/}
-			{/*    <Col></Col>*/}
-			{/*    <Col></Col>*/}
-			{/*</Row>*/}
-		</>
-	)
+
+                                </div>
+                                <div className='text-right mt-4'>
+                                    <MaterialButton
+                                        variant='outlined'
+                                        className='mt-4 btn-border-text-blue font-weight-bold p-2'
+                                        onClick={toggleEstimate}
+                                    >
+                                        Add Estimate
+                                    </MaterialButton>
+                                </div>
+                                {estimateView ? <AddNewEstimate toggle={toggleEstimate} modal={estimateView}/>: null}
+                            </div>
+                        </Col>
+                </AccordionDetails>
+            </Accordion>
+            {/*<Row>*/}
+            {/*    <Col></Col>*/}
+            {/*    <Col></Col>*/}
+            {/*    <Col></Col>*/}
+            {/*</Row>*/}
+        </>
+    )
 }
 
 export default WorkpackageCard;

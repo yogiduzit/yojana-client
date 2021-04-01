@@ -12,6 +12,10 @@ const Routes = {
     TIMESHEET_DETAIL: '/timesheet/:id',
     TIMESHEET_EDIT: '/timesheet-edit/:id',
     REPORT: '/report',
+    TEAM: '/team',
+    LEAVE_REQUEST_CREATE: '/leave-request-create',
+    LEAVE_REQUEST_LIST: '/leave-request-list',
+    LEAVE_REQUEST_DETAIL: '/leave-request-detail/:id',
     EMPLOYEE: '/employees',
     ADDEMPLOYEE: '/employee/create',
 };

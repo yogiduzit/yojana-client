@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 .body {
     background-color: #fff;
     margin: 1rem 5rem;
@@ -11,6 +13,7 @@
     border-radius: 3rem;
 }
 
+>>>>>>> d3c8f94976537e6bcbfc69b6b523b07773b04c8e
 #timesheetCreateHeader {
     width: 100%;
     table-layout: fixed;

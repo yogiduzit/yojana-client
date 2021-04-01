@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
+import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
+import { createTimesheet } from '../../api/Timesheet'
+import Routes from '../../constants/routes'
+import { withRouter } from 'react-router';
 import { daysEnum, INITIAL_HOURS } from '../../constants/timesheet/constants'
 import {
   formatHours,
@@ -48,6 +52,11 @@ const user = {
 const dummyTimesheet = {
   weekEndDate: new Date(),
   weekNum: moment(new Date()).format('W'),
+  signature: null,
+  feedback: null,
+  overtime: null,
+  flextime: null,
+  approvedAt: null,
   rows: [
     {
       projectId: '010',
@@ -66,7 +75,7 @@ const dummyProjectIds = ['010', '1205', '3710']
 // dummy workPackages which needs to be deleted later
 const dummyWorkPackages = ['SICK', 'COOL', 'AWES']
 
-function TimesheetCreate () {
+function TimesheetCreate() {
   const history = useHistory()
   const classes = useStyles()
   const [timesheet, setTimesheet] = useState(dummyTimesheet)
@@ -148,11 +157,36 @@ function TimesheetCreate () {
   }
 
   const handleSubmit = () => {
-    console.log('submit!')
+    var timesheetDate = timesheet.weekEndDate;
+    var month = timesheetDate.getMonth() + 1;
+    var day = timesheetDate.getDate();
+    var year = timesheetDate.getFullYear();
+    var monthStr = "" + month;
+    var dayStr = "" + day;
+    if (month < 10) {
+      monthStr = "0" + month;
+    }
+    if (day < 10) {
+      dayStr = "0" + day;
+    }
+    var date =  year + "-" + monthStr + "-" + dayStr;
+    var tempTimesheet = {
+      ownerId: 0,
+      endWeek: date,
+      signature: null,
+      feedback: null,
+      status: "pending",
+      overtime: null,
+      flextime: null,
+      approvedAt: null
+    };
+    console.log(tempTimesheet);
+    console.log('2021-03-22' === date);
+    createTimesheet(tempTimesheet);
   }
 
   return (
-    <div className='body'>
+    <div className='main-body'>
       {/* header that has 3 columns*/}
       <table id='timesheetCreateHeader' className='mb-3'>
         <thead>
