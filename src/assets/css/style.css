@@ -5,12 +5,20 @@ body {
     font-weight: 400;
 }
 
+.bg-primary-alice-blue {
+    background-color: #E5ECF4 !important;
+}
+
 .loginbox {
 
     /* Primary White */
     background: #FFFFFF;
     border-radius: 50px;
 
+}
+
+.border-blue {
+    border: 1px solid #4877AD !important;
 }
 
 .loginbutton {
@@ -124,6 +132,26 @@ body {
 
 }
 
+.border-radius-15 {
+    border-radius: 15px !important;
+}
+
+.border-radius-50 {
+    border-radius: 50px !important;
+}
+
 .border-radius-cicle {
     border-radius: 100%;
+}
+
+.modal-content {
+    border: none !important;
+}
+
+#add-modal-wp {
+    min-width: 700px !important;
+}
+
+.border-right-solid {
+    border-right: 1px solid #9F9F9F;
 }

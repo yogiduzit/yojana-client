@@ -11,6 +11,11 @@ import BCITLogo from '../../assets/images/bcit-logo.svg';
 import EditPencil from '../../assets/images/edit-pencil-icon.svg';
 import GreenCheck from '../../assets/images/green-check-submission.svg';
 import RedClose from '../../assets/images/red-close-submission.svg';
+import AddButtonIcon from '../../assets/images/addWpButton.svg';
+import { IconButton, TextField } from '@material-ui/core'
+import WorkpackageCard from "../../components/workpackage/workpackageCard.component";
+import LowestLevelWorkpackageCard from "../../components/workpackage/lowestLevelWorkpackageCard.component";
+import AddWorkpackage from "../../components/workpackage/addWorkpackage.component";
 
 import { fetchWorkPackagesByHierarchy } from '../../api/WorkPackage';
 import { initialProjectState } from './initialState';
@@ -28,6 +33,10 @@ const Workpackage = (props) => {
     const [initialEstimate, setInitialEstimate] = useState(project.initialEstimate);
     const [tempTotalBudget, setTempTotalBudget] = useState(totalBudget);
     const [tempInitialEstimate, setTempInitialEstimate] = useState(initialEstimate);
+
+    useEffect( () => {
+        calculateUnallocatedBudget()
+    }, [totalBudget, allocatedBudget]);
 
     const [wps, setWps] = useState([]);
 
@@ -60,6 +69,11 @@ const Workpackage = (props) => {
             <Container>
                 <h1 className=' px-4 font-weight-bold'>Project {project.name}</h1>
                 <div className='bg-white dashboard-card-border-radius px-4 py-3'>
+                <h1 className=' px-4 font-weight-bold'>Project {projectObj.projectName}</h1>
+                <div className='text-right'>
+                    <AddWorkpackage workpackage={projectObj} />
+                </div>
+                <div className='bg-white dashboard-card-border-radius px-4 py-3 mt-5'>
                     <Row>
                         <Col>
                             <span>
@@ -332,6 +346,7 @@ const Workpackage = (props) => {
                             </span>
                         </Col>
                     </Row>
+<<<<<<< src/routes/workpackage/index.jsx
                     {
                         wps.map((wp, index) => {
                             return (
@@ -339,6 +354,13 @@ const Workpackage = (props) => {
                             );
                         })
                     }
+=======
+                    <WorkpackageCard />
+                    <WorkpackageCard />
+                    <WorkpackageCard />
+                    <WorkpackageCard />
+                    <LowestLevelWorkpackageCard />
+>>>>>>> src/routes/workpackage/index.jsx
                 </div>
 
             </Container>
