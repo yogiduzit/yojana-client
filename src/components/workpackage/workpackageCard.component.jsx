@@ -31,12 +31,12 @@ const WorkpackageCard = ({ wpData }) => {
   const classes = useStyles();
   const history = useHistory();
 
-  const [estimateView, setEstimateView] = useState(false);
-  const [estimatedCost, setEstimatedCost] = useState(0);
+  // const [estimateView, setEstimateView] = useState(false);
+  // const [estimatedCost, setEstimatedCost] = useState(0);
   const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
-  const toggleEstimate = () => {
-    setEstimateView(!estimateView);
-  };
+  // const toggleEstimate = () => {
+  //   setEstimateView(!estimateView);
+  // };
 
   return (
     <>
@@ -143,18 +143,8 @@ const WorkpackageCard = ({ wpData }) => {
                   onClick={() => history.push(`/project/${wpData.workPackagePk.projectID}/wp/${wpData.workPackagePk.id}`)}
                 >
                   View sub work packages
-                                    </MaterialButton>
+                </MaterialButton>
               </div>
-              <div className='text-right mt-4'>
-                <MaterialButton
-                  variant='outlined'
-                  className='mt-4 btn-border-text-blue font-weight-bold p-2'
-                  onClick={toggleEstimate}
-                >
-                  Add Estimate
-                                    </MaterialButton>
-              </div>
-              {estimateView ? <AddNewEstimate toggle={toggleEstimate} modal={estimateView} /> : null}
             </div>
           </Col>
         </AccordionDetails >
