@@ -6,54 +6,62 @@ import Routes from "../../constants/routes";
 
 
 const ProjectCard = (props) => {
-  return (
-    <Col sm={12} md={6} className=''>
-      <div className='p-4 m-4 bg-white dashboard-card-border-radius'>
-        <h3 className='primary-blue-text-color mb-5'>{props.project.projectName}</h3>
-        <Row>
-          <Col xs={12} sm={4} className='py-2'>
-            <span className='primary-blue-text-color'>
-              Milestone
+    return (
+        <Col sm={12} md={6} className=''>
+            <div className='p-4 m-4 bg-white dashboard-card-border-radius'>
+                <h3 className='primary-blue-text-color mb-5'>{props.project.name}</h3>
+                <Row>
+                    <Col xs={12} sm={4} className='py-2'>
+                        <span className='primary-blue-text-color'>
+                            Milestone
                             </span>
-          </Col>
-          <Col xs={12} sm={8} className='py-2'>
-            <span className='primary-blue-text-color'>
-              {props.project.milestone}
-            </span>
-          </Col>
-          <Col xs={12} sm={4} className='py-2'>
-            <span className='primary-blue-text-color'>
-              Current WP
+                    </Col>
+                    <Col xs={12} sm={8} className='py-2'>
+                        <span className='primary-blue-text-color'>
+                            {props.project.milestone}
+                        </span>
+                    </Col>
+                    <Col xs={12} sm={4} className='py-2'>
+                        <span className='primary-blue-text-color'>
+                            Current WP
                             </span>
-          </Col>
-          <Col xs={12} sm={8} className='py-2'>
-            <span className='primary-blue-text-color'>
-              {props.project.currentWpID}
-            </span>
-          </Col>
-          <Col xs={12} sm={4} className='py-2'>
-            <span className='primary-blue-text-color'>
-              Team Members
+                    </Col>
+                    <Col xs={12} sm={8} className='py-2'>
+                        <span className='primary-blue-text-color'>
+                            {props.project.currentWpID}
+                        </span>
+                    </Col>
+                    <Col xs={12} sm={4} className='py-2'>
+                        <span className='primary-blue-text-color'>
+                            Team Members
                             </span>
-          </Col>
-          <Col xs={12} sm={8} className='py-2 text-right'>
-            <Link>
-              <span className='primary-blue-text-color text-decoration-underline'>
-                See all
+                    </Col>
+                    <Col xs={12} sm={8} className='py-2 text-right'>
+                        <Link>
+                            <span className='primary-blue-text-color text-decoration-underline'>
+                                See all
                                 </span>
-            </Link>
-          </Col>
-        </Row>
-        <div className='text-right'>
-          <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
-            <Link classname="text-white" to={`${Routes.PROJECTS}/${props.project.id}`}>
-              More Info
-            </Link>
-          </MaterialButton>
-        </div>
-      </div>
-    </Col>
-  )
+                        </Link>
+                    </Col>
+                </Row>
+                <div className='text-right'>
+                    <Link classname="bg-white text-decoration-none "
+                        to={
+                            {
+                                pathname: `/project/${props.project.id}`,
+                                data: props.project
+                            }
+                        }
+                    >
+                        <MaterialButton className='bg-primary-blue primary-white-text-color px-3 mt-3  rounded-pill'>
+                            More Info
+            </MaterialButton>
+                    </Link>
+
+                </div>
+            </div>
+        </Col>
+    )
 };
 
 export default ProjectCard;

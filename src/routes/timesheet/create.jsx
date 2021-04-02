@@ -10,6 +10,7 @@ import {
   calculateTotalHours,
   handleHoursChange
 } from '../../utils/timesheet/totalHoursCalcFunctions'
+import { createTimesheet } from '../../api/Timesheet'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -49,6 +50,11 @@ const user = {
 const dummyTimesheet = {
   weekEndDate: new Date(),
   weekNum: moment(new Date()).format('W'),
+  signature: null,
+  feedback: null,
+  overtime: null,
+  flextime: null,
+  approvedAt: null,
   rows: [
     {
       projectId: '010',
@@ -67,7 +73,7 @@ const dummyProjectIds = ['010', '1205', '3710']
 // dummy workPackages which needs to be deleted later
 const dummyWorkPackages = ['SICK', 'COOL', 'AWES']
 
-function TimesheetCreate () {
+function TimesheetCreate() {
   const history = useHistory()
   const classes = useStyles()
   const [timesheet, setTimesheet] = useState(dummyTimesheet)
@@ -149,7 +155,32 @@ function TimesheetCreate () {
   }
 
   const handleSubmit = () => {
-    console.log('submit!')
+    var timesheetDate = timesheet.weekEndDate;
+    var month = timesheetDate.getMonth() + 1;
+    var day = timesheetDate.getDate();
+    var year = timesheetDate.getFullYear();
+    var monthStr = "" + month;
+    var dayStr = "" + day;
+    if (month < 10) {
+      monthStr = "0" + month;
+    }
+    if (day < 10) {
+      dayStr = "0" + day;
+    }
+    var date =  year + "-" + monthStr + "-" + dayStr;
+    var tempTimesheet = {
+      ownerId: 0,
+      endWeek: date,
+      signature: null,
+      feedback: null,
+      status: "pending",
+      overtime: null,
+      flextime: null,
+      approvedAt: null
+    };
+    console.log(tempTimesheet);
+    console.log('2021-03-22' === date);
+    createTimesheet(tempTimesheet);
   }
 
   return (

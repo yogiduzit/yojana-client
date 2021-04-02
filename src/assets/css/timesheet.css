@@ -1,3 +1,16 @@
+.body {
+    background-color: #fff;
+    margin: 1rem 5rem;
+    padding: 3rem;
+    border-radius: 3rem;
+    overflow: hidden;
+}
+
+.timesheet-container {
+    background-color: #fff;
+    border-radius: 3rem;
+}
+
 #timesheetCreateHeader {
     width: 100%;
     table-layout: fixed;

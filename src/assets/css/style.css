@@ -5,12 +5,20 @@ body {
     font-weight: 400;
 }
 
+.bg-primary-alice-blue {
+    background-color: #E5ECF4 !important;
+}
+
 .loginbox {
 
     /* Primary White */
     background: #FFFFFF;
     border-radius: 50px;
 
+}
+
+.border-blue {
+    border: 1px solid #4877AD !important;
 }
 
 .loginbutton {
@@ -115,7 +123,7 @@ body {
 
 }
 .employeeAcc{
-    font-size: 15;
+    font-size: 15px;
     font-weight: bold;
     
 
@@ -132,4 +140,52 @@ body {
 }
 .colorP{
     background-color:#4877AD !important;
+}
+
+.background-light-blue {
+    background-color: #CCDDF1 !important;
+}
+
+.bg-light-green {
+    background-color: #C1F1D5 !important;
+}
+
+.bg-light-red {
+    background-color: #FFC7C3 !important;
+}
+
+#wp-accordion {
+    background-color: #E5ECF4 !important;
+    border-radius: 50px !important;
+}
+
+.btn-border-text-blue {
+    border-radius: 10px !important;
+    border-color: #4877AD !important;
+    color: #4877AD !important;
+
+}
+
+.border-radius-15 {
+    border-radius: 15px !important;
+}
+
+.border-radius-50 {
+    border-radius: 50px !important;
+}
+
+.border-radius-cicle {
+    border-radius: 100%;
+}
+
+.modal-content {
+    border: none !important;
+}
+
+#add-modal-wp {
+    min-width: 700px !important;
+}
+
+.border-right-solid {
+    border-right: 1px solid #9F9F9F;
 }

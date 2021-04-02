@@ -93,4 +93,4 @@ class AddProject extends Component {
   }
 }
 
-export default WithSidebar(WithHeader(withRouter(AddProject)));
+export default WithSidebar(WithHeader(AddProject));

@@ -29,3 +29,15 @@ export const createProject = async (body) => {
   });
   return res.json();    
 };
+
+export const updateProject = async (id, body) => {
+    const res = await fetch(`${API_URL}/projects/${id}`, {
+        body: JSON.stringify(body),
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+            'Content-Type': "application/json",
+        }
+    });
+    return res.json();
+}
