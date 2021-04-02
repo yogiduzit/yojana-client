@@ -49,17 +49,14 @@ class AddEmployee extends Component {
     const empResponse = await createEmployee({
       fullName: firstName.concat(' ', lastName)
     });
-
-    if (empResponse.errors.length === 0) {
       const credResponse = await createCredential({
         username,
         password,
         empID: empResponse.data.id
       });
-      if (credResponse.errors.length === 0) {
+
         this.props.history.push(Routes.EMPLOYEE);
-      }
-    }
+      
   }
   render() {
     return (

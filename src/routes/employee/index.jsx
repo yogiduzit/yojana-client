@@ -41,6 +41,11 @@ const Employees = (props) => {
   const [projectManager, setProjectManager] = useState(false);
   const [hr, setHr] = useState(false);
   const [empId, setEmpId] = useState(0);
+  const [managerId, setManagerId] = useState(0);
+  const [creatorId, setCreatorId] = useState(0);
+  const [labourGradeId, setLabourGradeId] = useState(0);
+  const [timesheetApproverId, setTimesheetApproverId] = useState(0);
+
   // const [newPassword, setNewPassword] = useState([])
 
 
@@ -65,19 +70,21 @@ const Employees = (props) => {
     })
   };
 
-  const onSubmit = () => {
-      console.log(empId);
+const onSubmit = () => {
       const data = {
         id: empId ,
         fullName: fullName,
         admin: admin,
         timesheetApprover: timesheetApprover,
         projectManager: projectManager,
-        hr: hr
+        hr: hr,
+        managerId: managerId,
+        creatorId: creatorId,
+        timesheetApproverId: timesheetApproverId,
+        labourGradeId: labourGradeId
       }
       const headers = {
-        'Authorization': `${localStorage.getItem(ACCESS_TOKEN)}`,
-        'Content-Type': 'application/json'
+        headers: { 'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,'Content-Type': "application/json"}
       }
       console.log(data);
       axios.patch(`http://localhost:8080/yojana-backend/api/employees/${empId}`, 
@@ -120,8 +127,11 @@ const Employees = (props) => {
             <TableCell >User Name</TableCell>
             <TableCell >Admin</TableCell>
             <TableCell >Project Manager</TableCell>
-            <TableCell >Timesheet Approver</TableCell>
             <TableCell >HR</TableCell>
+            <TableCell >Managed By</TableCell>
+            <TableCell >Created By</TableCell>
+            <TableCell >Timesheet Approved By</TableCell>
+            <TableCell >Labour Grade</TableCell>
             <TableCell ></TableCell>
           </TableRow>
         </TableHead>
@@ -133,8 +143,11 @@ const Employees = (props) => {
               <TableCell >{e.credential?.username}</TableCell>
               <TableCell >{e.admin.toString()}</TableCell>
               <TableCell >{e.projectManager.toString()}</TableCell>
-              <TableCell >{e.timesheetApprover}</TableCell>
               <TableCell >{e.hr.toString()}</TableCell>
+              <TableCell >{e.managerId}</TableCell>
+              <TableCell >{e.creatorId}</TableCell>
+              <TableCell >{e.timesheetApproverId}</TableCell>
+              <TableCell >{e.labourGradeId}</TableCell>
               <TableCell align="right">
                 <span onClick={() => removeData(e.id)}>
                   <DeleteIcon />
@@ -186,6 +199,10 @@ const Employees = (props) => {
                 <Checkbox onChange={(e) => setTimesheetApprover(e.target.value) } className="bg-white w-100" id="myTA" value={timesheetApprover} />
                 <label for="myHR">HR</label>
                 <Checkbox onChange={(e) => setHr(e.target.value) } className="bg-white w-100" id="myHR"  variant="outlined" value={hr} />
+                <TextField onChange={(e) => setManagerId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Manager ID" variant="outlined" value={managerId} />
+                <TextField onChange={(e) => setCreatorId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Creator ID" variant="outlined" value={creatorId} />
+                <TextField onChange={(e) => setTimesheetApproverId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Timesheet Approver ID" variant="outlined" value={timesheetApproverId} />
+                <TextField onChange={(e) => setLabourGradeId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Labour Grade" variant="outlined" value={labourGradeId} />
               </div>
         </ModalBody>
         <ModalFooter>
