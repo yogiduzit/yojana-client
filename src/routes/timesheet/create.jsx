@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
@@ -32,6 +32,8 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
 import Routes from '../../constants/routes'
+import { fetchAllProjects } from '../../api/Project'
+import { fetchAllWorkPackages } from '../../api/WorkPackage'
 
 const useStyles = makeStyles({
   // for the table
@@ -59,7 +61,7 @@ const initialTimesheetState = {
   rows: [
     {
       index: 0,
-      notes: "",
+      notes: '',
       projectId: 'PR123',
       workPackageId: 'WP1.1',
       totalHours: 0,
@@ -76,7 +78,7 @@ const dummyProjectIds = ['PR123', 'PR125', 'PR126']
 // dummy workPackages which needs to be deleted later
 const dummyWorkPackages = ['WP1.1', 'WP1.2']
 
-function TimesheetCreate() {
+function TimesheetCreate () {
   const history = useHistory()
   const classes = useStyles()
   const [timesheet, setTimesheet] = useState(initialTimesheetState)
@@ -87,8 +89,8 @@ function TimesheetCreate() {
    * in the timesheet row. Based on the project selected, we can show the workpackages
    * that the user has worked upon.
    */
-  const [projectIds, setProjectIds] = useState(dummyProjectIds)
-  const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
+  const [projectIds, setProjectIds] = useState([])
+  const [workPackageIds, setWorkPackageIds] = useState([])
 
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
@@ -96,6 +98,37 @@ function TimesheetCreate() {
   const [hoursInputErrorMsg, setHoursInputErrorMsg] = useState('')
   // display none or block for p tag
   const [showInputErrorMsg, setShowInputErrorMsg] = useState('none')
+
+  useEffect(() => {
+    loadProjectIds()
+  }, [])
+
+  async function loadProjectIds () {
+    const res = await fetchAllProjects()
+    const projectIdsToSave = []
+    res.data.projects.forEach(({ id }) => projectIdsToSave.push(id))
+    setProjectIds(projectIdsToSave)
+  }
+
+  async function loadWorkPackageIdsForProject (id, rowToUpdate) {
+    const res = await fetchAllWorkPackages(id)
+    const workPackageIdsToSave = []
+    res.data.workPackages.forEach(({ workPackagePk }) =>
+      workPackageIdsToSave.push(workPackagePk.id)
+    )
+    // add or update options of workPackage in the row
+    rowToUpdate.workPackageIdOptions = workPackageIdsToSave
+
+    setTimesheet({
+      ...timesheet,
+      rows: [
+        ...timesheet.rows.map(row => {
+          if (row.index !== rowToUpdate.index) return row
+          else return rowToUpdate
+        })
+      ]
+    })
+  }
 
   const handleDateSelect = date => {
     setTimesheet({
@@ -108,6 +141,7 @@ function TimesheetCreate() {
   const handleDropdownChange = (e, rowToUpdate) => {
     if (e.target.name === 'projectId') {
       rowToUpdate.projectId = e.target.value
+      loadWorkPackageIdsForProject(e.target.value, rowToUpdate)
     } else if (e.target.name === 'workPackageId') {
       rowToUpdate.workPackageId = e.target.value
     }
@@ -115,9 +149,7 @@ function TimesheetCreate() {
     setTimesheet({
       ...timesheet,
       rows: [...timesheet.rows].map(row => {
-        if (
-          row.index === rowToUpdate.index
-        ) {
+        if (row.index === rowToUpdate.index) {
           return rowToUpdate
         } else return row
       })
@@ -126,8 +158,8 @@ function TimesheetCreate() {
 
   const handleAddRow = () => {
     if (timesheet.rows.length === 7) {
-      console.error("Can't create more than 7 timesheet rows");
-      return;
+      console.error("Can't create more than 7 timesheet rows")
+      return
     }
     setTimesheet({
       ...timesheet,
@@ -145,7 +177,7 @@ function TimesheetCreate() {
   }
 
   const handleDeleteRow = rowToDelete => {
-    const updatedRows = [...timesheet.rows].filter(row => rowToDelete.index);
+    const updatedRows = [...timesheet.rows].filter(row => rowToDelete.index)
 
     calculateTotalHours(
       undefined,
@@ -165,50 +197,62 @@ function TimesheetCreate() {
     })
   }
 
-  async function handleSubmit() {
-    console.log(timesheet);
-    const timesheetDate = timesheet.weekEndDate;
-    const month = timesheetDate.getMonth() + 1;
-    const day = timesheetDate.getDate();
-    const year = timesheetDate.getFullYear();
+  async function handleSubmit () {
+    console.log(timesheet)
+    const timesheetDate = timesheet.weekEndDate
+    const month = timesheetDate.getMonth() + 1
+    const day = timesheetDate.getDate()
+    const year = timesheetDate.getFullYear()
 
-    let monthStr = month.toString();
-    let dayStr = day.toString();
+    let monthStr = month.toString()
+    let dayStr = day.toString()
     if (month < 10) {
-      monthStr = "0" + month;
+      monthStr = '0' + month
     }
     if (day < 10) {
-      dayStr = "0" + day;
+      dayStr = '0' + day
     }
-    const date = `${year}-${monthStr}-${dayStr}`;
+    const date = `${year}-${monthStr}-${dayStr}`
     const createTimesheetResponse = await createTimesheet({
       endWeek: date,
       signature: timesheet.signature,
       feedback: timesheet.feedback,
-      status: "pending",
+      status: 'pending',
       overtime: timesheet.overtime,
       flextime: timesheet.flextime,
       approvedAt: timesheet.approvedAt
-    });
+    })
 
-    if (!(createTimesheetResponse.errors && createTimesheetResponse.errors.length > 0)) {
-      const createRowsResponses = await Promise.all(timesheet.rows.map(async (row) => {
-        await addRow(createTimesheetResponse.data.id, {
-          index: row.index,
-          notes: row.notes,
-          projectId: row.projectId,
-          workPackageId: row.workPackageId,
-          hours: row.hours
-        });
-      }));
+    if (
+      !(
+        createTimesheetResponse.errors &&
+        createTimesheetResponse.errors.length > 0
+      )
+    ) {
+      const createRowsResponses = await Promise.all(
+        timesheet.rows.map(
+          async row =>
+            await addRow(createTimesheetResponse.data.id, {
+              index: row.index,
+              notes: row.notes,
+              projectId: row.projectId,
+              workPackageId: row.workPackageId,
+              hours: row.hours
+            })
+        )
+      )
 
-      if (createRowsResponses.some(res => res.data.errors && res.data.errors.length > 0)) {
-        console.error("Error creating rows in the timesheet");
+      if (
+        createRowsResponses.some(
+          res => res.data.errors && res.data.errors.length > 0
+        )
+      ) {
+        console.error('Error creating rows in the timesheet')
       } else {
-        history.push(Routes.TIMESHEET);
+        history.push(Routes.TIMESHEET)
       }
     }
-  };
+  }
 
   return (
     <div className='main-body'>
@@ -251,10 +295,7 @@ function TimesheetCreate() {
           </TableHead>
           <TableBody>
             {timesheet.rows.map((row, index) => (
-              <TableRow
-                key={index}
-                className='timesheetCreateRow'
-              >
+              <TableRow key={index} className='timesheetCreateRow'>
                 <TableCell component='th' scope='row'>
                   <Select
                     value={row.projectId}
@@ -287,8 +328,8 @@ function TimesheetCreate() {
                     <MenuItem value=''>
                       <em>Work Package</em>
                     </MenuItem>
-                    {workPackages.length > 0 &&
-                      workPackages.map(item => (
+                    {row.workPackageIdOptions?.length > 0 &&
+                      row.workPackageIdOptions.map(item => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
