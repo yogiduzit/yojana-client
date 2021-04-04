@@ -9,7 +9,7 @@ import { Button } from '@material-ui/core'
 import logo from '../../assets/images/logo.svg'
 import { isLoggedIn, login } from '../../api/Authentication';
 
-import { ACCESS_TOKEN } from '../../constants/environementVariables';
+import { ACCESS_TOKEN, ROLES } from '../../constants/environementVariables';
 import Routes from '../../constants/routes';
 import { Redirect } from 'react-router';
 
@@ -35,6 +35,7 @@ class Login extends Component {
           return;
         } else {
           localStorage.setItem(ACCESS_TOKEN, res.data.token);
+          localStorage.setItem(ROLES, res.data.roles);
           this.props.history.push(Routes.DASHBOARD);
         }
       });

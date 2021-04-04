@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import Routes from '../../constants/routes'
@@ -19,16 +19,19 @@ import {
   FaRegCalendarMinus
 } from 'react-icons/fa'
 import { FiLogOut } from 'react-icons/fi'
-import { logout } from '../../api/Authentication'
+import { logout, extractRoles } from '../../api/Authentication'
 import { COLLAPSE_SIDEBAR, EXPAND_SIDEBAR } from '../../actions/actionsTypes'
 
 const Sidebar = props => {
   const { pathname } = props.location
   const { collapsed, expand, collapse } = props
   const history = useHistory()
+  const [viewProjects, setViewProjects] = useState(false);
+  const [viewEmployees, setViewEmployees] = useState(false);
 
   useEffect(() => {
     console.log(pathname)
+    setViews()
   }, [pathname])
 
   const handleCollapsedChange = () => {
@@ -39,6 +42,16 @@ const Sidebar = props => {
   const handleLogout = () => {
     logout()
     history.push(Routes.LOGIN)
+  }
+
+  const setViews = () => {
+    const roles = extractRoles();
+    if (roles.includes('HR')) {
+      setViewEmployees(true);
+    }
+    if (roles.includes('PROJECT_MANAGER')) {
+      setViewProjects(true);
+    }
   }
 
   return (
@@ -69,13 +82,15 @@ const Sidebar = props => {
             Dashboard
             <Link to={Routes.DASHBOARD} />
           </MenuItem>
-          <MenuItem
-            icon={<FaFolder />}
-            active={pathname.localeCompare(Routes.PROJECTS) === 0}
-          >
-            Projects
+          {viewProjects &&
+            <MenuItem
+              icon={<FaFolder />}
+              active={pathname.localeCompare(Routes.PROJECTS) === 0}
+            >
+              Projects
             <Link to={Routes.PROJECTS} />
-          </MenuItem>
+            </MenuItem>
+          }
           <MenuItem
             icon={<FaMoneyCheck />}
             active={pathname.localeCompare(Routes.TIMESHEET) === 0}
@@ -98,7 +113,7 @@ const Sidebar = props => {
             <Link to={Routes.EMPLOYEE} />
           </MenuItem>
           <MenuItem
-            icon={<FaRegCalendarMinus/>}
+            icon={<FaRegCalendarMinus />}
             active={pathname.localeCompare(Routes.LEAVE_REQUEST_LIST) === 0}
           >
             Leave Requests
