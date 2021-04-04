@@ -18,7 +18,7 @@ import { withRouter } from 'react-router';
 import Routes from '../../constants/routes';
 import { createCredential } from '../../api/Credential';
 
-const roles = ['General', 'PM', 'HR', 'Admin'];
+const roles = ['PM', 'HR', 'Admin'];
 class AddEmployee extends Component {
   constructor() {
     super();
@@ -29,6 +29,10 @@ class AddEmployee extends Component {
       lastName: '',
       paygrade: '',
       role: '',
+      managerId: '',
+      Admin: false,
+      HR: false,
+      PM: false
     };
 
   }
@@ -36,28 +40,46 @@ class AddEmployee extends Component {
   onChange = (e) => {
     this.setState({ ...this.state, [e.target.name]: e.target.value });
   }
-
+  onChangeCB = (e) => {
+    this.setState({ ...this.state, [e.target.name]: e.target.checked });
+  }
   onSubmit = async (e) => {
     e.preventDefault();
     const {
       firstName, 
       lastName,
       password, 
-      username
+      username,
+      paygrade,
+      managerId,
+      timesheetApproverId,
+      Admin,
+      HR,
+      PM
     } = this.state;
 
     const empResponse = await createEmployee({
-      fullName: firstName.concat(' ', lastName)
+      fullName: firstName.concat(' ', lastName),
+      labourGradeId: paygrade,
+      managerId: managerId,
+      timesheetApproverId: timesheetApproverId,
+      admin: Admin,
+      hr: HR,
+      projectManager: PM
     });
+
+    if (empResponse.errors.length === 0) {
       const credResponse = await createCredential({
         username,
         password,
         empID: empResponse.data.id
       });
-
+      if (credResponse.errors.length === 0) {
         this.props.history.push(Routes.EMPLOYEE);
-      
+      }
+    }
   }
+
   render() {
     return (
       <Container className='mx-auto p-5 w-200'>
@@ -69,24 +91,20 @@ class AddEmployee extends Component {
                 <Row className="mx-2 my-2">
                   <Col xs="8" sm="10" className="font-weight-bold"><img src={user} alt="Profile" /></Col>
                 </Row>
-                <Row className=" my-3">
-                  <Col xs="8" sm="5" className="font-weight-bold">
-                    <ButtonGroup>
-                      {
-                        roles.map((role, index) =>
+
+                <Row>
+                  <Col xs="8" sm="10" className="font-weight-bold my-2">
+                    {roles.map((role) =>
                           <FormControlLabel
                             control={<Checkbox 
-                              checked={this.state.role === role} 
-                              onChange={this.onChange} 
-                              name="role"
-                              value={role} />} 
+                              onChange={this.onChangeCB} 
+                              name={role} />} 
                             label={role}
-                            key={index}
                           />
-                        )
-                      }
-                    </ButtonGroup>
+                          
+                        )}
                   </Col>
+                  
                 </Row>
                 <Row>
                   <Col xs="8" sm="5" className="font-weight-bold my-2 ">
@@ -106,7 +124,7 @@ class AddEmployee extends Component {
                 </Row>
                 <Row>
                   <Col xs="8" sm="5" className="font-weight-bold my-2">
-                    <TextField className="bg-white w-100" id="outlined-basic" label="Manager" variant="outlined" />
+                    <TextField className="bg-white w-100" id="outlined-basic" label="Manager" name="managerId" variant="outlined" value={this.state.managerId} onChange={this.onChange}/>
                   </Col>
                   <Col xs="8" sm="5" className="font-weight-bold my-2">
                     <TextField className="bg-white w-100" id="outlined-basic" label="Password" name="password" variant="outlined" type="password" value={this.state.password} onChange={this.onChange}/>
@@ -114,9 +132,13 @@ class AddEmployee extends Component {
                 </Row>
                 <Row>
                   <Col xs="8" sm="5" className="font-weight-bold my-2">
-                    <TextField className="bg-white w-100" id="outlined-basic" label="Timesheet Approver" variant="outlined" />
+                    <TextField className="bg-white w-100" id="outlined-basic" label="Timesheet Approver" name="timesheetApproverId" variant="outlined" value={this.state.timesheetApproverId} onChange={this.onChange}/>
+                  </Col>
+                  <Col xs="8" sm="5" className="font-weight-bold my-2">
+                    <TextField className="bg-white w-100" id="outlined-basic" label="Labour Grade" name="paygrade" variant="outlined" value={this.state.paygrade} onChange={this.onChange}/>
                   </Col>
                 </Row>
+                
                 <Row>
                   <Col xs="8" sm="10" className="font-weight-bold my-2">
                     <Button className='ml-auto  w-30 mt-5 loginbutton'

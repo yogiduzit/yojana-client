@@ -42,8 +42,7 @@ const Employees = (props) => {
   const [hr, setHr] = useState(false);
   const [empId, setEmpId] = useState(0);
   const [managerId, setManagerId] = useState(0);
-  const [creatorId, setCreatorId] = useState(0);
-  const [labourGradeId, setLabourGradeId] = useState(0);
+  const [labourGradeId, setLabourGradeId] = useState("");
   const [timesheetApproverId, setTimesheetApproverId] = useState(0);
 
   // const [newPassword, setNewPassword] = useState([])
@@ -58,13 +57,15 @@ const Employees = (props) => {
     setEmployees(data.employees);
     console.log(data.employees);
   }
-  const removeData = (id) => {
-
-    axios.delete(`http://localhost:8080/yojana-backend/api/employees/${id}`,{
+  const removeData2 = (id) => {
+    const headers = {
       headers:{
-        'Authorization': `${localStorage.getItem(ACCESS_TOKEN)}`
+        'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
       }
-    }).then(res => {
+    }
+    axios.delete(`http://localhost:8080/yojana-backend/api/employees/${id}`,
+      headers
+    ).then(res => {
       const del = employees.filter(employees => id !== employees.id)
       setEmployees(del)
     })
@@ -79,7 +80,6 @@ const onSubmit = () => {
         projectManager: projectManager,
         hr: hr,
         managerId: managerId,
-        creatorId: creatorId,
         timesheetApproverId: timesheetApproverId,
         labourGradeId: labourGradeId
       }
@@ -93,6 +93,8 @@ const onSubmit = () => {
       )
       .then((result) => {
         console.log(result.data);
+        getData();
+        toggle();
       })
   }
 
@@ -101,9 +103,16 @@ const onSubmit = () => {
   // };
 
   const [modal, setModal] = useState(false);
-  const toggle = (id) => {
+  const toggle = (e) => {
     if (modal == false) {
-      setEmpId(id);
+      setEmpId(e.id);
+      setFullName(e.fullName);
+      setAdmin(e.admin);
+      setTimesheetApproverId(e.timesheetApproverId);
+      setProjectManager(e.projectManager);
+      setHr(e.hr);
+      setManagerId(e.managerId);
+      setLabourGradeId(e.labourGradeId);
       setModal(true);
       return;
     }
@@ -149,10 +158,10 @@ const onSubmit = () => {
               <TableCell >{e.timesheetApproverId}</TableCell>
               <TableCell >{e.labourGradeId}</TableCell>
               <TableCell align="right">
-                <span onClick={() => removeData(e.id)}>
+                <span onClick={() => removeData2(e.id)}>
                   <DeleteIcon />
                 </span>
-                <span onClick={() => toggle(e.id)}> 
+                <span onClick={() => toggle(e)}> 
                   <EditIcon className="ml-4"/>
                 </span>
               </TableCell>
@@ -192,15 +201,12 @@ const onSubmit = () => {
                 <TextField onChange={(e) => setFullName(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Full Name" variant="outlined" value={fullName} />
                 <label>Privileges:</label><br/>
                 <label for="myAdmin">Admin</label>
-                <Checkbox onChange={(e) => setAdmin(e.target.value) } className="bg-white w-100" id="myAdmin" label="Admin" value={admin}/>
+                <Checkbox onChange={(e) => setAdmin(e.target.checked) } checked={admin} className="bg-white w-100" id="myAdmin" label="Admin" value={admin}/>
                 <label for="myPM">Project Manager</label>
-                <Checkbox onChange={(e) => setProjectManager(e.target.value) } className="bg-white w-100" id="myPM" value={projectManager} />
-                <label for="myTA">Timesheet Approver</label>
-                <Checkbox onChange={(e) => setTimesheetApprover(e.target.value) } className="bg-white w-100" id="myTA" value={timesheetApprover} />
+                <Checkbox onChange={(e) => setProjectManager(e.target.checked) } checked={projectManager} className="bg-white w-100" id="myPM" value={projectManager} />
                 <label for="myHR">HR</label>
-                <Checkbox onChange={(e) => setHr(e.target.value) } className="bg-white w-100" id="myHR"  variant="outlined" value={hr} />
+                <Checkbox onChange={(e) => setHr(e.target.checked) } checked={hr} className="bg-white w-100" id="myHR"  variant="outlined" value={hr} />
                 <TextField onChange={(e) => setManagerId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Manager ID" variant="outlined" value={managerId} />
-                <TextField onChange={(e) => setCreatorId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Creator ID" variant="outlined" value={creatorId} />
                 <TextField onChange={(e) => setTimesheetApproverId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Timesheet Approver ID" variant="outlined" value={timesheetApproverId} />
                 <TextField onChange={(e) => setLabourGradeId(e.target.value) } className="bg-white w-100" id="outlined-basic" label="Labour Grade" variant="outlined" value={labourGradeId} />
               </div>
