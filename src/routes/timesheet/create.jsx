@@ -11,8 +11,6 @@ import {
   handleHoursChange
 } from '../../utils/timesheet/totalHoursCalcFunctions'
 import { addRow, createTimesheet } from '../../api/Timesheet'
-// import Routes from '../../constants/routes'
-// import { withRouter } from 'react-router';
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -42,14 +40,6 @@ const useStyles = makeStyles({
   }
 })
 
-// TODO: DELETE DUMMY
-// dummy user which needs to be deleted later
-const user = {
-  empNum: 331,
-  firstName: 'Joe',
-  lastName: 'Bloggs'
-}
-
 const initialTimesheetState = {
   weekEndDate: new Date(),
   weekNum: moment(new Date()).format('W'),
@@ -58,27 +48,10 @@ const initialTimesheetState = {
   overtime: null,
   flextime: null,
   approvedAt: null,
-  rows: [
-    {
-      index: 0,
-      notes: '',
-      projectId: 'PR123',
-      workPackageId: 'WP1.1',
-      totalHours: 0,
-      hours: [...INITIAL_HOURS]
-    }
-  ]
+  rows: []
 }
 
-// TODO: DELETE DUMMY
-// dummy projectIds which needs to be deleted later
-const dummyProjectIds = ['PR123', 'PR125', 'PR126']
-
-// TODO: DELETE DUMMY
-// dummy workPackages which needs to be deleted later
-const dummyWorkPackages = ['WP1.1', 'WP1.2']
-
-function TimesheetCreate () {
+function TimesheetCreate ({ user }) {
   const history = useHistory()
   const classes = useStyles()
   const [timesheet, setTimesheet] = useState(initialTimesheetState)
@@ -90,7 +63,6 @@ function TimesheetCreate () {
    * that the user has worked upon.
    */
   const [projectIds, setProjectIds] = useState([])
-  const [workPackageIds, setWorkPackageIds] = useState([])
 
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
@@ -260,7 +232,7 @@ function TimesheetCreate () {
       <table id='timesheetCreateHeader' className='mb-3'>
         <thead>
           <tr>
-            <th>Employee Number: {user.empNum}</th>
+            <th>Employee Number: {user?.id}</th>
             <th style={{ textAlign: 'center' }}>
               Week Number: {timesheet.weekNum}
             </th>
@@ -274,7 +246,7 @@ function TimesheetCreate () {
             </th>
           </tr>
           <tr>
-            <th>Name: {`${user.firstName} ${user.lastName}`}</th>
+            <th>Name: {user?.fullName}</th>
           </tr>
         </thead>
       </table>

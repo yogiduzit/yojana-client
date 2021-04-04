@@ -4,7 +4,7 @@ import Header from '../../containers/Header'
 
 const WithHeader = WrappingComponent => {
   function WrappedComponent (props) {
-    const { collapsed } = props
+    const { collapsed, user } = props
 
     const sidebarExpandedStyle = {
       padding: '0 0 0 200px' // 200px is the width of expanded sidebar
@@ -16,7 +16,7 @@ const WithHeader = WrappingComponent => {
 
     return (
       <div {...props} style={collapsed ? sidebarCollapsedStyle : sidebarExpandedStyle}>
-        <Header {...props} />
+        <Header {...props} user={user} />
         <WrappingComponent {...props} />
       </div>
     )
@@ -26,7 +26,8 @@ const WithHeader = WrappingComponent => {
 
 const mapStateToProps = state => {
   return {
-    collapsed: state.sidebar.collapsed
+    collapsed: state.sidebar.collapsed,
+    user: state.auth.user
   }
 }
 

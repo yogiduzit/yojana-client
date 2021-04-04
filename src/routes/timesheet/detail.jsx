@@ -25,6 +25,8 @@ import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
 import Loading from '../../components/Loading/Loading.jsx'
 import NotFound from '../../components/NotFound/NotFound'
 import { fetchEmployeeById } from '../../api/Employee'
+import { deleteTimesheet } from '../../api/Timesheet'
+import Routes from '../../constants/routes'
 
 const useStyles = makeStyles({
   // for the table
@@ -33,7 +35,7 @@ const useStyles = makeStyles({
   }
 })
 
-function TimesheetDetail ({ location }) {
+function TimesheetDetail ({ location, user }) {
   const history = useHistory()
   const classes = useStyles()
   const [loaded, setLoaded] = useState(false)
@@ -58,6 +60,17 @@ function TimesheetDetail ({ location }) {
         .catch(e => console.error(e))
     }
   }, [location.state])
+
+  const handleTimesheetDelete = e => {
+    e.preventDefault()
+    const deleteConfirmMessage = 'Are you sure to delete this timesheet?'
+    if (window.confirm(deleteConfirmMessage)) {
+      deleteTimesheet(timesheet.id)
+        .then(res => console.log(res))
+        .catch(e => console.error(e))
+      history.push(Routes.TIMESHEET)
+    }
+  }
 
   return !loaded ? (
     <Loading />
@@ -166,6 +179,16 @@ function TimesheetDetail ({ location }) {
           >
             Back
           </Button>
+          {user?.admin && (
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={handleTimesheetDelete}
+              className='ml-3'
+            >
+              Delete
+            </Button>
+          )}
         </span>
       </div>
     </Container>
