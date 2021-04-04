@@ -57,7 +57,7 @@ class Login extends Component {
     return (
       <Container className='mx-auto p-5'>
         <div className='mx-auto loginbox text-center py-5'>
-          <img src={logo} />
+          <img src={logo} alt='app-logo' />
           <form className='p-5 w-100' onSubmit={this.loginSubmissionHandler}>
             <div className='mt-5'>
               <TextField
