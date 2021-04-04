@@ -8,9 +8,10 @@ export const orderByEnum = Object.freeze({
 
 // Enum for timesheet status
 export const statusEnum = Object.freeze({
-  APPROVED: 'Approved',
-  IN_PROGRESS: 'In Progress',
-  REJECTED: 'Rejected'
+  APPROVED: 'approved',
+  IN_PROGRESS: 'in progress',
+  PENDING: 'pending',
+  REJECTED: 'rejected'
 })
 
 export const daysEnum = Object.freeze({

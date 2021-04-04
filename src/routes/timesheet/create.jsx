@@ -10,7 +10,9 @@ import {
   calculateTotalHours,
   handleHoursChange
 } from '../../utils/timesheet/totalHoursCalcFunctions'
-import { createTimesheet } from '../../api/Timesheet'
+import { addRow, createTimesheet } from '../../api/Timesheet'
+// import Routes from '../../constants/routes'
+// import { withRouter } from 'react-router';
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -29,6 +31,7 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
+import Routes from '../../constants/routes'
 
 const useStyles = makeStyles({
   // for the table
@@ -45,9 +48,7 @@ const user = {
   lastName: 'Bloggs'
 }
 
-// TODO: DELETE DUMMY
-// dummy timesheet which needs to be deleted later
-const dummyTimesheet = {
+const initialTimesheetState = {
   weekEndDate: new Date(),
   weekNum: moment(new Date()).format('W'),
   signature: null,
@@ -57,8 +58,10 @@ const dummyTimesheet = {
   approvedAt: null,
   rows: [
     {
-      projectId: '010',
-      workPackage: 'SICK',
+      index: 0,
+      notes: "",
+      projectId: 'PR123',
+      workPackageId: 'WP1.1',
       totalHours: 0,
       hours: [...INITIAL_HOURS]
     }
@@ -67,18 +70,26 @@ const dummyTimesheet = {
 
 // TODO: DELETE DUMMY
 // dummy projectIds which needs to be deleted later
-const dummyProjectIds = ['010', '1205', '3710']
+const dummyProjectIds = ['PR123', 'PR125', 'PR126']
 
 // TODO: DELETE DUMMY
 // dummy workPackages which needs to be deleted later
-const dummyWorkPackages = ['SICK', 'COOL', 'AWES']
+const dummyWorkPackages = ['WP1.1', 'WP1.2']
 
 function TimesheetCreate() {
   const history = useHistory()
   const classes = useStyles()
-  const [timesheet, setTimesheet] = useState(dummyTimesheet)
+  const [timesheet, setTimesheet] = useState(initialTimesheetState)
+
+  /**
+   * For proper UI, we will have to fetch the projects the user
+   * is working on. The user can then choose either of the projects
+   * in the timesheet row. Based on the project selected, we can show the workpackages
+   * that the user has worked upon.
+   */
   const [projectIds, setProjectIds] = useState(dummyProjectIds)
   const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
+
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
@@ -97,16 +108,15 @@ function TimesheetCreate() {
   const handleDropdownChange = (e, rowToUpdate) => {
     if (e.target.name === 'projectId') {
       rowToUpdate.projectId = e.target.value
-    } else if (e.target.name === 'workPackage') {
-      rowToUpdate.workPackage = e.target.value
+    } else if (e.target.name === 'workPackageId') {
+      rowToUpdate.workPackageId = e.target.value
     }
 
     setTimesheet({
       ...timesheet,
       rows: [...timesheet.rows].map(row => {
         if (
-          row.projectId === rowToUpdate.projectId &&
-          row.workPackage === rowToUpdate.workPackage
+          row.index === rowToUpdate.index
         ) {
           return rowToUpdate
         } else return row
@@ -115,26 +125,27 @@ function TimesheetCreate() {
   }
 
   const handleAddRow = () => {
+    if (timesheet.rows.length === 7) {
+      console.error("Can't create more than 7 timesheet rows");
+      return;
+    }
     setTimesheet({
       ...timesheet,
       rows: [
         ...timesheet.rows,
         {
           projectId: '',
-          workPackage: '',
+          workPackageId: '',
           totalHours: 0,
-          hours: [...INITIAL_HOURS]
+          hours: [...INITIAL_HOURS],
+          index: timesheet.rows.length
         }
       ]
     })
   }
 
   const handleDeleteRow = rowToDelete => {
-    const updatedRows = [...timesheet.rows].filter(
-      row =>
-        row.projectId !== rowToDelete.projectId &&
-        row.workPackage !== rowToDelete.workPackage
-    )
+    const updatedRows = [...timesheet.rows].filter(row => rowToDelete.index);
 
     calculateTotalHours(
       undefined,
@@ -154,34 +165,50 @@ function TimesheetCreate() {
     })
   }
 
-  const handleSubmit = () => {
-    var timesheetDate = timesheet.weekEndDate;
-    var month = timesheetDate.getMonth() + 1;
-    var day = timesheetDate.getDate();
-    var year = timesheetDate.getFullYear();
-    var monthStr = "" + month;
-    var dayStr = "" + day;
+  async function handleSubmit() {
+    console.log(timesheet);
+    const timesheetDate = timesheet.weekEndDate;
+    const month = timesheetDate.getMonth() + 1;
+    const day = timesheetDate.getDate();
+    const year = timesheetDate.getFullYear();
+
+    let monthStr = month.toString();
+    let dayStr = day.toString();
     if (month < 10) {
       monthStr = "0" + month;
     }
     if (day < 10) {
       dayStr = "0" + day;
     }
-    var date =  year + "-" + monthStr + "-" + dayStr;
-    var tempTimesheet = {
-      ownerId: 0,
+    const date = `${year}-${monthStr}-${dayStr}`;
+    const createTimesheetResponse = await createTimesheet({
       endWeek: date,
-      signature: null,
-      feedback: null,
+      signature: timesheet.signature,
+      feedback: timesheet.feedback,
       status: "pending",
-      overtime: null,
-      flextime: null,
-      approvedAt: null
-    };
-    console.log(tempTimesheet);
-    console.log('2021-03-22' === date);
-    createTimesheet(tempTimesheet);
-  }
+      overtime: timesheet.overtime,
+      flextime: timesheet.flextime,
+      approvedAt: timesheet.approvedAt
+    });
+
+    if (!(createTimesheetResponse.errors && createTimesheetResponse.errors.length > 0)) {
+      const createRowsResponses = await Promise.all(timesheet.rows.map(async (row) => {
+        await addRow(createTimesheetResponse.data.id, {
+          index: row.index,
+          notes: row.notes,
+          projectId: row.projectId,
+          workPackageId: row.workPackageId,
+          hours: row.hours
+        });
+      }));
+
+      if (createRowsResponses.some(res => res.data.errors && res.data.errors.length > 0)) {
+        console.error("Error creating rows in the timesheet");
+      } else {
+        history.push(Routes.TIMESHEET);
+      }
+    }
+  };
 
   return (
     <div className='main-body'>
@@ -223,9 +250,9 @@ function TimesheetCreate() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {timesheet.rows.map(row => (
+            {timesheet.rows.map((row, index) => (
               <TableRow
-                key={`${row.projectId}_${row.workPackage}`}
+                key={index}
                 className='timesheetCreateRow'
               >
                 <TableCell component='th' scope='row'>
@@ -250,8 +277,8 @@ function TimesheetCreate() {
                 </TableCell>
                 <TableCell component='th' scope='row'>
                   <Select
-                    value={row.workPackage}
-                    name='workPackage'
+                    value={row.workPackageId}
+                    name='workPackageId'
                     onChange={e => handleDropdownChange(e, row)}
                     displayEmpty
                     required
