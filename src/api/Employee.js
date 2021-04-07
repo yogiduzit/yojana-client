@@ -11,6 +11,7 @@ export const fetchAllEmployees = async () => {
 };
 
 export const createEmployee = async (body) => {
+  console.log(body);
   const res = await fetch(`${API_URL}/employees`, {
     method: 'POST',
     headers: {
