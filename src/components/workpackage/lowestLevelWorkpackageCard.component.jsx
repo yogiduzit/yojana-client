@@ -23,6 +23,8 @@ import Paper from '@material-ui/core/Paper';
 import Collapse from '@material-ui/core/Collapse';
 import { getTimeAgo } from '../../utils/dateFormatter';
 import AddNewEstimate from '../estimate/newEstimateTable';
+import { useParams } from 'react-router';
+import { fetchAllEstimates } from '../../api/Estimate';
 
 
 const ExpandIcon = () => {
@@ -83,29 +85,30 @@ const lowestLevelWorkpackageData = [
 ]
 
 const LowestLevelWorkpackageCard = ({ wpData }) => {
+  const { id, wpId } = useParams();
 
   const [estimateView, setEstimateView] = useState(false);
   const [estimatedCost, setEstimatedCost] = useState(0);
   const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [estimates, setEstimates] = useState([]);
   const toggleEstimate = () => {
     setEstimateView(!estimateView);
   };
 
   const classes = useStyles();
-  // const wpData = {
-  //     wp: 'WP 1.1.1',
-  //     initEstimate: 200,
-  //     priority: 'High',
-  //     issuedDate: '18/01/21',
-  //     dueDate: '18/01/21',
-  //     detail: {
-  //         purpose: 'More refined user interface',
-  //         description: 'Customization user interface',
-  //         estimatedCost: 200,
-  //         charge: 150
-  //     }
-  // }
+
+  useEffect(() => {
+    async function loadEstimates() {
+      const res = await fetchAllEstimates(id, wpId);
+      if (res.errors && res.errors.length > 0) {
+        console.error("Cannot load estimates");
+      } else {
+        setEstimates(res.data.estimates);
+      }
+    }
+    loadEstimates();
+  }, [id, wpId])
   return (
     <Accordion elevation={0} classes={{ root: classes.MuiAccordionroot }} className='mt-3' id='wp-accordion'>
       <AccordionSummary
@@ -231,7 +234,7 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
         <Collapse in={detailsExpanded} timeout="auto" unmountOnExit>
           <Timeline align='left' className='justify-content-start align-items-start'>
             {
-              lowestLevelWorkpackageData.map((e, index) => {
+              estimates.map((e, index) => {
                 return (
                   <TimelineItem key={index}>
                     <TimelineSeparator>
@@ -239,7 +242,7 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
                       <TimelineConnector />
                     </TimelineSeparator>
                     <TimelineContent>
-                      <span className='font-weight-bold'>{e.date}</span>
+                      <span className='font-weight-bold'>{e.forWeek}</span>
                     </TimelineContent>
                     <TimelineContent>
                       <TableContainer component={Paper} style={{ minWidth: 700 }}>
@@ -248,38 +251,38 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
                             <TableRow>
                               <TableCell>
                                 Labor Grade
-                                                            </TableCell>
+                              </TableCell>
                               <TableCell>Hourly Rate</TableCell>
                               <TableCell>Number of Emp</TableCell>
                               <TableCell>Person Days</TableCell>
                               <TableCell>Cost</TableCell>
                             </TableRow>
-                            <TableRow>
+                            {/* <TableRow>
                               <TableCell>Desc</TableCell>
                               <TableCell align="right">Qty.</TableCell>
                               <TableCell align="right">Unit</TableCell>
                               <TableCell align="right">Sum</TableCell>
-                            </TableRow>
+                            </TableRow> */}
                           </TableHead>
                           <TableBody>
                             {
-                              e.data.map((d, index1) => {
+                              e.rows.map((row, rowIndex) => {
                                 return (
-                                  <TableRow key={index1}>
+                                  <TableRow key={rowIndex}>
                                     <TableCell>
-                                      {d.labourGrade}
+                                      {row.paygradeId}
                                     </TableCell>
                                     <TableCell>
-                                      {d.hourlyRate}
+                                      {row.payGrade.chargeRate}
                                     </TableCell>
                                     <TableCell>
-                                      {d.numberOfEmps}
+                                      {row.empCount}
                                     </TableCell>
                                     <TableCell>
-                                      {d.personDays}
+                                      {row.empDays}
                                     </TableCell>
                                     <TableCell>
-                                      {d.cost}
+                                      {row.empCount * row.empDays * 8 * row.payGrade.chargeRate}
                                     </TableCell>
                                   </TableRow>
                                 )
