@@ -13,10 +13,11 @@ import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import SearchBar from "material-ui-search-bar";
-
-import download from '../../assets/images/download.svg'
+import { Link } from 'react-router-dom'
 import { ACCESS_TOKEN } from "../../constants/environementVariables"
+import { IconButton } from "@material-ui/core";
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Container } from 'reactstrap';
+import OpenNewPageIcon from '../../assets/images/new-page-icon.svg'
 
 const Report = (props) => {
     const [activeTab,setActiveTab] = useState('1');
@@ -65,6 +66,11 @@ const Report = (props) => {
         setSearchedM("");
         requestSearchM(searchedM);
     };
+
+    const project = {
+        projectId: 'PR123',
+        name: 'Project Management System'
+    }
 
     return (
         <Container className='p-5 w-200'>
@@ -115,9 +121,17 @@ const Report = (props) => {
                 <TableCell >{e.from}</TableCell>
                 <TableCell >{e.to}</TableCell>
                 <TableCell >{e.issue}</TableCell>
-                <TableCell ><span onClick={() => downloadFile(e.id)}>
-                    <img src={download} />
-                    </span></TableCell>
+                <TableCell>
+                    <Link
+                        to={{
+                            pathname: `weekly-report/${project.projectId}`
+                        }}
+                    >
+                    <IconButton onClick={() => downloadFile(e.id)} className='background-light-blue'>
+                            <img src={OpenNewPageIcon} />
+                        </IconButton>
+                    </Link>
+                </TableCell>
                 </TableRow>
             ))}
             </TableBody>
@@ -152,7 +166,13 @@ const Report = (props) => {
                     <TableCell >{e.from}</TableCell>
                     <TableCell >{e.to}</TableCell>
                     <TableCell >{e.issue}</TableCell>
-                    <TableCell ><img src={download} /></TableCell>
+                    <TableCell >
+
+                        <IconButton className='background-light-blue'>
+                            <img src={OpenNewPageIcon} />
+                        </IconButton>
+
+                    </TableCell>
                     </TableRow>
                 ))}
                 </TableBody>

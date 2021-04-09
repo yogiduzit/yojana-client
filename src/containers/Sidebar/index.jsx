@@ -45,7 +45,8 @@ const Sidebar = props => {
   }
 
   const setViews = () => {
-    const roles = extractRoles();
+    const roles = 'HR';
+    // const roles = extractRoles();
     if (roles.includes('HR')) {
       setViewEmployees(true);
     }

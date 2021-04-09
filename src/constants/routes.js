@@ -19,6 +19,7 @@ const Routes = {
     EMPLOYEE: '/employees',
     ADDEMPLOYEE: '/employee/create',
     EMPLOYEEPROFILE: '/employeeprofile',
+    WEEKLY_REPORT: '/weekly-report/:projectId'
 };
 
 export default Routes;
