@@ -13,6 +13,9 @@ const Routes = {
     REPORT: '/report',
     EMPLOYEE: '/employees',
     ADDEMPLOYEE: '/employee/create',
+    MONTHLYREPORT:'/monthly_report'
+    
+
 };
 
 export default Routes;

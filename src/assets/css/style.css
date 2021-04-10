@@ -27,6 +27,11 @@ body {
     color: #8A4FFF;
     font-size: large;
 }
+.text-purple-color {
+    color: #8A4FFF;
+    
+}
+
 
 .primary-blue-border-text-color {
     border: 1px solid #4877AD !important;
@@ -98,4 +103,10 @@ body {
 }
 .colorP{
     background-color:#4877AD !important;
+}
+.background-light-blue {
+    background-color: #CCDDF1 !important;
+}
+.alice-blue{
+    background-color: #E5ECF4 !important;
 }

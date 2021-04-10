@@ -16,6 +16,8 @@ import Report from './report';
 import Team from './team';
 import Employee from './employee/index'
 import AddEmployee from './employee/create'
+import MonthlyReport from './monthly_report'
+
 
 import '../assets/css/style.css';
 
@@ -37,6 +39,7 @@ const Main = (props) => {
                 <Route path={Routes.REPORT} component={Report} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
+                <Route path={Routes.MONTHLYREPORT} component={MonthlyReport} />
             </BrowserRouter>
         </div>
     )
