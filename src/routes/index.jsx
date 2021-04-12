@@ -34,7 +34,7 @@ const Main = (props) => {
                 <Route path={Routes.LOGIN} component={Login} />
                 <Route exact path={Routes.HOME} component={Dashboard} />
                 <Route path={Routes.DASHBOARD} component={Dashboard} />
-                <Route path={Routes.PROJECTS} component={Projects} />
+                <Route exact path={Routes.PROJECTS} component={Projects} />
                 <Route path={Routes.ADDPROJECT} component={AddProject} />
                 <Route exact path={Routes.VIEW_PROJECT} render={(props) => (
                   <Workpackage key={`view-project-${window.location.href}`} {...props} />

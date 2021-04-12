@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     makeStyles,
@@ -16,30 +16,42 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper';
 import ClearIcon from "@material-ui/icons/Clear";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { fetchAllPaygrades } from "../../api/Paygrade";
+import { useHistory, useParams } from "react-router";
+import { getLastFridayOf } from "../../utils/dateFormatter";
+import { createEstimate, createEstimateRow } from "../../api/Estimate";
 
 export default function AddNewEstimate(props) {
-    // TODO: DELETE DUMMY DATA
-    // Dummy labour grades that need to be deleted later
-    const dummyLabourGrade = ["P1", "P2", "P3", "P4"];
+    const { id } = useParams();
+    const history = useHistory();
 
-    // TODO: DELETE DUMMY DATA
-    // Dummy estimate data that need to be deleted later
     const dummyEstimate = {
         rows: [
             {
                 rowId: 1,
                 labourGrade: "",
                 hourlyRate: 0,
-                numberOfEmp: 0,
-                personDays: 0,
+                empCount: 0,
+                empDays: 0,
                 cost: 0
             }
         ]
     }
     const [estimate, setEstimate] = useState(dummyEstimate);
-    const [labourGrades, setLabourGrades] = useState(dummyLabourGrade);
+    const [payGrades, setPayGrades] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
 
+    useEffect(() => {
+        async function loadPaygrades() {
+            const res = await fetchAllPaygrades();
+            if (res.errors && res.errors.length > 0) {
+                console.error("Cannot load paygrades");
+            } else {
+                setPayGrades(res.data.paygrades);
+            }
+        }
+        loadPaygrades();
+    }, [])
     const closeEstimateTable = () => {
         props.toggle();
     }
@@ -49,13 +61,13 @@ export default function AddNewEstimate(props) {
         if (e.target.name === "hourlyRate") {
             rowToUpdate.hourlyRate = e.target.value;
         }
-        else if (e.target.name === "numberOfEmp") {
-            rowToUpdate.numberOfEmp = e.target.value;
+        else if (e.target.name === "empCount") {
+            rowToUpdate.empCount = e.target.value;
         }
-        else if (e.target.name === "personDays") {
-            rowToUpdate.personDays = e.target.value;
+        else if (e.target.name === "empDays") {
+            rowToUpdate.empDays = e.target.value;
         }
-        rowToUpdate.cost = rowToUpdate.hourlyRate * rowToUpdate.numberOfEmp * rowToUpdate.personDays;
+        rowToUpdate.cost = rowToUpdate.hourlyRate * rowToUpdate.empCount * rowToUpdate.empDays;
         setEstimate({
             ...estimate,
             rows: [...estimate.rows].map(row => {
@@ -70,6 +82,8 @@ export default function AddNewEstimate(props) {
     const handleDropdownChange = (e, rowToUpdate) => {
         if (e.target.name === 'labourGrade') {
             rowToUpdate.labourGrade = e.target.value;
+            rowToUpdate.hourlyRate = payGrades.find(payGrade =>
+                payGrade.labourGrade === e.target.value).chargeRate;
         }
         setEstimate({
             ...estimate,
@@ -97,7 +111,7 @@ export default function AddNewEstimate(props) {
     }
     const handleAddRow = () => {
         var index;
-        if (estimate.rows.length != 0) {
+        if (estimate.rows.length !== 0) {
             index = estimate.rows[estimate.rows.length - 1].rowId + 1;
         }
         else {
@@ -111,16 +125,42 @@ export default function AddNewEstimate(props) {
                     rowId: index,
                     labourGrade: "",
                     hourlyRate: 0,
-                    numberOfEmp: 0,
-                    personDays: 0,
+                    empCount: 0,
+                    empDays: 0,
                     cost: 0
                 }
             ]
         })
     }
 
-    const submitEstimate = () => {
-        console.log(estimate);
+    const submitEstimate = async () => {
+        const createEstimatePayload = {
+            workPackageId: props.wpId,
+            projectId: id,
+            estimateToComplete: 0,
+            forWeek: getLastFridayOf(new Date()),
+            type: props.type
+        }
+        const createEstimateResponse = await createEstimate(createEstimatePayload);
+        if (!(createEstimateResponse.errors && createEstimateResponse.errors.length > 0)) {
+            const createRowsResponses = await Promise.all(estimate.rows.map(async (row, index) => 
+                await createEstimateRow(createEstimateResponse.data.id, {
+                    estimateRowPk: {
+                        estimateId: createEstimateResponse.data.id,
+                        index
+                    },
+                    paygradeId: row.labourGrade,
+                    empDays: row.empDays,
+                    empCount: row.empCount
+                })
+            ));
+
+            if (createRowsResponses.some(res => res.data.errors && res.data.errors.length > 0)) {
+                console.error("Error creating rows in the estimate");
+            } else {
+                history.push(`/project/${id}/wp/${props.wpId}`);
+            }
+        }
     }
 
     return (
@@ -153,10 +193,10 @@ export default function AddNewEstimate(props) {
                                             <MenuItem value="">
                                                 <em>Labour Grade</em>
                                             </MenuItem>
-                                            {labourGrades.length > 0 &&
-                                                labourGrades.map(item => (
-                                                    <MenuItem value={item} key={item}>
-                                                        {item}
+                                            {payGrades.length > 0 &&
+                                                payGrades.map((item, index) => (
+                                                    <MenuItem value={item.labourGrade} key={index}>
+                                                        {item.labourGrade}
                                                     </MenuItem>
                                                 ))}
                                         </Select>
@@ -168,13 +208,14 @@ export default function AddNewEstimate(props) {
                                             value={row.hourlyRate}
                                             min="0"
                                             onChange={e => handleNumberChange(e, row)}
+                                            readOnly
                                         />
                                     </TableCell>
                                     <TableCell component="th" scope="row">
                                         <input
-                                            name="numberOfEmp"
+                                            name="empCount"
                                             type="number"
-                                            value={row.numberOfEmp}
+                                            value={row.empCount}
                                             onChange={e => handleNumberChange(e, row)}
                                             min="0"
                                             step="1"
@@ -182,9 +223,9 @@ export default function AddNewEstimate(props) {
                                     </TableCell>
                                     <TableCell component="th" scope="row">
                                         <input
-                                            name="personDays"
+                                            name="empDays"
                                             type="number"
-                                            value={row.personDays}
+                                            value={row.empDays}
                                             onChange={e => handleNumberChange(e, row)}
                                             min="0"
                                             step="1"
