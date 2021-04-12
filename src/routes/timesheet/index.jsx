@@ -254,7 +254,7 @@ const TimesheetIndex = ({ user }) => {
 
   useEffect(() => {
     async function loadTimesheets () {
-      const res = user?.timesheetApprover
+      const res = user?.isTimesheetApprover
         ? await fetchAllSubmittedTimesheets()
         : await fetchAllTimesheets()
       setTimesheets(res.data.timesheets)
@@ -267,7 +267,7 @@ const TimesheetIndex = ({ user }) => {
     <Container className=' text-center'>
       <div className='mx-auto timesheet-container p-5'>
         <h1 style={{ float: 'left' }}>
-          {user?.timesheetApprover ? 'Review Timesheets' : 'Timesheet'}
+          {user?.isTimesheetApprover ? 'Review Timesheets' : 'Timesheet'}
         </h1>
         <Button
           variant='outlined'
@@ -318,20 +318,10 @@ const TimesheetIndex = ({ user }) => {
                         <EditIcon style={{ color: '#4877AD' }} />
                       </Link>
                     ) : (
-                      <Link
-                        to={{
-                          pathname: `timesheet-edit/${row.id}`,
-                          state: row
-                        }}
-                        className='mr-5'
-                      >
-                        <EditIcon style={{ color: '#4877AD' }} />
-                      </Link>
-                      // TODO: Remove edit link and restore the below
-                      // <EditIcon
-                      //     style={{ visibility: 'hidden' }}
-                      //     className='mr-5'
-                      // />
+                      <EditIcon
+                          style={{ visibility: 'hidden' }}
+                          className='mr-5'
+                      />
                     )}
                     <Link
                       to={{

@@ -75,6 +75,12 @@ function TimesheetDetail ({ location, user }) {
     console.log('Timesheet Approved!')
   }
 
+  const handleTimesheetReject = e => {
+    e.preventDefault()
+    // TODO: Patch call to change status of timesheet to 'rejected'
+    console.log('Timesheet Rejected!')
+  }
+
   // For admin only, to delete the timesheet.
   const handleTimesheetDelete = e => {
     e.preventDefault()
@@ -206,9 +212,7 @@ function TimesheetDetail ({ location, user }) {
             </TableBody>
           </Table>
         </TableContainer>
-        {/* TODO: Uncomment the below */}
-        {/* {user?.isTimesheetApprover && { feedbackForTimesheetApprover }} */}
-        {user?.admin && feedbackForTimesheetApprover}
+        {user?.isTimesheetApprover && feedbackForTimesheetApprover}
         <span style={{ float: 'right' }} className='mt-5'>
           <Button
             variant='contained'
@@ -217,7 +221,7 @@ function TimesheetDetail ({ location, user }) {
           >
             Back
           </Button>
-          {!(user?.admin && user?.timesheetApprover) &&
+          {!(user?.admin && user?.isTimesheetApprover) &&
             timesheet.status !== statusEnum.SUBMITTED && (
               <Button
                 variant='contained'
@@ -228,16 +232,26 @@ function TimesheetDetail ({ location, user }) {
                 Submit
               </Button>
             )}
-          {user?.timesheetApprover &&
+          {user?.isTimesheetApprover &&
             timesheet.status === statusEnum.SUBMITTED && (
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleTimesheetApprove}
-                className='ml-3'
-              >
-                Approve
-              </Button>
+              <>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleTimesheetApprove}
+                  className='ml-3'
+                >
+                  Approve
+                </Button>
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  onClick={handleTimesheetReject}
+                  className='ml-3'
+                >
+                  Reject
+                </Button>
+              </>
             )}
           {user?.admin && (
             <Button
