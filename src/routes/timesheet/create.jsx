@@ -30,8 +30,11 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
 import Routes from '../../constants/routes'
-import { fetchAllProjects } from '../../api/Project'
-import { fetchAllWorkPackages } from '../../api/WorkPackage'
+import { convertEndWeekToString } from '../../utils/timesheet/convertEndWeek'
+import {
+  loadProjectIds,
+  loadWorkPackageIdsForProject
+} from '../../utils/timesheet/loadProjectWP'
 
 const useStyles = makeStyles({
   // for the table
@@ -41,7 +44,7 @@ const useStyles = makeStyles({
 })
 
 const initialTimesheetState = {
-  weekEndDate: new Date(),
+  endWeek: new Date(),
   weekNum: moment(new Date()).format('W'),
   signature: null,
   feedback: null,
@@ -67,45 +70,21 @@ function TimesheetCreate ({ user }) {
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
+  const [overtime, setOvertime] = useState(formatHours(0))
+  // TODO: Need to figure out how to calculate flextime
+  const [flextime, setFlextime] = useState(formatHours(0))
   const [hoursInputErrorMsg, setHoursInputErrorMsg] = useState('')
   // display none or block for p tag
   const [showInputErrorMsg, setShowInputErrorMsg] = useState('none')
 
   useEffect(() => {
-    loadProjectIds()
+    loadProjectIds({ setProjectIds })
   }, [])
-
-  async function loadProjectIds () {
-    const res = await fetchAllProjects()
-    const projectIdsToSave = []
-    res.data.projects.forEach(({ id }) => projectIdsToSave.push(id))
-    setProjectIds(projectIdsToSave)
-  }
-
-  async function loadWorkPackageIdsForProject (id, rowToUpdate) {
-    const res = await fetchAllWorkPackages(id)
-    const workPackageIdsToSave = []
-    res.data.workPackages.forEach(({ workPackagePk }) =>
-      workPackageIdsToSave.push(workPackagePk.id)
-    )
-    // add or update options of workPackage in the row
-    rowToUpdate.workPackageIdOptions = workPackageIdsToSave
-
-    setTimesheet({
-      ...timesheet,
-      rows: [
-        ...timesheet.rows.map(row => {
-          if (row.index !== rowToUpdate.index) return row
-          else return rowToUpdate
-        })
-      ]
-    })
-  }
 
   const handleDateSelect = date => {
     setTimesheet({
       ...timesheet,
-      weekEndDate: date,
+      endWeek: date,
       weekNum: moment(date).format('W')
     })
   }
@@ -113,7 +92,10 @@ function TimesheetCreate ({ user }) {
   const handleDropdownChange = (e, rowToUpdate) => {
     if (e.target.name === 'projectId') {
       rowToUpdate.projectId = e.target.value
-      loadWorkPackageIdsForProject(e.target.value, rowToUpdate)
+      loadWorkPackageIdsForProject(e.target.value, rowToUpdate, {
+        timesheet,
+        setTimesheet
+      })
     } else if (e.target.name === 'workPackageId') {
       rowToUpdate.workPackageId = e.target.value
     }
@@ -149,7 +131,8 @@ function TimesheetCreate ({ user }) {
   }
 
   const handleDeleteRow = rowToDelete => {
-    const updatedRows = [...timesheet.rows].filter(row => rowToDelete.index)
+    const updatedRows = timesheet.rows.filter(row => row.index !== rowToDelete.index)
+    updatedRows.forEach((row, idx) => row.index = idx) // update index
 
     calculateTotalHours(
       undefined,
@@ -171,22 +154,9 @@ function TimesheetCreate ({ user }) {
 
   async function handleSubmit () {
     console.log(timesheet)
-    const timesheetDate = timesheet.weekEndDate
-    const month = timesheetDate.getMonth() + 1
-    const day = timesheetDate.getDate()
-    const year = timesheetDate.getFullYear()
 
-    let monthStr = month.toString()
-    let dayStr = day.toString()
-    if (month < 10) {
-      monthStr = '0' + month
-    }
-    if (day < 10) {
-      dayStr = '0' + day
-    }
-    const date = `${year}-${monthStr}-${dayStr}`
     const createTimesheetResponse = await createTimesheet({
-      endWeek: date,
+      endWeek: convertEndWeekToString(timesheet.endWeek),
       signature: timesheet.signature,
       feedback: timesheet.feedback,
       status: 'pending',
@@ -239,7 +209,7 @@ function TimesheetCreate ({ user }) {
             <th style={{ textAlign: 'right' }}>
               Week Ending:
               <DatePicker
-                selected={timesheet.weekEndDate}
+                selected={timesheet.endWeek}
                 onSelect={handleDateSelect}
                 className='ml-3'
               />
@@ -327,7 +297,9 @@ function TimesheetCreate ({ user }) {
                               setTotalHours,
                               timesheet,
                               setTimesheet,
-                              setTotalOfTotalHours
+                              setTotalOfTotalHours,
+                              setOvertime,
+                              setFlextime
                             })
                           }
                           type='number'
@@ -394,13 +366,13 @@ function TimesheetCreate ({ user }) {
             <TableRow>
               <TableCell>Overtime</TableCell>
               <TableCell />
-              <TableCell align='right'>?</TableCell>
+              <TableCell align='right'>{overtime}</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
             <TableRow>
               <TableCell>Flextime</TableCell>
               <TableCell />
-              <TableCell align='right'>?</TableCell>
+              <TableCell align='right'>{flextime}</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
           </TableBody>
@@ -416,7 +388,7 @@ function TimesheetCreate ({ user }) {
           Cancel
         </Button>
         <Button variant='contained' color='primary' onClick={handleSubmit}>
-          Submit
+          Create
         </Button>
       </span>
     </div>

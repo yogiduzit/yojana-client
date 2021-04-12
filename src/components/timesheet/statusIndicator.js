@@ -1,22 +1,9 @@
 import { statusEnum } from '../../constants/timesheet/constants'
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord'
+import DoneIcon from '@material-ui/icons/Done'
 
 const statusIndicator = (status, className) => {
   switch (status) {
-    case statusEnum.APPROVED:
-      return (
-        <FiberManualRecordIcon
-          style={{ color: '#95DB73' }}
-          className={className ? className : null}
-        />
-      )
-    case statusEnum.IN_PROGRESS:
-      return (
-        <FiberManualRecordIcon
-          style={{ color: '#F6E54B' }}
-          className={className ? className : null}
-        />
-      )
     case statusEnum.PENDING:
       return (
         <FiberManualRecordIcon
@@ -24,10 +11,24 @@ const statusIndicator = (status, className) => {
           className={className ? className : null}
         />
       )
-    case statusEnum.REJECTED:
+    case statusEnum.SUBMITTED:
+      return (
+        <FiberManualRecordIcon
+          style={{ color: '#95DB73' }}
+          className={className ? className : null}
+        />
+      )
+    case statusEnum.DENIED:
       return (
         <FiberManualRecordIcon
           style={{ color: '#DD5B24' }}
+          className={className ? className : null}
+        />
+      )
+    case statusEnum.APPROVED:
+      return (
+        <DoneIcon
+          style={{ color: '#95DB73' }}
           className={className ? className : null}
         />
       )

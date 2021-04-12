@@ -31,6 +31,16 @@ import Paper from '@material-ui/core/Paper'
 import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
 import Loading from '../../components/Loading/Loading.jsx'
 import NotFound from '../../components/NotFound/NotFound'
+import {
+  convertEndWeekToDate,
+  convertEndWeekToString
+} from '../../utils/timesheet/convertEndWeek'
+import {
+  loadProjectIds,
+  loadWorkPackageIdsForProject
+} from '../../utils/timesheet/loadProjectWP'
+import { updateRow, updateTimesheet } from '../../api/Timesheet'
+import Routes from '../../constants/routes'
 
 const useStyles = makeStyles({
   // for the table
@@ -39,35 +49,23 @@ const useStyles = makeStyles({
   }
 })
 
-// TODO: DELETE DUMMY
-// dummy user which needs to be deleted later
-const user = {
-  empNum: 331,
-  firstName: 'Joe',
-  lastName: 'Bloggs'
-}
-
-// TODO: DELETE DUMMY
-// dummy projectIds which needs to be deleted later
-const dummyProjectIds = ['010', '1205', '3710']
-
-// TODO: DELETE DUMMY
-// dummy workPackages which needs to be deleted later
-const dummyWorkPackages = ['SICK', 'COOL', 'AWES']
-
-function TimesheetEdit ({ location }) {
+function TimesheetEdit ({ location, user }) {
   const history = useHistory()
   const classes = useStyles()
   const [loaded, setLoaded] = useState(false)
   const [timesheet, setTimesheet] = useState(null)
-  const [projectIds, setProjectIds] = useState(dummyProjectIds)
-  const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
+  const [projectIds, setProjectIds] = useState([])
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
+  const [overtime, setOvertime] = useState(formatHours(0))
+  // TODO: Need to figure out how to calculate flextime
+  const [flextime, setFlextime] = useState(formatHours(0))
   const [hoursInputErrorMsg, setHoursInputErrorMsg] = useState('')
   // display none or block for p tag
   const [showInputErrorMsg, setShowInputErrorMsg] = useState('none')
+
+  console.log('In Timesheet Edit', user)
 
   useEffect(() => {
     getTimesheetFromProps(location.state, {
@@ -76,12 +74,13 @@ function TimesheetEdit ({ location }) {
       setTimesheet,
       setLoaded
     })
+    loadProjectIds({ setProjectIds })
   }, [location.state])
 
   const handleDateSelect = date => {
     setTimesheet({
       ...timesheet,
-      weekEndDate: date,
+      endWeek: date,
       weekNum: moment(date).format('W')
     })
   }
@@ -89,8 +88,12 @@ function TimesheetEdit ({ location }) {
   const handleDropdownChange = (e, rowToUpdate) => {
     if (e.target.name === 'projectId') {
       rowToUpdate.projectId = e.target.value
+      loadWorkPackageIdsForProject(e.target.value, rowToUpdate, {
+        timesheet,
+        setTimesheet
+      })
     } else if (e.target.name === 'workPackage') {
-      rowToUpdate.workPackage = e.target.value
+      rowToUpdate.workPackageId = e.target.value
     }
 
     setTimesheet({
@@ -122,11 +125,8 @@ function TimesheetEdit ({ location }) {
   }
 
   const handleDeleteRow = rowToDelete => {
-    const updatedRows = [...timesheet.rows].filter(
-      row =>
-        row.projectId !== rowToDelete.projectId &&
-        row.workPackage !== rowToDelete.workPackage
-    )
+    const updatedRows = timesheet.rows.filter(row => row.index !== rowToDelete.index)
+    updatedRows.forEach((row, idx) => row.index = idx) // update index
 
     calculateTotalHours(
       undefined,
@@ -146,8 +146,46 @@ function TimesheetEdit ({ location }) {
     })
   }
 
-  const handleSubmit = () => {
-    console.log('submit!')
+  const handleSubmit = async () => {
+    const updateTimesheetResponse = await updateTimesheet(timesheet.id, {
+      id: timesheet.id,
+      endWeek: typeof timesheet.endWeek === 'string' ? timesheet.endWeek : convertEndWeekToString(timesheet.endWeek),
+      signature: timesheet.signature,
+      feedback: timesheet.feedback,
+      overtime: timesheet.overtime,
+      flextime: timesheet.flextime,
+      approvedAt: timesheet.approvedAt
+    })
+
+    if (
+      !(
+        updateTimesheetResponse.errors &&
+        updateTimesheetResponse.errors.length > 0
+      )
+    ) {
+      const updateRowsResponses = await Promise.all(
+        timesheet.rows.map(
+          async row =>
+            await updateRow(updateTimesheetResponse.data.id, {
+              index: row.index,
+              notes: row.notes,
+              projectId: row.projectId,
+              workPackageId: row.workPackageId,
+              hours: row.hours
+            })
+        )
+      )
+
+      if (
+        updateRowsResponses.some(
+          res => res.data.errors && res.data.errors.length > 0
+        )
+      ) {
+        console.error('Error creating rows in the timesheet')
+      } else {
+        history.push(Routes.TIMESHEET)
+      }
+    }
   }
 
   return !loaded ? (
@@ -161,21 +199,25 @@ function TimesheetEdit ({ location }) {
       <table id='timesheetCreateHeader' className='mb-3'>
         <thead>
           <tr>
-            <th>Employee Number: {user.empNum}</th>
+            <th>Employee Number: {user?.id}</th>
             <th style={{ textAlign: 'center' }}>
               Week Number: {timesheet.weekNum}
             </th>
             <th style={{ textAlign: 'right' }}>
               Week Ending:
               <DatePicker
-                selected={timesheet.weekEndDate}
+                selected={
+                  typeof timesheet.endWeek === 'string'
+                    ? convertEndWeekToDate(timesheet.endWeek)
+                    : timesheet.endWeek
+                }
                 onSelect={handleDateSelect}
                 className='ml-3'
               />
             </th>
           </tr>
           <tr>
-            <th>Name: {`${user.firstName} ${user.lastName}`}</th>
+            <th>Name: {`${user?.fullName}`}</th>
           </tr>
         </thead>
       </table>
@@ -222,7 +264,7 @@ function TimesheetEdit ({ location }) {
                 </TableCell>
                 <TableCell component='th' scope='row'>
                   <Select
-                    value={row.workPackage}
+                    value={row.workPackageId}
                     name='workPackage'
                     onChange={e => handleDropdownChange(e, row)}
                     displayEmpty
@@ -232,8 +274,8 @@ function TimesheetEdit ({ location }) {
                     <MenuItem value=''>
                       <em>Work Package</em>
                     </MenuItem>
-                    {workPackages.length > 0 &&
-                      workPackages.map(item => (
+                    {row.workPackageIdOptions?.length > 0 &&
+                      row.workPackageIdOptions.map(item => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
@@ -259,7 +301,9 @@ function TimesheetEdit ({ location }) {
                               setTotalHours,
                               timesheet,
                               setTimesheet,
-                              setTotalOfTotalHours
+                              setTotalOfTotalHours,
+                              setOvertime,
+                              setFlextime
                             })
                           }
                           type='number'
@@ -326,13 +370,13 @@ function TimesheetEdit ({ location }) {
             <TableRow>
               <TableCell>Overtime</TableCell>
               <TableCell />
-              <TableCell align='right'>?</TableCell>
+              <TableCell align='right'>{overtime}</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
             <TableRow>
               <TableCell>Flextime</TableCell>
               <TableCell />
-              <TableCell align='right'>?</TableCell>
+              <TableCell align='right'>{flextime}</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
           </TableBody>
@@ -348,7 +392,7 @@ function TimesheetEdit ({ location }) {
           Cancel
         </Button>
         <Button variant='contained' color='primary' onClick={handleSubmit}>
-          Submit
+          Confirm
         </Button>
       </span>
     </div>

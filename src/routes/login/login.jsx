@@ -40,8 +40,8 @@ class Login extends Component {
         return
       } else {
         localStorage.setItem(ACCESS_TOKEN, res.data.token)
+        this.props.fetchUser(res.data.authEmp)
         this.props.history.push(Routes.DASHBOARD)
-        this.props.fetchUser()
       }
     })
   }

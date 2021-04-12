@@ -36,6 +36,7 @@ import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
 import { fetchAllTimesheets } from '../../api/Timesheet'
 import { toPascalCase } from '../../utils/string'
+import { convertEndWeekToDate } from '../../utils/timesheet/convertEndWeek'
 
 const useStyles = makeStyles(theme => ({
   // styles for order by dropdown
@@ -293,16 +294,16 @@ const TimesheetIndex = () => {
               ).map(row => (
                   <TableRow key={row.id}>
                     <TableCell component='th' scope='row'>
-                      {formatMMDDYYYY(row.weekEndDate)}
+                      {formatMMDDYYYY(convertEndWeekToDate(row.endWeek))}
                     </TableCell>
-                    <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
+                    <TableCell>{formatMMDDYYYY(row.audit.updatedAt)}</TableCell>
                     <TableCell>{row.totalHours} hrs</TableCell>
                     <TableCell>
                       {statusIndicator(row.status, 'mr-3')}
                       {row.status}
                     </TableCell>
                     <TableCell>
-                      {row.status === statusEnum.REJECTED ? (
+                      {row.status === statusEnum.DENIED ? (
                           <Link
                               to={{
                                 pathname: `timesheet-edit/${row.id}`,
@@ -313,10 +314,20 @@ const TimesheetIndex = () => {
                             <EditIcon style={{ color: '#4877AD' }} />
                           </Link>
                       ) : (
-                          <EditIcon
-                              style={{ visibility: 'hidden' }}
+                          <Link
+                              to={{
+                                pathname: `timesheet-edit/${row.id}`,
+                                state: row
+                              }}
                               className='mr-5'
-                          />
+                          >
+                            <EditIcon style={{ color: '#4877AD' }} />
+                          </Link>
+                          // TODO: Remove edit link and restore the below
+                          // <EditIcon
+                          //     style={{ visibility: 'hidden' }}
+                          //     className='mr-5'
+                          // />
                       )}
                       <Link
                           to={{

@@ -4,7 +4,7 @@ import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
-import { daysEnum } from '../../constants/timesheet/constants'
+import { daysEnum, statusEnum } from '../../constants/timesheet/constants'
 import { formatHours } from '../../utils/timesheet/totalHoursCalcFunctions'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import statusIndicator from '../../components/timesheet/statusIndicator'
@@ -18,7 +18,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TextField
 } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
 import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
@@ -41,6 +42,7 @@ function TimesheetDetail ({ location, user }) {
   const [loaded, setLoaded] = useState(false)
   const [employee, setEmployee] = useState(null)
   const [timesheet, setTimesheet] = useState(null)
+  const [feedback, setFeedback] = useState('')
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
@@ -61,6 +63,19 @@ function TimesheetDetail ({ location, user }) {
     }
   }, [location.state])
 
+  const handleTimesheetSubmit = e => {
+    e.preventDefault()
+    // TODO: Patch call to change status of timesheet to 'submitted'
+    console.log('Timesheet Submitted!')
+  }
+
+  const handleTimesheetApprove = e => {
+    e.preventDefault()
+    // TODO: Patch call to change status of timesheet to 'approved'
+    console.log('Timesheet Approved!')
+  }
+
+  // For admin only, to delete the timesheet.
   const handleTimesheetDelete = e => {
     e.preventDefault()
     const deleteConfirmMessage = 'Are you sure to delete this timesheet?'
@@ -71,6 +86,26 @@ function TimesheetDetail ({ location, user }) {
       history.push(Routes.TIMESHEET)
     }
   }
+
+  const handleFeedbackChange = e => {
+    setFeedback(e.target.value)
+  }
+
+  const feedbackForTimesheetApprover = (
+    <div className='mt-5'>
+      <h3 className='mb-3'>Feedback</h3>
+      <TextField
+        id='outlined-multiline-static'
+        multiline
+        placeholder='Feedback'
+        fullWidth
+        required
+        rows={3}
+        variant='outlined'
+        onChange={handleFeedbackChange}
+      />
+    </div>
+  )
 
   return !loaded ? (
     <Loading />
@@ -171,6 +206,9 @@ function TimesheetDetail ({ location, user }) {
             </TableBody>
           </Table>
         </TableContainer>
+        {/* TODO: Uncomment the below */}
+        {/* {user?.isTimesheetApprover && { feedbackForTimesheetApprover }} */}
+        {user?.admin && feedbackForTimesheetApprover}
         <span style={{ float: 'right' }} className='mt-5'>
           <Button
             variant='contained'
@@ -179,6 +217,28 @@ function TimesheetDetail ({ location, user }) {
           >
             Back
           </Button>
+          {!(user?.admin && user?.timesheetApprover) &&
+            timesheet.status !== statusEnum.SUBMITTED && (
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={handleTimesheetSubmit}
+                className='ml-3'
+              >
+                Submit
+              </Button>
+            )}
+          {user?.timesheetApprover &&
+            timesheet.status === statusEnum.SUBMITTED && (
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={handleTimesheetApprove}
+                className='ml-3'
+              >
+                Approve
+              </Button>
+            )}
           {user?.admin && (
             <Button
               variant='contained'

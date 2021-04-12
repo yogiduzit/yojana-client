@@ -4,6 +4,7 @@ import {
   INITIAL_HOURS
 } from '../../constants/timesheet/constants'
 import { getRows } from '../../api/Timesheet';
+import { loadWorkPackageIdsForProject } from './loadProjectWP';
 
 async function getTimesheetFromProps (timesheetFromProps, state) {
   const { setTotalHours, setTotalOfTotalHours, setTimesheet, setLoaded } = state
@@ -40,6 +41,14 @@ async function getTimesheetFromProps (timesheetFromProps, state) {
 
     // add week number field in timesheet object
     timesheetToSave.weekNum = moment(timesheetToSave.weekEndDate).format('W')
+
+    // This is for Timesheet Edit page
+    // Contain existing workPackageId for each row into the select options
+    await Promise.all(
+      timesheetToSave.rows?.map(async row => {
+        await loadWorkPackageIdsForProject(row.projectId, row)
+      })
+    )
 
     setTimesheet(timesheetToSave)
   }
