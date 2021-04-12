@@ -4,7 +4,7 @@ import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
-import { daysEnum, INITIAL_HOURS } from '../../constants/timesheet/constants'
+import { daysEnum, INITIAL_HOURS, statusEnum } from '../../constants/timesheet/constants'
 import {
   formatHours,
   calculateTotalHours,
@@ -154,7 +154,8 @@ function TimesheetEdit ({ location, user }) {
       feedback: timesheet.feedback,
       overtime: timesheet.overtime,
       flextime: timesheet.flextime,
-      approvedAt: timesheet.approvedAt
+      approvedAt: timesheet.approvedAt,
+      status: statusEnum.SUBMITTED
     })
 
     if (

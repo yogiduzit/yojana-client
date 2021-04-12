@@ -10,6 +10,15 @@ export const fetchAllTimesheets = async () => {
   return res.json()
 }
 
+export const fetchAllSubmittedTimesheets = async () => {
+  const res = await fetch(`${API_URL}/timesheets?status=submitted`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+    }
+  })
+  return res.json()
+}
+
 export const createTimesheet = async body => {
   const res = await fetch(`${API_URL}/timesheets`, {
     method: 'POST',

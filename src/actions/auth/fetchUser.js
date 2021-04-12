@@ -5,6 +5,8 @@ export const fetchUser = user => dispatch => {
   if (user) {
     modifiedUser = user
     delete modifiedUser.credential
+    // // TODO: delete the below
+    // modifiedUser.timesheetApprover = true
   }
   dispatch({
     type: FETCH_CURRENT_USER,
