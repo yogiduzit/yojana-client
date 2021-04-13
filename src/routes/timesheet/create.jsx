@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
@@ -11,8 +11,6 @@ import {
   handleHoursChange
 } from '../../utils/timesheet/totalHoursCalcFunctions'
 import { addRow, createTimesheet } from '../../api/Timesheet'
-// import Routes from '../../constants/routes'
-// import { withRouter } from 'react-router';
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -32,6 +30,11 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete'
 import Paper from '@material-ui/core/Paper'
 import Routes from '../../constants/routes'
+import { convertEndWeekToString } from '../../utils/timesheet/convertEndWeek'
+import {
+  loadProjectIds,
+  loadWorkPackageIdsForProject
+} from '../../utils/timesheet/loadProjectWP'
 
 const useStyles = makeStyles({
   // for the table
@@ -40,43 +43,18 @@ const useStyles = makeStyles({
   }
 })
 
-// TODO: DELETE DUMMY
-// dummy user which needs to be deleted later
-const user = {
-  empNum: 331,
-  firstName: 'Joe',
-  lastName: 'Bloggs'
-}
-
 const initialTimesheetState = {
-  weekEndDate: new Date(),
+  endWeek: new Date(),
   weekNum: moment(new Date()).format('W'),
   signature: null,
   feedback: null,
   overtime: null,
   flextime: null,
   approvedAt: null,
-  rows: [
-    {
-      index: 0,
-      notes: "",
-      projectId: 'PR123',
-      workPackageId: 'WP1.1',
-      totalHours: 0,
-      hours: [...INITIAL_HOURS]
-    }
-  ]
+  rows: []
 }
 
-// TODO: DELETE DUMMY
-// dummy projectIds which needs to be deleted later
-const dummyProjectIds = ['PR123', 'PR125', 'PR126']
-
-// TODO: DELETE DUMMY
-// dummy workPackages which needs to be deleted later
-const dummyWorkPackages = ['WP1.1', 'WP1.2']
-
-function TimesheetCreate() {
+function TimesheetCreate ({ user }) {
   const history = useHistory()
   const classes = useStyles()
   const [timesheet, setTimesheet] = useState(initialTimesheetState)
@@ -87,20 +65,26 @@ function TimesheetCreate() {
    * in the timesheet row. Based on the project selected, we can show the workpackages
    * that the user has worked upon.
    */
-  const [projectIds, setProjectIds] = useState(dummyProjectIds)
-  const [workPackages, setWorkPackages] = useState(dummyWorkPackages)
+  const [projectIds, setProjectIds] = useState([])
 
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([...INITIAL_HOURS])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
+  const [overtime, setOvertime] = useState(formatHours(0))
+  // TODO: Need to figure out how to calculate flextime
+  const [flextime, setFlextime] = useState(formatHours(0))
   const [hoursInputErrorMsg, setHoursInputErrorMsg] = useState('')
   // display none or block for p tag
   const [showInputErrorMsg, setShowInputErrorMsg] = useState('none')
 
+  useEffect(() => {
+    loadProjectIds({ setProjectIds })
+  }, [])
+
   const handleDateSelect = date => {
     setTimesheet({
       ...timesheet,
-      weekEndDate: date,
+      endWeek: date,
       weekNum: moment(date).format('W')
     })
   }
@@ -108,6 +92,10 @@ function TimesheetCreate() {
   const handleDropdownChange = (e, rowToUpdate) => {
     if (e.target.name === 'projectId') {
       rowToUpdate.projectId = e.target.value
+      loadWorkPackageIdsForProject(e.target.value, rowToUpdate, {
+        timesheet,
+        setTimesheet
+      })
     } else if (e.target.name === 'workPackageId') {
       rowToUpdate.workPackageId = e.target.value
     }
@@ -115,9 +103,7 @@ function TimesheetCreate() {
     setTimesheet({
       ...timesheet,
       rows: [...timesheet.rows].map(row => {
-        if (
-          row.index === rowToUpdate.index
-        ) {
+        if (row.index === rowToUpdate.index) {
           return rowToUpdate
         } else return row
       })
@@ -126,8 +112,8 @@ function TimesheetCreate() {
 
   const handleAddRow = () => {
     if (timesheet.rows.length === 7) {
-      console.error("Can't create more than 7 timesheet rows");
-      return;
+      console.error("Can't create more than 7 timesheet rows")
+      return
     }
     setTimesheet({
       ...timesheet,
@@ -145,7 +131,8 @@ function TimesheetCreate() {
   }
 
   const handleDeleteRow = rowToDelete => {
-    const updatedRows = [...timesheet.rows].filter(row => rowToDelete.index);
+    const updatedRows = timesheet.rows.filter(row => row.index !== rowToDelete.index)
+    updatedRows.forEach((row, idx) => row.index = idx) // update index
 
     calculateTotalHours(
       undefined,
@@ -165,50 +152,49 @@ function TimesheetCreate() {
     })
   }
 
-  async function handleSubmit() {
-    console.log(timesheet);
-    const timesheetDate = timesheet.weekEndDate;
-    const month = timesheetDate.getMonth() + 1;
-    const day = timesheetDate.getDate();
-    const year = timesheetDate.getFullYear();
+  async function handleSubmit () {
+    console.log(timesheet)
 
-    let monthStr = month.toString();
-    let dayStr = day.toString();
-    if (month < 10) {
-      monthStr = "0" + month;
-    }
-    if (day < 10) {
-      dayStr = "0" + day;
-    }
-    const date = `${year}-${monthStr}-${dayStr}`;
     const createTimesheetResponse = await createTimesheet({
-      endWeek: date,
+      endWeek: convertEndWeekToString(timesheet.endWeek),
       signature: timesheet.signature,
       feedback: timesheet.feedback,
-      status: "pending",
+      status: 'pending',
       overtime: timesheet.overtime,
       flextime: timesheet.flextime,
       approvedAt: timesheet.approvedAt
-    });
+    })
 
-    if (!(createTimesheetResponse.errors && createTimesheetResponse.errors.length > 0)) {
-      const createRowsResponses = await Promise.all(timesheet.rows.map(async (row) => {
-        await addRow(createTimesheetResponse.data.id, {
-          index: row.index,
-          notes: row.notes,
-          projectId: row.projectId,
-          workPackageId: row.workPackageId,
-          hours: row.hours
-        });
-      }));
+    if (
+      !(
+        createTimesheetResponse.errors &&
+        createTimesheetResponse.errors.length > 0
+      )
+    ) {
+      const createRowsResponses = await Promise.all(
+        timesheet.rows.map(
+          async row =>
+            await addRow(createTimesheetResponse.data.id, {
+              index: row.index,
+              notes: row.notes,
+              projectId: row.projectId,
+              workPackageId: row.workPackageId,
+              hours: row.hours
+            })
+        )
+      )
 
-      if (createRowsResponses.some(res => res.data.errors && res.data.errors.length > 0)) {
-        console.error("Error creating rows in the timesheet");
+      if (
+        createRowsResponses.some(
+          res => res.data.errors && res.data.errors.length > 0
+        )
+      ) {
+        console.error('Error creating rows in the timesheet')
       } else {
-        history.push(Routes.TIMESHEET);
+        history.push(Routes.TIMESHEET)
       }
     }
-  };
+  }
 
   return (
     <div className='main-body'>
@@ -216,21 +202,21 @@ function TimesheetCreate() {
       <table id='timesheetCreateHeader' className='mb-3'>
         <thead>
           <tr>
-            <th>Employee Number: {user.empNum}</th>
+            <th>Employee Number: {user?.id}</th>
             <th style={{ textAlign: 'center' }}>
               Week Number: {timesheet.weekNum}
             </th>
             <th style={{ textAlign: 'right' }}>
               Week Ending:
               <DatePicker
-                selected={timesheet.weekEndDate}
+                selected={timesheet.endWeek}
                 onSelect={handleDateSelect}
                 className='ml-3'
               />
             </th>
           </tr>
           <tr>
-            <th>Name: {`${user.firstName} ${user.lastName}`}</th>
+            <th>Name: {user?.fullName}</th>
           </tr>
         </thead>
       </table>
@@ -251,10 +237,7 @@ function TimesheetCreate() {
           </TableHead>
           <TableBody>
             {timesheet.rows.map((row, index) => (
-              <TableRow
-                key={index}
-                className='timesheetCreateRow'
-              >
+              <TableRow key={index} className='timesheetCreateRow'>
                 <TableCell component='th' scope='row'>
                   <Select
                     value={row.projectId}
@@ -287,8 +270,8 @@ function TimesheetCreate() {
                     <MenuItem value=''>
                       <em>Work Package</em>
                     </MenuItem>
-                    {workPackages.length > 0 &&
-                      workPackages.map(item => (
+                    {row.workPackageIdOptions?.length > 0 &&
+                      row.workPackageIdOptions.map(item => (
                         <MenuItem value={item} key={item}>
                           {item}
                         </MenuItem>
@@ -314,7 +297,9 @@ function TimesheetCreate() {
                               setTotalHours,
                               timesheet,
                               setTimesheet,
-                              setTotalOfTotalHours
+                              setTotalOfTotalHours,
+                              setOvertime,
+                              setFlextime
                             })
                           }
                           type='number'
@@ -381,13 +366,13 @@ function TimesheetCreate() {
             <TableRow>
               <TableCell>Overtime</TableCell>
               <TableCell />
-              <TableCell align='right'>?</TableCell>
+              <TableCell align='right'>{overtime}</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
             <TableRow>
               <TableCell>Flextime</TableCell>
               <TableCell />
-              <TableCell align='right'>?</TableCell>
+              <TableCell align='right'>{flextime}</TableCell>
               <TableCell colSpan={8} />
             </TableRow>
           </TableBody>
@@ -403,7 +388,7 @@ function TimesheetCreate() {
           Cancel
         </Button>
         <Button variant='contained' color='primary' onClick={handleSubmit}>
-          Submit
+          Create
         </Button>
       </span>
     </div>

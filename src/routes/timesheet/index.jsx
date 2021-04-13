@@ -5,10 +5,7 @@ import WithHeader from '../../hoc/WithHeader'
 import { formatMMDDYYYY } from '../../utils/dateFormatter'
 import { Container } from 'reactstrap'
 import { Link, useHistory } from 'react-router-dom'
-import {
-  stableSort,
-  getComparator
-} from '../../utils/tableSortFunctions'
+import { stableSort, getComparator } from '../../utils/tableSortFunctions'
 import statusIndicator from '../../components/timesheet/statusIndicator'
 import { orderByEnum, statusEnum } from '../../constants/timesheet/constants'
 import '../../assets/css/body-component.css'
@@ -34,8 +31,12 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 
 import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
-import { fetchAllTimesheets } from '../../api/Timesheet'
+import {
+  fetchAllSubmittedTimesheets,
+  fetchAllTimesheets
+} from '../../api/Timesheet'
 import { toPascalCase } from '../../utils/string'
+import { convertEndWeekToDate } from '../../utils/timesheet/convertEndWeek'
 
 const useStyles = makeStyles(theme => ({
   // styles for order by dropdown
@@ -122,33 +123,32 @@ function EnhancedTableHead (props) {
   }
 
   return (
-        <TableHead>
-          <TableRow>
-            {headCells.map(headCell => (
-                <TableCell
-                    key={headCell.id}
-                    sortDirection={orderBy === headCell.id ? order : false}
-                >
-                  <TableSortLabel
-                      active={orderBy === headCell.id}
-                      direction={orderBy === headCell.id ? order : 'asc'}
-                      onClick={createSortHandler(headCell.id)}
-                  >
-                    <b>{headCell.label}</b>
-                    {orderBy === headCell.id ? (
-                        <span className={classes.visuallyHidden}>
+    <TableHead>
+      <TableRow>
+        {headCells.map(headCell => (
+          <TableCell
+            key={headCell.id}
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
+              <b>{headCell.label}</b>
+              {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </span>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-            ))}
-            <TableCell>
-              <b>Actions</b>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+        <TableCell>
+          <b>Actions</b>
+        </TableCell>
+      </TableRow>
+    </TableHead>
   )
 }
 
@@ -224,17 +224,18 @@ TablePaginationActions.propTypes = {
 }
 
 // Timesheet container
-const TimesheetIndex = () => {
+const TimesheetIndex = ({ user }) => {
+  console.log('In timesheet index: ', user)
   const classes = useStyles()
   const history = useHistory()
-  const [timesheets, setTimesheets] = useState([]);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState(-1);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [timesheets, setTimesheets] = useState([])
+  const [order, setOrder] = useState('asc')
+  const [orderBy, setOrderBy] = useState(-1)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, timesheets.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, timesheets.length - page * rowsPerPage)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -252,24 +253,28 @@ const TimesheetIndex = () => {
   }
 
   useEffect(() => {
-    async function loadTimesheets() {
-      const res = await fetchAllTimesheets();
-      setTimesheets(res.data.timesheets);
-    };
+    async function loadTimesheets () {
+      const res = user?.isTimesheetApprover
+        ? await fetchAllSubmittedTimesheets()
+        : await fetchAllTimesheets()
+      setTimesheets(res.data.timesheets)
+    }
 
     loadTimesheets()
-  }, []);
+  }, [user])
 
   return (
     <Container className=' text-center'>
       <div className='mx-auto timesheet-container p-5'>
-        <h1 style={{ float: 'left' }}>Timesheet</h1>
+        <h1 style={{ float: 'left' }}>
+          {user?.isTimesheetApprover ? 'Review Timesheets' : 'Timesheet'}
+        </h1>
         <Button
-            variant='outlined'
-            color='primary'
-            style={{ float: 'right' }}
-            className='mb-5'
-            onClick={() => history.push('/timesheet-create')}
+          variant='outlined'
+          color='primary'
+          style={{ float: 'right' }}
+          className='mb-5'
+          onClick={() => history.push('/timesheet-create')}
         >
           <AddIcon className='mr-3' />
           Create New
@@ -277,87 +282,86 @@ const TimesheetIndex = () => {
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label='custom pagination table'>
             <EnhancedTableHead
-                classes={classes}
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-                rowCount={timesheets.length}
+              classes={classes}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={timesheets.length}
             />
             <TableBody>
               {(rowsPerPage > 0
-                      ? stableSort(
-                          timesheets,
-                          getComparator(order, orderBy, descendingComparator)
-                      ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      : timesheets
+                ? stableSort(
+                    timesheets,
+                    getComparator(order, orderBy, descendingComparator)
+                  ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                : timesheets
               ).map(row => (
-                  <TableRow key={row.id}>
-                    <TableCell component='th' scope='row'>
-                      {formatMMDDYYYY(row.weekEndDate)}
-                    </TableCell>
-                    <TableCell>{formatMMDDYYYY(row.submittedDate)}</TableCell>
-                    <TableCell>{row.totalHours} hrs</TableCell>
-                    <TableCell>
-                      {statusIndicator(row.status, 'mr-3')}
-                      {row.status}
-                    </TableCell>
-                    <TableCell>
-                      {row.status === statusEnum.REJECTED ? (
-                          <Link
-                              to={{
-                                pathname: `timesheet-edit/${row.id}`,
-                                state: row
-                              }}
-                              className='mr-5'
-                          >
-                            <EditIcon style={{ color: '#4877AD' }} />
-                          </Link>
-                      ) : (
-                          <EditIcon
-                              style={{ visibility: 'hidden' }}
-                              className='mr-5'
-                          />
-                      )}
+                <TableRow key={row.id}>
+                  <TableCell component='th' scope='row'>
+                    {formatMMDDYYYY(convertEndWeekToDate(row.endWeek))}
+                  </TableCell>
+                  <TableCell>{formatMMDDYYYY(row.audit.updatedAt)}</TableCell>
+                  <TableCell>{row.totalHours} hrs</TableCell>
+                  <TableCell>
+                    {statusIndicator(row.status, 'mr-3')}
+                    {toPascalCase(row.status)}
+                  </TableCell>
+                  <TableCell>
+                    {row.status === statusEnum.DENIED ? (
                       <Link
-                          to={{
-                            pathname: `timesheet/${row.id}`,
-                            state: row
-                          }}
+                        to={{
+                          pathname: `timesheet-edit/${row.id}`,
+                          state: row
+                        }}
+                        className='mr-5'
                       >
-                        <OpenInNewIcon style={{ color: '#4877AD' }} />
+                        <EditIcon style={{ color: '#4877AD' }} />
                       </Link>
-                    </TableCell>
-                  </TableRow>
+                    ) : (
+                      <EditIcon
+                          style={{ visibility: 'hidden' }}
+                          className='mr-5'
+                      />
+                    )}
+                    <Link
+                      to={{
+                        pathname: `timesheet/${row.id}`,
+                        state: row
+                      }}
+                    >
+                      <OpenInNewIcon style={{ color: '#4877AD' }} />
+                    </Link>
+                  </TableCell>
+                </TableRow>
               ))}
 
               {emptyRows > 0 && (
-                  <TableRow style={{ height: 53 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                  </TableRow>
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
               )}
             </TableBody>
             <TableFooter>
               <TableRow>
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                    colSpan={3}
-                    count={timesheets.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    SelectProps={{
-                      inputProps: { 'aria-label': 'rows per page' },
-                      native: true
-                    }}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                    ActionsComponent={TablePaginationActions}
+                  rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                  colSpan={3}
+                  count={timesheets.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    inputProps: { 'aria-label': 'rows per page' },
+                    native: true
+                  }}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
                 />
               </TableRow>
             </TableFooter>
           </Table>
         </TableContainer>
       </div>
-
     </Container>
   )
 }

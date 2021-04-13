@@ -8,7 +8,8 @@ import {
   WED_IDX,
   THU_IDX,
   FRI_IDX,
-  DAYS_IN_WEEK
+  DAYS_IN_WEEK,
+  MAX_HOURS_PER_WEEK
 } from '../../constants/timesheet/constants'
 
 export const calculateTotalHours = (
@@ -133,7 +134,9 @@ export const handleHoursChange = (e, index, rowToUpdate, state) => {
     setTotalHours,
     timesheet,
     setTimesheet,
-    setTotalOfTotalHours
+    setTotalOfTotalHours,
+    setOvertime,
+    // setFlextime
   } = state
 
   // validate input hour - to see if it exceeds 24 hrs
@@ -231,16 +234,22 @@ export const handleHoursChange = (e, index, rowToUpdate, state) => {
   setTimesheet({
     ...timesheet,
     rows: [...timesheet.rows].map(row => {
-      if (
-        row.index === rowToUpdate.index
-      ) {
+      if (row.index === rowToUpdate.index) {
         return rowToUpdate
       } else return row
     })
   })
 
-  // set total of total hours from each row
-  setTotalOfTotalHours(
-    timesheet.rows.reduce((acc, obj) => acc + parseFloat(obj.totalHours), 0)
+  const grandTotalHours = timesheet.rows.reduce(
+    (acc, obj) => acc + parseFloat(obj.totalHours),
+    0
   )
+  // set total of total hours from each row
+  setTotalOfTotalHours(grandTotalHours)
+  
+  if (grandTotalHours > MAX_HOURS_PER_WEEK) {
+    setOvertime(formatHours(grandTotalHours - MAX_HOURS_PER_WEEK))
+  } else {
+    setOvertime(formatHours(0))
+  }
 }
