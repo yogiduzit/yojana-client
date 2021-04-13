@@ -27,6 +27,15 @@ export const fetchChildWorkPackages = async (id, wpId) => {
     return res.json();
 };
 
+export const fetchRespEngWorkPackages = async () => {
+  const res = await fetch(`${API_URL}/projects/get/respEng`, {
+      headers: {
+          'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+      }
+  });
+  return res.json();
+};
+
 export const fetchWorkPackage = async (id, wpId) => {
     const res = await fetch(`${API_URL}/projects/${id}/workPackages/${wpId}`, {
         headers: {

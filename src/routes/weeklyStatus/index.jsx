@@ -9,9 +9,8 @@ import WithHeader from "../../hoc/WithHeader";
 import ProjectCard from "../../components/projects/projectCard.component";
 
 import { fetchAllProjects } from '../../api/Project';
-import Routes from '../../constants/routes';
 
-const Projects = () => {
+const WeeklyStatusList = () => {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -20,22 +19,12 @@ const Projects = () => {
 
   const getData = async () => {
     const { data } = await fetchAllProjects();
-    if (typeof data.projects !== "undefined") {
-      setProjects(data.projects);
-    }
+    setProjects(data.projects);
   };
   
   return (
       <Container>
-          <h1 className=' px-4 font-weight-bold'>Projects</h1>
-        <div className='text-right m-1'>
-            <Link className="text-white" to={Routes.ADDPROJECT}>
-              <Button className='ml-auto  w-30 mt-5 loginbutton'
-                variant="contained">
-                Add projects
-              </Button>
-            </Link>
-        </div>
+          <h1 className=' px-4 font-weight-bold'>Responsible Engineers' work packages</h1>
         <Row>
           {
             projects.map((p, index) => {
@@ -49,4 +38,4 @@ const Projects = () => {
   )
 }
 
-export default WithSidebar(WithHeader(Projects))
+export default WithSidebar(WithHeader(WeeklyStatusList))

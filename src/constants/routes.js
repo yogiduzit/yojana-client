@@ -7,6 +7,8 @@ const Routes = {
     ADDPROJECT: '/projects-create',
     VIEW_PROJECT: '/project/:id',
     VIEW_SUB_WORK_PACKAGE: '/project/:id/wp/:wpId',
+    RESPONSIBLE_ENG_LIST: '/resp-eng',
+    RESPONSIBLE_ENG_CREATE: '/resp-eng/:projectId/:wpId',
     TIMESHEET: '/timesheets',
     TIMESHEET_CREATE: '/timesheet-create',
     TIMESHEET_DETAIL: '/timesheet/:id',
