@@ -304,7 +304,7 @@ const TimesheetIndex = ({ user }) => {
                   <TableCell>{row.totalHours} hrs</TableCell>
                   <TableCell>
                     {statusIndicator(row.status, 'mr-3')}
-                    {row.status}
+                    {toPascalCase(row.status)}
                   </TableCell>
                   <TableCell>
                     {row.status === statusEnum.DENIED ? (

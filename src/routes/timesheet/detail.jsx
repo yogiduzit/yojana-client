@@ -28,6 +28,7 @@ import NotFound from '../../components/NotFound/NotFound'
 import { fetchEmployeeById } from '../../api/Employee'
 import { deleteTimesheet } from '../../api/Timesheet'
 import Routes from '../../constants/routes'
+import { toPascalCase } from '../../utils/string'
 
 const useStyles = makeStyles({
   // for the table
@@ -42,6 +43,7 @@ function TimesheetDetail ({ location, user }) {
   const [loaded, setLoaded] = useState(false)
   const [employee, setEmployee] = useState(null)
   const [timesheet, setTimesheet] = useState(null)
+  // TODO: Payload for any feedback when approve or reject timesheet
   const [feedback, setFeedback] = useState('')
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([])
@@ -137,7 +139,7 @@ function TimesheetDetail ({ location, user }) {
               <th></th>
               <th style={{ textAlign: 'right' }}>
                 Status: {statusIndicator(timesheet.status, 'ml-3')}{' '}
-                {timesheet.status}
+                {toPascalCase(timesheet.status)}
               </th>
             </tr>
           </thead>
@@ -212,6 +214,7 @@ function TimesheetDetail ({ location, user }) {
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Visible for only timesheet approver */}
         {user?.isTimesheetApprover && feedbackForTimesheetApprover}
         <span style={{ float: 'right' }} className='mt-5'>
           <Button
@@ -221,6 +224,7 @@ function TimesheetDetail ({ location, user }) {
           >
             Back
           </Button>
+          {/* Visible for normal users except admin and timesheet approver */}
           {!(user?.admin && user?.isTimesheetApprover) &&
             timesheet.status !== statusEnum.SUBMITTED && (
               <Button
@@ -232,6 +236,7 @@ function TimesheetDetail ({ location, user }) {
                 Submit
               </Button>
             )}
+          {/* Visible for only timesheet approver */}
           {user?.isTimesheetApprover &&
             timesheet.status === statusEnum.SUBMITTED && (
               <>
@@ -253,6 +258,7 @@ function TimesheetDetail ({ location, user }) {
                 </Button>
               </>
             )}
+          {/* Visible for only admin */}
           {user?.admin && (
             <Button
               variant='contained'
