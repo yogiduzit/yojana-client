@@ -21,3 +21,11 @@ export const createEmployee = async (body) => {
   return res.json();    
 };
 
+export const fetchOneEmployees = async () => {
+  const res = await fetch(`http://localhost:8080/yojana-backend/api/employees/`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+    }
+  });
+  return res.json();    
+};

@@ -5,6 +5,90 @@ import '../../assets/css/employeeprofile.css';
 import ArcProgress from 'react-arc-progress';
 import { BsBell, BsBrush } from "react-icons/bs";
 import { AiFillCamera } from "react-icons/ai";
+import axios from "axios";
+const BaseApi = "http://localhost:8080/yojana-backend/api/";
+let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJlbXBsb3llZSI6ImJkbGluayJ9.Ufu3Wyz1W60xwOrLaR3xkVBT1zeod8LoUNZNlKpCE-hZBjQ_P3FCh1s1bZ1bSFb2aryqQPDm9Cz1UHd3-NieXA";
+
+function getHours(time) {
+    return axios.get(BaseApi + 'employees/hours/' + time, {
+        headers: {'Authorization': 'Bearer ' + token}
+    });
+}
+
+function getEmployeeprofileInfo(id) {
+    return axios.get(BaseApi + 'employees/' + id, {
+        headers: {'Authorization': 'Bearer ' + token}
+    });
+}
+
+let dateFormate = function(time, fmt) {
+    let da = new Date(time);
+    let o = {
+        "M+" : da.getMonth()+1,                 
+        "d+" : da.getDate(),                   
+        "h+" : da.getHours(),                  
+        "m+" : da.getMinutes(),               
+        "s+" : da.getSeconds(),                 
+        "q+" : Math.floor((da.getMonth()+3)/3), 
+        "S" : da.getMilliseconds()             
+    };
+    if(/(y+)/.test(fmt)) {
+        fmt=fmt.replace(RegExp.$1, (da.getFullYear()+"").substr(4 - RegExp.$1.length));
+    }
+    for(let k in o) {
+        if(new RegExp("("+ k +")").test(fmt)){
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        }
+    }
+    return fmt;
+}
+
+function getEmployeeprofileDetail(id) {
+   return axios.get(BaseApi + 'leaverequest/emp/' + id, {
+        headers: {'Authorization': 'Bearer ' + token}
+    });
+}
+
+function getEmployeeprofile(id, target) {
+    // 获取时间
+    let time = "2021-03-10";
+    axios.all([getEmployeeprofileInfo(id), getEmployeeprofileDetail(id)], getHours(time)).then(axios.spread(function (info, detail, timeDetail) {
+        console.log("===", info, detail)
+        let employee = {};
+        employee.fullName = '';
+        employee.username = '';
+        employee.id = 0;
+        if (info) {
+            console.log('=========+++++', info);
+            try {
+                const data = info.data.data.employee;
+                employee.fullName = data.fullName;
+                employee.username = data.credential.username;
+                employee.id = data.id;
+            } catch (e) {
+                console.log('Error parsing employees data');
+            }
+        }
+        if (detail) {
+            const data = detail.data.data.leaveRequest;
+            employee.records = [];
+            for (let i = 0; i < data.length; i++) {
+                const { type, startDate, endDate } = data[i];
+                employee.records.push({
+                    state: type,
+                    time: dateFormate(startDate, 'yyyy/MM/dd') + '-' + dateFormate(endDate, 'yyyy/MM/dd')
+                });
+            }
+        }
+        if (timeDetail) {
+            console.log('返回的时间数据', timeDetail);
+        }
+        target.setState({
+            employeeData: employee
+        });
+    }))
+}
+
 /**
  * @param isHaveNotice
  * @param headImg
@@ -19,12 +103,11 @@ function Header(isHaveNotice, headImg ,email) {
                 <img src={empPic} alt='search'/>
                 <input type="text" placeholder='Search...'/>
             </div>
-            
             <div className="info">
                 <div className='bell'>
                     {/*<img src={BsFillBellFill} alt="bell"/>*/}
                     <BsBell/>
-                    {isHaveNotice ? <div></div> : null }
+                  {isHaveNotice ? <div></div> : null }
                 </div>
                 <div className='head'>
                     <img src={headImg} alt="user-head"/>
@@ -185,36 +268,30 @@ function EmployeeUpdatePwd(props) {
     )
 }
 
-function showKind(kind = 1, callback) {
-    if (kind == 1) {
+function showKind(kind = 1, callback, data) {
+    if (kind === 1) {
         return (
             <Fragment>
                 <div className="introduce">Profile</div>
-                {Employee(788,empPic, 'test@gmail.com', [{
-                    state: 'Sick',
-                    time: '12/12/2020'
-                }, {
-                    state: 'Off',
-                    time: '15/10/2020'
-                }], .782, '24 hrs', () => {
+                {Employee(data.id,empPic, data.username, data.records, .782, '24 hrs', () => {
                     callback(2);
                 })}
             </Fragment>
         )
     }
-    else if (kind == 2) {
+    else if (kind === 2) {
         return (
             <Fragment>
                 <EmployeeUpdateProfile number={788} headImg={empPic} email={'test@gmail.com'} callback={() => {
                     callback(3);
-                }}></EmployeeUpdateProfile>
+                }}/>
             </Fragment>
         )
     }
-    else if (kind == 3) {
+    else if (kind === 3) {
         return (
             <Fragment>
-                <EmployeeUpdatePwd number={788} headImg={empPic} email={'test@gmail.com'}></EmployeeUpdatePwd>
+                <EmployeeUpdatePwd number={788} headImg={empPic} email={'test@gmail.com'}/>
             </Fragment>
         )
     }
@@ -228,13 +305,24 @@ class Employeeprofile extends Component {
             isHaveNotice: true,
             headImg: empPic,
             email: 'test@gmail.com',
-            index: 1
+            index: 1,
+            employeeData: {
+                id: 0,  
+                username: '', 
+                records: []
+            },
+            employeeUpdataData: {},
+            employeeUpdatePwd: {}
         }
+    }
+
+    componentDidMount() {
+        getEmployeeprofile(1, this);
     }
 
     render() {
         let that = this;
-        const { isHaveNotice, headImg, email, index} = this.state;
+        const { isHaveNotice, headImg, email, index, employeeData, employeeUpdataData, employeeUpdatePwd} = this.state;
         return (
             <div className='employee'>
                 {Header(isHaveNotice, headImg, email)}
@@ -242,7 +330,15 @@ class Employeeprofile extends Component {
                     that.setState({
                         index
                     })
-                })}
+                }, function () {
+                   if (index === 1) {
+                       return employeeData;
+                   } else if (index === 2) {
+                       return employeeUpdataData;
+                   } else {
+                       return employeeUpdatePwd;
+                   }
+                }())}
             </div>
         );
     }
