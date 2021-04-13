@@ -23,293 +23,233 @@ import Paper from '@material-ui/core/Paper';
 import Collapse from '@material-ui/core/Collapse';
 import { getTimeAgo } from '../../utils/dateFormatter';
 import AddNewEstimate from '../estimate/newEstimateTable';
+import { useParams } from 'react-router';
+import { fetchAllEstimates } from '../../api/Estimate';
 
 
 const ExpandIcon = () => {
-  return (
-    <IconButton className='background-light-blue'>
-      <img src={dropDownIcon} />
-    </IconButton>
-  )
+    return (
+        <IconButton className='background-light-blue'>
+            <img src={dropDownIcon} />
+        </IconButton>
+    )
 }
 
 const useStyles = makeStyles((theme) => ({
-  MuiAccordionroot: {
-    "&.MuiAccordion-root:before": {
-      backgroundColor: "white"
+    MuiAccordionroot: {
+        "&.MuiAccordion-root:before": {
+            backgroundColor: "white"
+        }
     }
-  }
 }));
 
-const lowestLevelWorkpackageData = [
-  {
-    date: '18/01/21',
-    data: [
-      {
-        labourGrade: 'P4',
-        hourlyRate: 20,
-        numberOfEmps: 2,
-        personDays: 4,
-        cost: 160
-      },
-      {
-        labourGrade: 'P2',
-        hourlyRate: 16,
-        numberOfEmps: 3,
-        personDays: 3,
-        cost: 144
-      }
-    ]
-  },
-  {
-    date: '18/01/28',
-    data: [
-      {
-        labourGrade: 'P4',
-        hourlyRate: 20,
-        numberOfEmps: 2,
-        personDays: 4,
-        cost: 160
-      },
-      {
-        labourGrade: 'P2',
-        hourlyRate: 16,
-        numberOfEmps: 3,
-        personDays: 3,
-        cost: 144
-      }
-    ]
-  }
-]
-
 const LowestLevelWorkpackageCard = ({ wpData }) => {
+    const { id, wpId } = useParams();
 
-  const [estimateView, setEstimateView] = useState(false);
-  const [estimatedCost, setEstimatedCost] = useState(0);
-  const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
-  const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const toggleEstimate = () => {
-    setEstimateView(!estimateView);
-  };
+    const [estimateView, setEstimateView] = useState(false);
+    const [estimatedCost, setEstimatedCost] = useState(0);
+    const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
+    const [detailsExpanded, setDetailsExpanded] = useState(false);
+    const [estimates, setEstimates] = useState([]);
+    const toggleEstimate = () => {
+        setEstimateView(!estimateView);
+    };
 
-  const classes = useStyles();
-  // const wpData = {
-  //     wp: 'WP 1.1.1',
-  //     initEstimate: 200,
-  //     priority: 'High',
-  //     issuedDate: '18/01/21',
-  //     dueDate: '18/01/21',
-  //     detail: {
-  //         purpose: 'More refined user interface',
-  //         description: 'Customization user interface',
-  //         estimatedCost: 200,
-  //         charge: 150
-  //     }
-  // }
-  return (
-    <Accordion elevation={0} classes={{ root: classes.MuiAccordionroot }} className='mt-3' id='wp-accordion'>
-      <AccordionSummary
-        expandIcon={<ExpandIcon />}
-        aria-controls="panel1a-content"
-        className='text-center'
-        id="panel1a-header"
-      >
-        <Col>
-          <span className='font-weight-bold'>
-            {wpData.workPackagePk.id}
-          </span>
+    const showAddEstimate = estimates.filter((estimate) => estimate.type === "initial").length === 0;
+    const getEstimateType = function(estimate) {
+      switch(estimate.type) {
+        case "initial":
+          return "Initial Estimate";
+        case "planned":
+          return "Engineer Planned";
+        case "weekly":
+          return "Weekly estimate";
+        default:
+          throw new Error("Unknown estimate type");
+      }
+    }
 
-        </Col>
-        <Col>
-          <span className='font-weight-bold'>
-            {wpData.initialEstimate}
-          </span>
-        </Col>
-        <Col>
-          <span className='font-weight-bold'>
-            {wpData.allocatedInitialEstimate}
-          </span>
-        </Col>
-        <Col>
-          <span className='font-weight-bold'>
-            {wpData.budget}
-          </span>
-        </Col>
-        <Col>
-          <span className='font-weight-bold'>
-            {wpData.allocatedBudget}
-          </span>
-        </Col>
-        {/* <Col>
-						<span className='font-weight-bold ml-3'>
-							{wpData.priority}
-						</span>
-					</Col> */}
-        <Col>
-          <span className='font-weight-bold'>
-            {getTimeAgo(wpData.audit.createdAt)}
-          </span>
-        </Col>
-        <Col>
-          <span className='font-weight-bold'>
-            {getTimeAgo(wpData.dueAt)}
-          </span>
-        </Col>
-      </AccordionSummary>
-      <AccordionDetails >
-        <Col>
-          <div className='p-2 text-left'>
-            {/* <div>
+    const classes = useStyles();
+
+    useEffect(() => {
+        async function loadEstimates() {
+            const res = await fetchAllEstimates(id, wpData.workPackagePk.id);
+            if (res.errors && res.errors.length > 0) {
+                console.error("Cannot load estimates");
+            } else {
+                setEstimates(res.data.estimates);
+            }
+        }
+        loadEstimates();
+    }, [id, wpData.workPackagePk.id])
+    return (
+        <Accordion elevation={0} classes={{ root: classes.MuiAccordionroot }} className='mt-3' id='wp-accordion'>
+            <AccordionSummary
+                expandIcon={<ExpandIcon />}
+                aria-controls="panel1a-content"
+                className='text-center'
+                id="panel1a-header"
+            >
+                <Col>
+                    <span className='font-weight-bold'>
+                        {wpData.workPackagePk.id}
+                    </span>
+
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {wpData.initialEstimate}
+                    </span>
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {wpData.allocatedInitialEstimate}
+                    </span>
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {wpData.budget}
+                    </span>
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {wpData.allocatedBudget}
+                    </span>
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {getTimeAgo(wpData.audit.createdAt)}
+                    </span>
+                </Col>
+                <Col>
+                    <span className='font-weight-bold'>
+                        {getTimeAgo(wpData.dueAt)}
+                    </span>
+                </Col>
+            </AccordionSummary>
+            <AccordionDetails >
+                <Col>
+                    <div className='p-2 text-left'>
+                        <div className='mt-3'>
                             <span className='font-weight-bold'>
-                                Purpose
+                                Description
                                     </span>
                             <span className='font-weight-bold ml-5'>
-                                {wpData.detail.purpose}
+                                {wpData.description}
                             </span>
-                        </div> */}
-            <div className='mt-3'>
-              <span className='font-weight-bold'>
-                Description
-                                    </span>
-              <span className='font-weight-bold ml-5'>
-                {wpData.description}
-              </span>
-            </div>
-          </div>
-        </Col>
-        <Col className='ml-auto text-right'>
-          <div className='p-2 text-right'>
-            {/* <div>
+                        </div>
+                    </div>
+                </Col>
+                <Col className='ml-auto text-right'>
+                    <div className='p-2 text-right'>
+                        <div className='mt-3'>
                             <span className='font-weight-bold'>
-                                Initial Estimate
-                                    </span>
-                            {
-                                isEstimatedCostEditMode ?
-                                    <>
-
-                                    </> :
-                                    <>
-                                    </>
-                            }
-                            <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                ${wpData.initialEstimate}
-                            </span>
-                        </div> */}
-            <div className='mt-3'>
-              <span className='font-weight-bold'>
-                Charge
-                                    </span>
-              <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                ${wpData.charged}
+                                Charge
               </span>
-            </div>
+                            <span className='font-weight-bold text-color-primary-yonder ml-5'>
+                                ${wpData.charged}
+                            </span>
+                        </div>
 
-          </div>
-        </Col>
+                    </div>
+                </Col>
+            </AccordionDetails>
+            <AccordionDetails>
+                <Col className='p-0'>
+                    <span className='font-weight-bold ml-4'>Assigned Employees</span>
+                    <span className='font-weight-bold ml-4'>XVZ, YZX, ZXY</span>
+                </Col>
+                <Col className='text-right'>
+                    <div className='text-right'>
+                        <MaterialButton variant='contained'
+                            onClick={() => setDetailsExpanded(!detailsExpanded)}
+                            className='bg-white text-color-primary-yonder border-blue font-weight-bold'>
+                            View detailed estimate
+            </MaterialButton>
+                    </div>
+                </Col>
 
 
-        {/*<Col></Col>*/}
-      </AccordionDetails>
-      <AccordionDetails>
-        <Col className='p-0'>
-          <span className='font-weight-bold ml-4'>Assigned Employees</span>
-          <span className='font-weight-bold ml-4'>XVZ, YZX, ZXY</span>
-        </Col>
-        <Col className='text-right'>
-          <div className='text-right'>
-            <MaterialButton variant='contained'
-              onClick={() => setDetailsExpanded(!detailsExpanded)}
-              className='bg-white text-color-primary-yonder border-blue font-weight-bold'>
-              View detailed estimate
-                        </MaterialButton>
-          </div>
-        </Col>
-
-
-      </AccordionDetails>
-      <AccordionDetails className=''>
-        <Collapse in={detailsExpanded} timeout="auto" unmountOnExit>
-          <Timeline align='left' className='justify-content-start align-items-start'>
-            {
-              lowestLevelWorkpackageData.map((e, index) => {
-                return (
-                  <TimelineItem key={index}>
-                    <TimelineSeparator>
-                      <TimelineDot />
-                      <TimelineConnector />
-                    </TimelineSeparator>
-                    <TimelineContent>
-                      <span className='font-weight-bold'>{e.date}</span>
-                    </TimelineContent>
-                    <TimelineContent>
-                      <TableContainer component={Paper} style={{ minWidth: 700 }}>
-                        <Table aria-label="spanning table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>
-                                Labor Grade
-                                                            </TableCell>
-                              <TableCell>Hourly Rate</TableCell>
-                              <TableCell>Number of Emp</TableCell>
-                              <TableCell>Person Days</TableCell>
-                              <TableCell>Cost</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Desc</TableCell>
-                              <TableCell align="right">Qty.</TableCell>
-                              <TableCell align="right">Unit</TableCell>
-                              <TableCell align="right">Sum</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {
-                              e.data.map((d, index1) => {
+            </AccordionDetails>
+            <AccordionDetails className=''>
+                <Collapse in={detailsExpanded} timeout="auto" unmountOnExit>
+                    <Timeline align='left' className='justify-content-start align-items-start'>
+                        {
+                            estimates.map((e, index) => {
                                 return (
-                                  <TableRow key={index1}>
-                                    <TableCell>
-                                      {d.labourGrade}
-                                    </TableCell>
-                                    <TableCell>
-                                      {d.hourlyRate}
-                                    </TableCell>
-                                    <TableCell>
-                                      {d.numberOfEmps}
-                                    </TableCell>
-                                    <TableCell>
-                                      {d.personDays}
-                                    </TableCell>
-                                    <TableCell>
-                                      {d.cost}
-                                    </TableCell>
-                                  </TableRow>
+                                    <TimelineItem key={index}>
+                                        <TimelineSeparator>
+                                            <TimelineDot />
+                                            <TimelineConnector />
+                                        </TimelineSeparator>
+                                        <TimelineContent>
+                                            <span className='font-weight-bold'>{e.forWeek}</span>
+                                        </TimelineContent>
+                                        <TimelineContent>
+                                            <TableContainer component={Paper} style={{ minWidth: 700 }}>
+                                                <p className='font-weight-bold'>Type {getEstimateType(e)}</p>
+                                                <Table aria-label="spanning table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>
+                                                                Labor Grade
+                                                            </TableCell>
+                                                            <TableCell>Hourly Rate</TableCell>
+                                                            <TableCell>Number of Emp</TableCell>
+                                                            <TableCell>Person Days</TableCell>
+                                                            <TableCell>Cost</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {
+                                                            e.rows.map((row, rowIndex) => {
+                                                                return (
+                                                                    <TableRow key={rowIndex}>
+                                                                        <TableCell>
+                                                                            {row.paygradeId}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {row.payGrade.chargeRate}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {row.empCount}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {row.empDays}
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {row.empCount * row.empDays * 8 * row.payGrade.chargeRate}
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                )
+                                                            })
+                                                        }
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </TimelineContent>
+                                    </TimelineItem>
                                 )
-                              })
-                            }
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
+                            })
+                        }
+                    </Timeline>
+                    {
+                    showAddEstimate && <div className='text-right mt-4'>
+                        <MaterialButton
+                            variant='outlined'
+                            className='mt-4 btn-border-text-blue font-weight-bold p-2'
+                            onClick={toggleEstimate}
+                        >
+                            Add Estimate
+                        </MaterialButton>
+                    </div>
+                    }
+                    {estimateView ? <AddNewEstimate toggle={toggleEstimate} modal={estimateView} type="initial" wpId={wpData.workPackagePk.id} /> : null}
+                </Collapse>
+            </AccordionDetails>
 
-                    </TimelineContent>
-                  </TimelineItem>
-                )
-              })
-            }
-          </Timeline>
-          <div className='text-right mt-4'>
-            <MaterialButton
-              variant='outlined'
-              className='mt-4 btn-border-text-blue font-weight-bold p-2'
-              onClick={toggleEstimate}
-            >
-              Add Estimate
-                </MaterialButton>
-          </div>
-          {estimateView ? <AddNewEstimate toggle={toggleEstimate} modal={estimateView} /> : null}
-        </Collapse>
-      </AccordionDetails>
-
-    </Accordion>
-  )
+        </Accordion>
+    )
 }
 
 export default LowestLevelWorkpackageCard;
