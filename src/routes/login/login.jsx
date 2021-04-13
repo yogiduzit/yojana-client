@@ -15,6 +15,7 @@ import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
 import { fetchUser } from '../../actions/auth/fetchUser'
 
+
 class Login extends Component {
   constructor (props) {
     super(props)
@@ -35,15 +36,16 @@ class Login extends Component {
   }
 
   onLogin = () => {
-    login(this.getUsername(), this.getPassword()).then(res => {
-      if (res.errors.length > 0) {
-        return
-      } else {
-        localStorage.setItem(ACCESS_TOKEN, res.data.token)
-        this.props.fetchUser(res.data.authEmp)
-        this.props.history.push(Routes.DASHBOARD)
-      }
-    })
+    login(this.getUsername(), this.getPassword())
+      .then(res => {
+        if (res.errors.length > 0) {
+          return;
+        } else {
+          localStorage.setItem(ACCESS_TOKEN, res.data.token);
+          localStorage.setItem(ROLES, res.data.roles);
+          this.props.history.push(Routes.DASHBOARD);
+        }
+      });
   }
 
   componentDidMount () {

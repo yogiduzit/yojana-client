@@ -1,4 +1,4 @@
-import {  ACCESS_TOKEN, API_URL } from "../constants/environementVariables"
+import {  ACCESS_TOKEN, API_URL, ROLES } from "../constants/environementVariables"
 
 export const isLoggedIn = () => {
   const token = localStorage.getItem(ACCESS_TOKEN);
@@ -18,4 +18,9 @@ export const login = async (username, password) => {
 
 export const logout = () => {
   localStorage.removeItem(ACCESS_TOKEN);
+}
+
+export const extractRoles = () => {
+  const role = localStorage.getItem(ROLES);
+  return role;
 }

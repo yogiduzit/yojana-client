@@ -20,7 +20,9 @@ const Projects = () => {
 
   const getData = async () => {
     const { data } = await fetchAllProjects();
-    setProjects(data.projects);
+    if (typeof data.projects !== "undefined") {
+      setProjects(data.projects);
+    }
   };
 
     const projectObj = {
