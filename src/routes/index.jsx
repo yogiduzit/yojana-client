@@ -24,6 +24,7 @@ import Workpackage from "./workpackage";
 import SubWorkpackage from "./workpackage/sub";
 
 import '../assets/css/style.css';
+import WeeklyReportPage from "./weekly-reporting";
 
 const Main = (props) => {
     return (
@@ -53,6 +54,11 @@ const Main = (props) => {
                 <Route path={Routes.LEAVE_REQUEST_DETAIL} component={LeaveRequestDetail} />
                 <Route path={Routes.EMPLOYEE} component={Employee} />
                 <Route path={Routes.ADDEMPLOYEE} component={AddEmployee} />
+                <Route path={Routes.WEEKLY_REPORT}
+                       render={(props) => (
+                           <WeeklyReportPage {...props} />
+                       )}
+                />
               </Switch>  
             
             </BrowserRouter>
