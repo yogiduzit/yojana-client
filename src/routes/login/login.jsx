@@ -43,6 +43,8 @@ class Login extends Component {
         } else {
           localStorage.setItem(ACCESS_TOKEN, res.data.token);
           localStorage.setItem(ROLES, res.data.roles);
+          // Need to save currently logged in user in redux state too
+          this.props.fetchUser(res.data.authEmp)
           this.props.history.push(Routes.DASHBOARD);
         }
       });

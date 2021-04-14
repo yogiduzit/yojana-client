@@ -32,7 +32,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew'
 import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
 import {
-  fetchAllSubmittedTimesheets,
+  fetchAllSubmittedTimesheetsForApprover,
   fetchAllTimesheets,
   fetchTimesheetsForEmployee
 } from '../../api/Timesheet'
@@ -257,7 +257,7 @@ const TimesheetIndex = ({ user }) => {
     async function loadTimesheets () {
       const res =
         user?.isTimesheetApprover && !user?.admin
-          ? await fetchAllSubmittedTimesheets()
+          ? await fetchAllSubmittedTimesheetsForApprover()
           : !(user?.admin || user?.isTimesheetApprover)
           ? await fetchTimesheetsForEmployee(user?.id)
           : await fetchAllTimesheets()

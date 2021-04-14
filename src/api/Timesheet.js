@@ -11,6 +11,15 @@ export const fetchAllTimesheets = async () => {
 }
 
 export const fetchAllSubmittedTimesheets = async () => {
+  const res = await fetch(`${API_URL}/timesheets?status=submitted&getAll=true`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+    }
+  })
+  return res.json()
+}
+
+export const fetchAllSubmittedTimesheetsForApprover = async () => {
   const res = await fetch(`${API_URL}/timesheets?status=submitted`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
