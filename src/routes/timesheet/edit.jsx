@@ -4,7 +4,11 @@ import WithSidebar from '../../hoc/WithSidebar'
 import WithHeader from '../../hoc/WithHeader'
 import '../../assets/css/body-component.css'
 import '../../assets/css/timesheet.css'
-import { daysEnum, INITIAL_HOURS, statusEnum } from '../../constants/timesheet/constants'
+import {
+  daysEnum,
+  INITIAL_HOURS,
+  statusEnum
+} from '../../constants/timesheet/constants'
 import {
   formatHours,
   calculateTotalHours,
@@ -125,8 +129,10 @@ function TimesheetEdit ({ location, user }) {
   }
 
   const handleDeleteRow = rowToDelete => {
-    const updatedRows = timesheet.rows.filter(row => row.index !== rowToDelete.index)
-    updatedRows.forEach((row, idx) => row.index = idx) // update index
+    const updatedRows = timesheet.rows.filter(
+      row => row.index !== rowToDelete.index
+    )
+    updatedRows.forEach((row, idx) => (row.index = idx)) // update index
 
     calculateTotalHours(
       undefined,
@@ -149,13 +155,21 @@ function TimesheetEdit ({ location, user }) {
   const handleSubmit = async () => {
     const updateTimesheetResponse = await updateTimesheet(timesheet.id, {
       id: timesheet.id,
-      endWeek: typeof timesheet.endWeek === 'string' ? timesheet.endWeek : convertEndWeekToString(timesheet.endWeek),
+      endWeek:
+        typeof timesheet.endWeek === 'string'
+          ? timesheet.endWeek
+          : convertEndWeekToString(timesheet.endWeek),
       signature: timesheet.signature,
       feedback: timesheet.feedback,
+      status: statusEnum.SUBMITTED,
       overtime: timesheet.overtime,
       flextime: timesheet.flextime,
       approvedAt: timesheet.approvedAt,
-      status: statusEnum.SUBMITTED
+      ownerId: user.id,
+      audit: {
+        ...timesheet.audit,
+        updatedAt: new Date().getTime()
+      }
     })
 
     if (
@@ -167,7 +181,7 @@ function TimesheetEdit ({ location, user }) {
       const updateRowsResponses = await Promise.all(
         timesheet.rows.map(
           async row =>
-            await updateRow(updateTimesheetResponse.data.id, {
+            await updateRow(timesheet.id, {
               index: row.index,
               notes: row.notes,
               projectId: row.projectId,

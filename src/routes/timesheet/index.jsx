@@ -33,7 +33,8 @@ import AddIcon from '@material-ui/icons/Add'
 import { Button, TableHead, TableSortLabel } from '@material-ui/core'
 import {
   fetchAllSubmittedTimesheets,
-  fetchAllTimesheets
+  fetchAllTimesheets,
+  fetchTimesheetsForEmployee
 } from '../../api/Timesheet'
 import { toPascalCase } from '../../utils/string'
 import { convertEndWeekToDate } from '../../utils/timesheet/convertEndWeek'
@@ -254,9 +255,12 @@ const TimesheetIndex = ({ user }) => {
 
   useEffect(() => {
     async function loadTimesheets () {
-      const res = user?.isTimesheetApprover
-        ? await fetchAllSubmittedTimesheets()
-        : await fetchAllTimesheets()
+      const res =
+        user?.isTimesheetApprover && !user?.admin
+          ? await fetchAllSubmittedTimesheets()
+          : !(user?.admin || user?.isTimesheetApprover)
+          ? await fetchTimesheetsForEmployee(user?.id)
+          : await fetchAllTimesheets()
       setTimesheets(res.data.timesheets)
     }
 
@@ -301,7 +305,9 @@ const TimesheetIndex = ({ user }) => {
                     {formatMMDDYYYY(convertEndWeekToDate(row.endWeek))}
                   </TableCell>
                   <TableCell>{formatMMDDYYYY(row.audit.updatedAt)}</TableCell>
-                  <TableCell>{row.totalHours} hrs</TableCell>
+                  <TableCell>
+                    {row.totalHours ? row.totalHours : 'null'} hrs
+                  </TableCell>
                   <TableCell>
                     {statusIndicator(row.status, 'mr-3')}
                     {toPascalCase(row.status)}
@@ -319,8 +325,8 @@ const TimesheetIndex = ({ user }) => {
                       </Link>
                     ) : (
                       <EditIcon
-                          style={{ visibility: 'hidden' }}
-                          className='mr-5'
+                        style={{ visibility: 'hidden' }}
+                        className='mr-5'
                       />
                     )}
                     <Link
