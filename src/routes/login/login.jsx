@@ -9,7 +9,7 @@ import { Button } from '@material-ui/core'
 import logo from '../../assets/images/logo.svg'
 import { isLoggedIn, login } from '../../api/Authentication'
 
-import { ACCESS_TOKEN } from '../../constants/environementVariables'
+import { ACCESS_TOKEN, ROLES } from '../../constants/environementVariables'
 import Routes from '../../constants/routes'
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'
@@ -43,6 +43,8 @@ class Login extends Component {
         } else {
           localStorage.setItem(ACCESS_TOKEN, res.data.token);
           localStorage.setItem(ROLES, res.data.roles);
+          // Need to save currently logged in user in redux state too
+          this.props.fetchUser(res.data.authEmp)
           this.props.history.push(Routes.DASHBOARD);
         }
       });
