@@ -19,6 +19,15 @@ export const fetchAllSubmittedTimesheets = async () => {
   return res.json()
 }
 
+export const fetchTimesheetsForEmployee = async empId => {
+  const res = await fetch(`${API_URL}/timesheets?empId=${empId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+    }
+  })
+  return res.json()
+}
+
 export const createTimesheet = async body => {
   const res = await fetch(`${API_URL}/timesheets`, {
     method: 'POST',

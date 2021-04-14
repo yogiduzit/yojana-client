@@ -26,9 +26,10 @@ import getTimesheetFromProps from '../../utils/timesheet/getTimesheetFromProps'
 import Loading from '../../components/Loading/Loading.jsx'
 import NotFound from '../../components/NotFound/NotFound'
 import { fetchEmployeeById } from '../../api/Employee'
-import { deleteTimesheet } from '../../api/Timesheet'
+import { deleteTimesheet, updateTimesheet } from '../../api/Timesheet'
 import Routes from '../../constants/routes'
 import { toPascalCase } from '../../utils/string'
+import { convertEndWeekToString } from '../../utils/timesheet/convertEndWeek'
 
 const useStyles = makeStyles({
   // for the table
@@ -43,8 +44,6 @@ function TimesheetDetail ({ location, user }) {
   const [loaded, setLoaded] = useState(false)
   const [employee, setEmployee] = useState(null)
   const [timesheet, setTimesheet] = useState(null)
-  // TODO: Payload for any feedback when approve or reject timesheet
-  const [feedback, setFeedback] = useState('')
   // This is total hours of each day of rows (7 items)
   const [totalHours, setTotalHours] = useState([])
   const [totalOfTotalHours, setTotalOfTotalHours] = useState(0)
@@ -65,22 +64,54 @@ function TimesheetDetail ({ location, user }) {
     }
   }, [location.state])
 
+  // Helper function for updating timesheet status
+  const updateTimesheetStatus = async statusToUpdate => {
+    const updateTimesheetResponse = await updateTimesheet(timesheet.id, {
+      id: timesheet.id,
+      endWeek:
+        typeof timesheet.endWeek === 'string'
+          ? timesheet.endWeek
+          : convertEndWeekToString(timesheet.endWeek),
+      signature: timesheet.signature,
+      feedback: timesheet.feedback,
+      status: statusToUpdate,
+      overtime: timesheet.overtime,
+      flextime: timesheet.flextime,
+      approvedAt: timesheet.approvedAt,
+      ownerId: user.id,
+      audit: {
+        ...timesheet.audit,
+        updatedAt: new Date().getTime()
+      }
+    })
+    if (
+      !(
+        updateTimesheetResponse.errors &&
+        updateTimesheetResponse.errors.length > 0
+      )
+    ) {
+      history.push(Routes.TIMESHEET)
+    } else {
+      console.error(
+        'Failed to update timesheet status',
+        updateTimesheetResponse.errors
+      )
+    }
+  }
+
   const handleTimesheetSubmit = e => {
     e.preventDefault()
-    // TODO: Patch call to change status of timesheet to 'submitted'
-    console.log('Timesheet Submitted!')
+    updateTimesheetStatus(statusEnum.SUBMITTED)
   }
 
   const handleTimesheetApprove = e => {
     e.preventDefault()
-    // TODO: Patch call to change status of timesheet to 'approved'
-    console.log('Timesheet Approved!')
+    updateTimesheetStatus(statusEnum.APPROVED)
   }
 
   const handleTimesheetReject = e => {
     e.preventDefault()
-    // TODO: Patch call to change status of timesheet to 'rejected'
-    console.log('Timesheet Rejected!')
+    updateTimesheetStatus(statusEnum.DENIED)
   }
 
   // For admin only, to delete the timesheet.
@@ -96,7 +127,10 @@ function TimesheetDetail ({ location, user }) {
   }
 
   const handleFeedbackChange = e => {
-    setFeedback(e.target.value)
+    setTimesheet({
+      ...timesheet,
+      feedback: e.target.value
+    })
   }
 
   const feedbackForTimesheetApprover = (
