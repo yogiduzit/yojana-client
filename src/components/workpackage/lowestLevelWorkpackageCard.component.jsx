@@ -44,11 +44,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LowestLevelWorkpackageCard = ({ wpData }) => {
-    const { id, wpId } = useParams();
+    const { id } = useParams();
 
     const [estimateView, setEstimateView] = useState(false);
-    const [estimatedCost, setEstimatedCost] = useState(0);
-    const [isEstimatedCostEditMode, setIsEstimatedCostEditMode] = useState(false);
     const [detailsExpanded, setDetailsExpanded] = useState(false);
     const [estimates, setEstimates] = useState([]);
     const toggleEstimate = () => {
@@ -56,17 +54,17 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
     };
 
     const showAddEstimate = estimates.filter((estimate) => estimate.type === "initial").length === 0;
-    const getEstimateType = function(estimate) {
-      switch(estimate.type) {
-        case "initial":
-          return "Initial Estimate";
-        case "planned":
-          return "Engineer Planned";
-        case "weekly":
-          return "Weekly estimate";
-        default:
-          throw new Error("Unknown estimate type");
-      }
+    const getEstimateType = function (estimate) {
+        switch (estimate.type) {
+            case "initial":
+                return "Initial Estimate";
+            case "planned":
+                return "Engineer Planned";
+            case "weekly":
+                return "Weekly estimate";
+            default:
+                throw new Error("Unknown estimate type");
+        }
     }
 
     const classes = useStyles();
@@ -145,7 +143,7 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
                         <div className='mt-3'>
                             <span className='font-weight-bold'>
                                 Charge
-              </span>
+                            </span>
                             <span className='font-weight-bold text-color-primary-yonder ml-5'>
                                 ${wpData.charged}
                             </span>
@@ -234,17 +232,25 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
                         }
                     </Timeline>
                     {
-                    showAddEstimate && <div className='text-right mt-4'>
-                        <MaterialButton
-                            variant='outlined'
-                            className='mt-4 btn-border-text-blue font-weight-bold p-2'
-                            onClick={toggleEstimate}
-                        >
-                            Add Estimate
+                        showAddEstimate && <div className='text-right mt-4'>
+                            <MaterialButton
+                                variant='outlined'
+                                className='mt-4 btn-border-text-blue font-weight-bold p-2'
+                                onClick={toggleEstimate}
+                            >
+                                Add Estimate
                         </MaterialButton>
-                    </div>
+                        </div>
                     }
-                    {estimateView ? <AddNewEstimate toggle={toggleEstimate} modal={estimateView} type="initial" wpId={wpData.workPackagePk.id} /> : null}
+                    {estimateView 
+                        ? <AddNewEstimate
+                            toggle={toggleEstimate}
+                            modal={estimateView}
+                            redirect={`/project/${wpData.workPackagePk.projectID}/wp/${wpData.workPackage.id}`}
+                            type="initial"
+                            wpData={wpData}/> 
+                        : null
+                    }
                 </Collapse>
             </AccordionDetails>
 

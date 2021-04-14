@@ -323,11 +323,6 @@ const Workpackage = (props) => {
                                 Allocated Budget
                             </span>
                         </Col>
-                        {/* <Col >
-							<span className='font-weight-bold mt-4 ml-5'>
-								Priority
-                            </span>
-						</Col> */}
                         <Col>
                             <span className='font-weight-bold mt-4 ml-2 '>
                                 Issue Date

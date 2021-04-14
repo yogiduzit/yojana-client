@@ -22,7 +22,6 @@ import { getLastFridayOf } from "../../utils/dateFormatter";
 import { createEstimate, createEstimateRow } from "../../api/Estimate";
 
 export default function AddNewEstimate(props) {
-    const { id } = useParams();
     const history = useHistory();
 
     const dummyEstimate = {
@@ -135,8 +134,8 @@ export default function AddNewEstimate(props) {
 
     const submitEstimate = async () => {
         const createEstimatePayload = {
-            workPackageId: props.wpId,
-            projectId: id,
+            workPackageId: props.wpData.workPackagePk.id,
+            projectId: props.wpData.workPackagePk.projectID,
             estimateToComplete: 0,
             forWeek: getLastFridayOf(new Date()),
             type: props.type
@@ -158,15 +157,18 @@ export default function AddNewEstimate(props) {
             if (createRowsResponses.some(res => res.data.errors && res.data.errors.length > 0)) {
                 console.error("Error creating rows in the estimate");
             } else {
-                history.push(`/project/${id}/wp/${props.wpId}`);
+                closeEstimateTable();
+                history.push(props.redirect);
             }
         }
     }
 
+    const type = props.type[0].toUpperCase() + props.type.substring(1);
+
     return (
         <div>
             <Modal isOpen={props.modal} toggle={closeEstimateTable}>
-                <ModalHeader toggle={closeEstimateTable}>Add New Estimate</ModalHeader>
+                <ModalHeader toggle={closeEstimateTable}>Add New {type} Estimate</ModalHeader>
                 <ModalBody>
                     <TableContainer component={Paper}>
                         <TableHead>

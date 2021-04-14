@@ -23,6 +23,8 @@ import AddEmployee from './employee/create'
 import Workpackage from "./workpackage";
 import SubWorkpackage from "./workpackage/sub";
 
+import RespEngList from "./weeklyStatus";
+
 import '../assets/css/style.css';
 import WeeklyReportPage from "./weekly-reporting";
 
@@ -43,6 +45,7 @@ const Main = (props) => {
                 <Route exact path={Routes.VIEW_SUB_WORK_PACKAGE} render={(props) => (
                   <SubWorkpackage key={`view-wp-${window.location.href}`} {...props} />
                 )} />
+                <Route exact path={Routes.RESPONSIBLE_ENG_LIST} component={RespEngList} />
                 <Route path={Routes.TIMESHEET} component={Timesheet} />
                 <Route path={Routes.TIMESHEET_CREATE} component={TimesheetCreate} />
                 <Route path={Routes.TIMESHEET_DETAIL} component={TimesheetDetail} />
