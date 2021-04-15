@@ -21,7 +21,8 @@ const Routes = {
     EMPLOYEE: '/employees',
     ADDEMPLOYEE: '/employee/create',
     EMPLOYEEPROFILE: '/employeeprofile',
-    WEEKLY_REPORT: '/weekly-report/:projectId'
+    WEEKLY_REPORT: '/weekly-report/:projectId',
+    MONTHLY_REPORT: '/monthly-report/:projectId'
 };
 
 export default Routes;

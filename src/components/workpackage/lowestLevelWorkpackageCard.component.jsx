@@ -138,19 +138,6 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
                         </div>
                     </div>
                 </Col>
-                <Col className='ml-auto text-right'>
-                    <div className='p-2 text-right'>
-                        <div className='mt-3'>
-                            <span className='font-weight-bold'>
-                                Charge
-                            </span>
-                            <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                ${wpData.charged}
-                            </span>
-                        </div>
-
-                    </div>
-                </Col>
             </AccordionDetails>
             <AccordionDetails>
                 <Col className='p-0'>
@@ -246,7 +233,7 @@ const LowestLevelWorkpackageCard = ({ wpData }) => {
                         ? <AddNewEstimate
                             toggle={toggleEstimate}
                             modal={estimateView}
-                            redirect={`/project/${wpData.workPackagePk.projectID}/wp/${wpData.workPackage.id}`}
+                            redirect={`/project/${wpData.workPackagePk.projectID}/wp/${wpData.workPackagePk.id}`}
                             type="initial"
                             wpData={wpData}/> 
                         : null

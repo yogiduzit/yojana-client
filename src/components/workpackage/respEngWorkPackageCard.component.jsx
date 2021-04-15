@@ -60,7 +60,7 @@ const WorkpackageCard = ({ wpData }) => {
             if (res.errors && res.errors.length > 0) {
                 console.error("Cannot load charges");
             } else {
-                setCharge(res.data.charge || 0);
+                setCharge(res.data.charge || {});
             }
         }
         async function loadWeeklyCharges() {
@@ -143,7 +143,7 @@ const WorkpackageCard = ({ wpData }) => {
                                     Charge (by dollar)
                                     </span>
                                 <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                    ${charge.charges || 0}
+                                    ${charge.charge || 0}
                                 </span>
                             </div>
                         </div>

@@ -112,30 +112,6 @@ const WorkpackageCard = ({ wpData }) => {
                     </Col>
                     <Col className='ml-auto text-right'>
                         <div className='p-2 text-right'>
-                            <div>
-                                <span className='font-weight-bold'>
-                                    Cost At Completion
-                                    </span>
-                                {
-                                    isEstimatedCostEditMode ?
-                                        <>
-
-                                        </> :
-                                        <>
-                                        </>
-                                }
-                                <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                    ${wpData.costAtCompletion}
-                                </span>
-                            </div>
-                            <div className='mt-3'>
-                                <span className='font-weight-bold'>
-                                    Charge
-                                    </span>
-                                <span className='font-weight-bold text-color-primary-yonder ml-5'>
-                                    ${wpData.charged}
-                                </span>
-                            </div>
                             <div className='text-right mt-4'>
                                 <MaterialButton
                                     variant='outlined'
@@ -143,17 +119,12 @@ const WorkpackageCard = ({ wpData }) => {
                                     onClick={() => history.push(`/project/${wpData.workPackagePk.projectID}/wp/${wpData.workPackagePk.id}`)}
                                 >
                                     View sub work packages
-                </MaterialButton>
+                                </MaterialButton>
                             </div>
                         </div>
                     </Col>
                 </AccordionDetails >
             </Accordion >
-            {/*<Row>*/}
-            {/*    <Col></Col>*/}
-            {/*    <Col></Col>*/}
-            {/*    <Col></Col>*/}
-            {/*</Row>*/}
         </>
     )
 }
