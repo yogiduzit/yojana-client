@@ -24,14 +24,7 @@ const Projects = () => {
       setProjects(data.projects);
     }
   };
-
-    const projectObj = {
-        id: 2,
-        projectName: "Admin Panel",
-        milestone: "Inception",
-        currentWpID: 2,
-
-    }
+  
   return (
       <Container>
           <h1 className=' px-4 font-weight-bold'>Projects</h1>
@@ -51,7 +44,6 @@ const Projects = () => {
               )
             })
           }
-          <ProjectCard project={projectObj} />
         </Row>
     </Container>
   )

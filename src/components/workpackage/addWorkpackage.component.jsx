@@ -18,8 +18,7 @@ import 'react-tagsinput/react-tagsinput.css'
 const AddWorkpackage = () => {
     const params = useParams();
     const history = useHistory();
-    const location = useLocation();
-    console.log(location);
+
     const { id: projectId } = params;
 
     const [isAddingModalOpen, setIsAddingModalOpen] = useState(false);

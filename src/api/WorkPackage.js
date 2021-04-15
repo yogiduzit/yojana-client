@@ -27,6 +27,15 @@ export const fetchChildWorkPackages = async (id, wpId) => {
     return res.json();
 };
 
+export const fetchRespEngWorkPackages = async () => {
+    const res = await fetch(`${API_URL}/projects/get/respEng`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+    });
+    return res.json();
+};
+
 export const fetchWorkPackage = async (id, wpId) => {
     const res = await fetch(`${API_URL}/projects/${id}/workPackages/${wpId}`, {
         headers: {
@@ -55,6 +64,24 @@ export const updateWorkPackage = async (id, wpId, body) => {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
             'Content-Type': "application/json",
+        }
+    });
+    return res.json();
+};
+
+export const fetchCharges = async (id, wpId) => {
+    const res = await fetch(`${API_URL}/projects/${id}/workPackages/${wpId}/charge`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
+        }
+    });
+    return res.json();
+};
+
+export const fetchWeeklyCharges = async (id, wpId) => {
+    const res = await fetch(`${API_URL}/projects/${id}/workPackages/${wpId}/weeklyCharges`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`
         }
     });
     return res.json();

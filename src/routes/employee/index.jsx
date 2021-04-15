@@ -76,7 +76,7 @@ const onSubmit = () => {
         id: empId ,
         fullName: fullName,
         admin: admin,
-        timesheetApprover: timesheetApprover,
+        isTimesheetApprover: timesheetApprover,
         projectManager: projectManager,
         hr: hr,
         managerId: managerId,
