@@ -21,12 +21,14 @@ class Login extends Component {
     super(props)
     this.state = {
       userName: '',
-      password: ''
+      password: '',
+      valid: true
     }
   }
 
   getUsername = () => this.state.username
   getPassword = () => this.state.password
+  getValid = () => this.state.valid
 
   setUsername = username => {
     this.setState({ username: username })
@@ -34,13 +36,19 @@ class Login extends Component {
   setPassword = password => {
     this.setState({ password: password })
   }
+  setValid = valid => {
+    this.setState({ valid: valid })
+  }
 
   onLogin = () => {
     login(this.getUsername(), this.getPassword())
       .then(res => {
-        if (res.errors.length > 0) {
+        console.log(res);
+        if ((res.code != null && res.code == 500) || (res.errors != null && res.errors.length > 0)) {
+          this.setValid(false);
           return;
         } else {
+          this.setValid(true);
           localStorage.setItem(ACCESS_TOKEN, res.data.token);
           localStorage.setItem(ROLES, res.data.roles);
           // Need to save currently logged in user in redux state too
@@ -90,8 +98,11 @@ class Login extends Component {
               Sign In
             </Button>
           </form>
+          <div style={{color: "red"}} hidden={this.getValid()}>Incorrect Login</div>
         </div>
+            
       </Container>
+      
     )
   }
 }
