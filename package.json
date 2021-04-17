@@ -1,5 +1,5 @@
 {
-    "name": "yojana-client",
+    "name": "comp4911-pms-client",
     "description": "A React client built by Team 2 for PMS project in COMP4911",
     "version": "0.1.0",
     "private": true,
