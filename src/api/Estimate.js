@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, API_URL } from "../constants/environementVariables";
+import { ACCESS_TOKEN, API_URL } from "../constants/environmentVariables";
 
 export const fetchAllEstimates = async (projectId, wpId) => {
     const res = await fetch(`${API_URL}/projects/${projectId}/workPackages/${wpId}/estimates`, {

@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, API_URL, ROLES } from "../constants/environementVariables"
+import { ACCESS_TOKEN, API_URL, ROLES } from "../constants/environmentVariables"
 
 export const isLoggedIn = () => {
     const token = localStorage.getItem(ACCESS_TOKEN);

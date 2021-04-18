@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, API_URL } from "../constants/environementVariables"
+import { ACCESS_TOKEN, API_URL } from "../constants/environmentVariables"
 
 export const createCredential = async (body) => {
   const res = await fetch(`${API_URL}/credentials`, {

@@ -9,7 +9,7 @@ import { Button } from '@material-ui/core'
 import logo from '../../assets/images/logo.svg'
 import { isLoggedIn, login } from '../../api/Authentication'
 
-import { ACCESS_TOKEN, ROLES } from '../../constants/environementVariables'
+import { ACCESS_TOKEN, ROLES } from '../../constants/environmentVariables'
 import Routes from '../../constants/routes'
 import { Redirect } from 'react-router'
 import { connect } from 'react-redux'

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ACCESS_TOKEN, API_URL } from '../constants/environementVariables'
+import { ACCESS_TOKEN, API_URL } from '../constants/environmentVariables'
 
 export const fetchAllTimesheets = async () => {
   const res = await fetch(`${API_URL}/timesheets`, {

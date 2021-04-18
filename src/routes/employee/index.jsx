@@ -19,7 +19,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import { ACCESS_TOKEN, API_URL } from "../../constants/environementVariables";
+import { ACCESS_TOKEN, API_URL } from "../../constants/environmentVariables";
 
 // import Accordion from '@material-ui/core/Accordion';
 // import AccordionSummary from '@material-ui/core/AccordionSummary';

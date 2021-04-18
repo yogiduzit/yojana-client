@@ -13,7 +13,7 @@ import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import SearchBar from "material-ui-search-bar";
 import { Link } from 'react-router-dom'
-import { ACCESS_TOKEN } from "../../constants/environementVariables"
+import { ACCESS_TOKEN } from "../../constants/environmentVariables"
 import { IconButton } from "@material-ui/core";
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Container } from 'reactstrap';
 import OpenNewPageIcon from '../../assets/images/new-page-icon.svg'
